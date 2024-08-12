@@ -10,8 +10,8 @@
     <header>
         <img src="./image/icon.png" alt="Logo" class="logo">
         <a href="#" class="dashboard-button" id="dashButton">Dashboard</a>
-        <a href="#" class="bills-button" id="billsButton">Bill Manager</a>
-        <a href="#" class="exit-button" id="exitButton">
+        <a href="billManager.php" class="bills-button" id="billsButton">Bill Manager</a>
+        <a href="index.php" class="exit-button" id="exitButton">
             <img src="./image/out.png" alt="Exit">
         </a>
     </header>
@@ -25,8 +25,6 @@
         <div class="card chart">Income per Month</div>
         <div class="card chart">Cubic meter Consumption per Month</div>
     </div>
-
-    <script src="./Javascript/modal_login.js"></script>
 
 </body>
 </html>

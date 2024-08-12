@@ -8,32 +8,33 @@
 </head>
 <body>
     <header>
+    <a href="index.php" class="logo-button" id="logoButton">
         <img src="./image/icon.png" alt="Logo" class="logo">
         <a href="#" class="login-button" id="loginButton">Admin Login</a>
     </header>
 
-<!-- Login Modal -->
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <span class="close-button" onclick="document.getElementById('loginModal').style.display='none'">&times;</span>
-        <div class="login-container">
-            <h1>Admin Login</h1>
-            <form>
-                <div class="input-group">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required>
-                    <span class="icon">&#128100;</span>
-                </div>
-                <div class="input-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required>
-                    <span class="icon">&#128274;</span>
-                </div>
-                <button type="submit">Login</button>
-            </form>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="document.getElementById('loginModal').style.display='none'">&times;</span>
+            <div class="login-container">
+                <h1>Admin Login</h1>
+                <form>
+                    <div class="input-group">
+                        <input type="text" id="username" placeholder ="Username" required>
+                        <span class="icon">&#128100;</span>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" name="password" placeholder ="Password" required>
+                        <span class="icon">&#128274;</span>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit">Login</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
     <div class="dashboard">
         <div class="card">Paid this Month</div>
