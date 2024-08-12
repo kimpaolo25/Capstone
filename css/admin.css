@@ -1,0 +1,96 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #b0c4de;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #4169e1;
+    color: #ffffff;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-left: 10px;
+}
+
+.dashboard-button {
+    position: relative;
+    color: #ffffff;
+    padding: 10px 5px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    margin-left: 10px;
+}
+
+.bills-button {
+    position: relative;
+    color: #ffffff;
+    padding: 10px 5px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    margin-left: 10px;
+}
+
+.dashboard-button::before,
+.dashboard-button::after {
+    content: "|";
+    flex-grow: 1;
+    height: 5px;
+    background-color: #ffffff;
+    margin: 10px;
+}
+
+.bills-button::before,
+.bills-button::after {
+    content: "|";
+    flex-grow: 1;
+    height: 5px;
+    background-color: #ffffff;
+    margin: 10px;
+}
+
+.dashboard-button:hover {
+    background-color: #1d3ceb;
+    padding: 10px 5px;
+}
+
+.bills-button:hover {
+    background-color: #1d3ceb;
+    padding: 10px 5px;
+}
+
+.exit-button {
+    margin-left: auto; /* Pushes the exit button to the right */
+}
+
+.exit-button img {
+    width: 40px; /* Adjust icon size as needed */
+    height: auto;
+    cursor: pointer;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 20px;
+}
+
+.card {
+    background-color: #d3d3d3;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.chart {
+    height: 200px;
+}
