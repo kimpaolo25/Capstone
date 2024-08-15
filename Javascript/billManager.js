@@ -177,10 +177,12 @@ document.getElementById('searchInput').addEventListener('input', function () {
         const cells = row.getElementsByTagName('td');
         let match = false;
 
-        for (let i = 0; i < cells.length - 1; i++) { // Exclude the last cell which is the action cell
-            if (cells[i].textContent.toLowerCase().includes(searchValue)) {
+        // Assuming the name is in the first column (index 0)
+        const nameCell = cells[0];
+        
+        if (nameCell) {
+            if (nameCell.textContent.toLowerCase().includes(searchValue)) {
                 match = true;
-                break;
             }
         }
 
@@ -191,7 +193,7 @@ document.getElementById('searchInput').addEventListener('input', function () {
     });
 
     // Show SweetAlert2 and clear search input if no records are found
-    if (!anyRowVisible) {
+    if (!anyRowVisible && searchValue !== '') {
         Swal.fire({
             title: 'No records found',
             text: 'No results match your search criteria.',
@@ -203,6 +205,7 @@ document.getElementById('searchInput').addEventListener('input', function () {
         });
     }
 });
+
 
 //active for billmanager
 document.addEventListener('DOMContentLoaded', () => {

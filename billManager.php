@@ -28,7 +28,7 @@
     <div id="addBillModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h2>Add Bill Report</h2>
+        <h2>Add Bill Report<br></br></h2>
         <form id="addBillForm">
             <div class="modal-section">
                 <div class="modal-field">
