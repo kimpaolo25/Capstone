@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="./css/admin.css">
+    <script src="./Javascript/sweetalert.js"></script>
 </head>
 <body>
     <header>
@@ -25,6 +26,8 @@
         <div class="card chart">Income per Month</div>
         <div class="card chart">Cubic meter Consumption per Month</div>
     </div>
+
+    <script src="./Javascript/admin.js"></script>
 
 </body>
 </html>
