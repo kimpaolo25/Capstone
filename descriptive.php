@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Descriptive Dashboard</title>
     <link rel="stylesheet" href="./css/descriptive.css">
+    <script src="./Javascript/sweetalert.js"></script>
 </head>
 <body>
     <header>
