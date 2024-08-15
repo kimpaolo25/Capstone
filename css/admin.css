@@ -101,3 +101,41 @@ header {
 .chart {
     height: 200px;
 }
+
+/* Define keyframes for fade-in and fade-out */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+}
+
+/* Apply the fade-in animation */
+.section.fade-in {
+    animation: fadeIn 0.5s forwards;
+}
+
+/* Apply the fade-out animation */
+.section.fade-out {
+    animation: fadeOut 0.5s forwards;
+}
+
+/* Ensure the section that is not visible is hidden */
+.section.hidden {
+    display: none;
+}
