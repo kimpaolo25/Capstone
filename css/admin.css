@@ -61,6 +61,13 @@ header {
     padding: 10px 5px;
 }
 
+/* Active button style */
+.dashboard-button.active {
+    background-color: #1d3ceb; /* Active color */
+    color: white;
+    font-weight: bold;
+}
+
 .bills-button:hover {
     background-color: #1d3ceb;
     padding: 10px 5px;

@@ -66,6 +66,12 @@ header {
     padding: 10px 5px;
 }
 
+.bills-button.active {
+    background-color: #1d3ceb; /* Active color */
+    color: white;
+    font-weight: bold;
+}
+
 /* Basic styling for the table */
 table {
     width: 90%;
