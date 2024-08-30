@@ -15,24 +15,39 @@
     </header>
 
     <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="document.getElementById('loginModal').style.display='none'">&times;</span>
-            <div class="login-container">
-                <h1>Admin Login</h1>
-                <form>
-                    <div class="input-group">
-                        <input type="text" id="username" placeholder ="Username" required>
+    <div id="loginModal" class="wrapper">
+        <div class="login-wrapper">
+            <span class="close-button" onclick="document.getElementById('loginModal').style.display='none'"></span>
+            <div class="login-header">Login</div>
+            <div class="login-form">
+                    <div class="input-wrapper">
+                        <input type="text" id="username" 
+                        class="input-field" required/>
+                        <label for="username"
+                        class="label">Username</label>
+                        <i class="bx bx-user icon"></i>
                         <span class="icon">&#128100;</span>
                     </div>
-                    <div class="input-group">
-                        <input type="password" id="password" name="password" placeholder ="Password" required>
+
+                    <div class="input-wrapper">
+                        <input type="password" id="password" 
+                        class="input-field" required/>
+                        <label for="password"
+                        class="label">Password</label>
+                        <i class="bx bx-lock-alt icon"></i>
                         <span class="icon">&#128274;</span>
                     </div>
-                    <div class="button-container">
-                        <button type="submit">Login</button>
+
+                    <div class="checkbox-container">
+                            <input type="checkbox" id="chk"> Show Password
+                        </div>
+                    
+                    <div class="input-wrapper">
+                        <input type="submit"
+                        id="loginButton"
+                        class="input-login"
+                        value="Login" />
                     </div>
-                </form>
             </div>
         </div>
     </div>
@@ -48,6 +63,7 @@
     </div>
 
     <script src="./Javascript/modal_login.js"></script>
+    <script src="./Javascript/password.js"></script>
 
 </body>
 </html>

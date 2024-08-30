@@ -87,8 +87,13 @@ header {
 
 /* Modal styles */
 /* Modal background */
-.modal {
+.wrapper {
     display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    padding: 1rem;
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
     left: 0;
@@ -102,96 +107,128 @@ header {
 }
 
 /* Modal content */
-.modal-content {
-    background-color: #0091abca;
-    margin: 15% auto; /* 15% from the top and centered horizontally */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 50%; /* Could be more or less, depending on screen size */
-    max-width: 400px;
-    border-radius: 8px; /* Rounded corners */
+.login-wrapper {
     position: relative;
+    padding: 6rem 2.5rem 2rem 2.5rem;
+    border: 3px solid #4169e1;
+    border-radius: 15px; /* Rounded corners */
+    backdrop-filter: blur(25px);
+    box-shadow: 0px 0px 10px 2px rgb(0, 0, 0, 0.2);
+    background-color: white;
+    backdrop-filter: blur(10px);
     transform: scale(1); /* Initial scale for zoom-in effect */
     animation: zoomIn 0.3s; /* Zoom-in animation */
 }
 
-/* Close button */
-.close-button {
-    color: #ff0000;
-    float: right;
-    font-size: 35px;
-    font-weight: bold;
-    cursor: pointer;
+.login-header{
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
+    transform: translateX(-50%);
+    border-radius: 0 0 20px 20px;
+    background-color: #4169e1;
+    color: white;
+    font-size: clamp(1rem, 3vw, 2rem);
 }
 
-.close-button:hover,
-.close-button:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+.login-header::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -30px;
+    width: 30px;
+    height: 30px;
+    border-top-right-radius: 50%;
+    background: transparent;
+    box-shadow: 15px 0 0 0 #4169e1;
 }
 
-/* Login container */
-.login-container {
+.login-header::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -30px;
+    width: 30px;
+    height: 30px;
+    border-top-left-radius: 50%;
+    background: transparent;
+    box-shadow: -15px 0 0 0 #4169e1;
+}
+
+.login-form{
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center horizontally */
+    font-size: clamp(0.8rem, 3vw, 1rem);
 }
 
-/* Input groups */
-.input-group {
+.input-wrapper{
     display: flex;
-    align-items: center;
-    margin: 10px 0;
-    width: 100%;
+    position: relative;
+    flex-direction: column;
+    margin-top: 1.5rem;
 }
 
-h1 {
+.input-field{
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid #4169e1;
+    border-radius: 30px;
+    outline: none;
+    background: transparent;
+    color: black;
+}
+
+.label{
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    transform: translateY(-50%);
+    transition: 0.2s;
+    color: black;
+}
+
+.input-field:focus~.label,
+.input-field:valid~.label{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    padding: 0 10px;
+    border-radius: 30px;
+    background-color: #4169e1;
     color: white;
 }
 
-.input-group input {
-    flex: 2;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
+.icon{
+    position: absolute;
+    top: 5px;
+    right: -15px;
 }
 
-.input-group input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+.checkbox-container{
+    color: black;
+    margin-top: 1.5rem;
 }
 
-.input-group .icon {
-    margin-left: 10px;
-    font-size: 1.2em;
-}
-
-/* Button container */
-.button-container {
-    display: flex; /* Use flexbox layout */
-    justify-content: center; /* Center horizontally */
-    width: 100%; /* Full width to allow centering */
-}
-
-/* Login button */
-button {
-    background-color: #ffffff;
-    color: rgb(0, 0, 0);
-    padding: 10px 25px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 16px;
+.input-login{
+    width: 100%;
+    padding: 0.6rem;
+    border: 2px solid #4169e1;;
+    border-radius: 30px;
+    background: #ececec;
+    font-size: clamp(1rem, 3vw, 1,3rem);
+    font-weight: 600;
     cursor: pointer;
-    margin-top: 10px;
-    border-radius: 4px;
-    border: 1px solid #ccc; /* Optional: add a border for better visibility */
+    transition: 0.3s;
 }
 
-.button-container:hover {
-    background-color: #54d0fd;
+.input-login:hover{
+    background: rgb(222, 245, 251);
 }
+
 
 /* Keyframes for animations */
 @keyframes fadeIn {
