@@ -85,7 +85,6 @@
             <tr>
 
             </tr>
-            <!-- Additional rows can be added here -->
         </tbody>
     </table>
     <script src="./Javascript/billManager.js"></script>
