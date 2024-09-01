@@ -112,10 +112,11 @@ th {
 
 /* Specific styling for the "Add" button */
 #addButton {
-    background-color: rgb(20, 173, 194); 
+    background-color: white; 
     color: black; 
     font-weight: bold; 
-    border: 1px solid #dddddd00; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 2px solid #4169e1; 
     width: 100px;
     border-radius: 5px;  
 }
@@ -125,26 +126,32 @@ th {
 
 /* Modal styles */
 .modal {
-    display: none; 
-    position: fixed; 
-    z-index: 1; 
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    padding: 1rem;
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
     left: 0;
     top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.4); 
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
     backdrop-filter: blur(5px); /* Blurring effect on the background */
     animation: fadeIn 0.5s; /* Fade-in animation */
 }
 
 /* Centering the modal content */
 .modal-content {
-    background-color: #0091ab;
+    background-color: white;
+    position: fixed center;
     margin: 5% auto; 
-    padding: 60px;
-    border: 1px solid #888;
-    width: 60%; 
+    padding: 50px;
+    border: 3px solid #4169e1;
+    width: 50%; 
     max-width: 900px; 
     border-radius: 8px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
@@ -154,14 +161,41 @@ th {
     animation: zoomIn 0.3s; /* Zoom-in animation */
 }
 
-/* Close button styles */
-.close {
-    color: #ff000000;
+.input-field {
+    width: 100%;
+    padding: 10px 10px 10px 40px; /* Padding left to make space for the icon */
+    border: 2px solid #4169e1;
+    border-radius: 5px;
+    font-size: 16px;
 }
 
-.close:hover,
-.close:focus {
+
+.modal-field{
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    margin-top: 1.5rem;
+}
+
+.label {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    transform: translateY(-50%);
+    transition: 0.2s;
     color: black;
+    pointer-events: none; /* To prevent clicks on the label */
+}   
+
+.input-field:focus ~ .label,
+.input-field:valid ~ .label {
+    top: 0%;
+    left: 0%;
+    padding: 5px 20px;
+    border-radius: 30px;
+    background-color: #4169e1;
+    color: white;
+    font-size: 12px;
 }
 
 /* Modal sections */
@@ -173,10 +207,43 @@ th {
 }
 
 /* Centering the h2 element */
-h2 {
-    color: rgb(255, 255, 255);
-    text-align: center;
-    margin: 0 0 20px 0;
+.login-header{
+    display: flex;
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
+    transform: translateX(-50%);
+    border-radius: 0 0 20px 20px;
+    background-color: #4169e1;
+    color: white;
+    font-size: clamp(1rem, 3vw, 2rem);
+}
+
+.login-header::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -30px;
+    width: 30px;
+    height: 30px;
+    border-top-right-radius: 50%;
+    background: transparent;
+    box-shadow: 15px 0 0 0 #4169e1;
+}
+
+.login-header::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -30px;
+    width: 30px;
+    height: 30px;
+    border-top-left-radius: 50%;
+    background: transparent;
+    box-shadow: -15px 0 0 0 #4169e1;
 }
 
 /* Modal fields */
@@ -193,7 +260,7 @@ h2 {
 .modal-field input {
     width: 80%;
     padding: 15px;
-    border: 1px solid #ddd;
+    border: 2px solid #4169e1;
     border-radius: 10px;
 }
 
@@ -212,13 +279,12 @@ h2 {
     cursor: pointer;
     border-radius: 4px;
     font-weight: bold;
-}
-
-.modal-buttons button#cancelButton {
-    background-color: #6c757d;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 2px solid #4169e1;
 }
 
 .modal-buttons button:hover {
+    border: 2px solid #4169e1;
     opacity: 0.9;
 }
 

@@ -80,37 +80,53 @@
     <!-- Modal HTML -->
     <div id="addBillModal" class="modal">
     <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Add Bill Report<br></br></h2>
+        <span class="close"></span>
+        <div class="login-header">Add Bill Report</div>
         <form id="addBillForm">
-            <div class="modal-section">
-                <div class="modal-field">
-                    <input type="text" id="name" name="name" placeholder= "Name:" required>
-                </div>
-                <div class="modal-field">
-                    <input type="text" id="area" name="area" placeholder="Area:" required>
-                </div>
-                <div class="modal-field">
-                    <input type="number" id="current" name="current" placeholder="Current:" required>
-                </div>
-                <div class="modal-field">
-                    <input type="number" id="previous" name="previous" placeholder="Previous:" required>
-                </div>
-            </div>
-            <div class="modal-section">
-                <div class="modal-field"> 
-                    <input type="date" id="date" name="date" placeholder="Date:" required>
-                </div>
-                <div class="modal-field">
-                    <input type="number" id="initialAmount" name="initialAmount" placeholder="Initial Amount:" required>
-                </div>
-                <div class="modal-field">
-                    <input type="number" id="cuM" name="cuM" placeholder="Cu.M:" required>
-                </div>
-                <div class="modal-field">
-                    <input type="number" id="amount" name="amount" placeholder="Amount:" required>
-                </div>
-            </div>
+        <div class="modal-section">
+    <div class="modal-field">
+        <input type="text" id="name" name="name" class="input-field" required />
+        <label for="name" class="label">Name</label>
+    </div>
+
+    <div class="modal-field">
+        <input type="text" id="area" name="area" class="input-field" required />
+        <label for="area" class="label">Area</label>
+    </div>
+
+    <div class="modal-field">
+        <input type="number" id="current" name="current" class="input-field" required />
+        <label for="current" class="label">Current</label>
+    </div>
+
+    <div class="modal-field">
+        <input type="number" id="previous" name="previous" class="input-field" required />
+        <label for="previous" class="label">Previous</label>
+    </div>
+
+</div>
+<div class="modal-section">
+    <div class="modal-field">
+        <input type="date" id="date" name="date" class="input-field" required />
+        
+    </div>
+
+    <div class="modal-field">
+        <input type="number" id="initialAmount" name="initialAmount" class="input-field" required />
+        <label for="initialAmount" class="label">Initial Amount</label>
+    </div>
+
+    <div class="modal-field">
+        <input type="number" id="cuM" name="cuM" class="input-field" required />
+        <label for="cuM" class="label">Cu.M</label>
+    </div>
+    
+    <div class="modal-field">
+        <input type="number" id="amount" name="amount" class="input-field" required />
+        <label for="amount" class="label">Amount</label>
+    </div>
+</div>
+
             <div class="modal-buttons">
                 <button type="submit" id="saveButton">Submit</button>
             </div>
