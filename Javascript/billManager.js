@@ -1,3 +1,6 @@
+// Data structure to store table data
+let tableData = [];
+
 // Ensure SweetAlert2 is included and available
 if (typeof Swal === 'undefined') {
     console.error('SweetAlert2 is not included or not loaded properly.');
@@ -11,12 +14,51 @@ const saveButton = document.getElementById('saveButton');
 const form = document.getElementById('addBillForm');
 
 // Variable to store the current row being edited
-let currentRow = null;
+let currentRowIndex = null;
+
+// Function to initialize table data and populate it
+function initializeTableData() {
+    const rows = document.querySelectorAll('#dataTable tbody tr');
+    tableData = Array.from(rows).map(row => {
+        const cells = row.getElementsByTagName('td');
+        return {
+            name: cells[0].textContent,
+            area: cells[1].textContent,
+            current: cells[2].textContent,
+            previous: cells[3].textContent,
+            date: cells[4].textContent,
+            initialAmount: cells[5].textContent,
+            cuM: cells[6].textContent,
+            amount: cells[7].textContent
+        };
+    });
+}
+
+// Function to reload table data
+function reloadTable() {
+    const tableBody = document.querySelector('#dataTable tbody');
+    tableBody.innerHTML = ''; // Clear existing rows
+
+    tableData.forEach((row, index) => {
+        const newRow = tableBody.insertRow();
+        Object.values(row).forEach(value => {
+            const cell = newRow.insertCell();
+            cell.textContent = value;
+        });
+
+        // Add action buttons
+        const actionCell = newRow.insertCell();
+        actionCell.innerHTML = `
+            <button class="update-btn">Update</button>
+            <button class="delete-btn">Delete</button>
+        `;
+    });
+}
 
 // Show the modal for adding a new entry
 addButton.addEventListener('click', function () {
     form.reset(); // Clear the form
-    currentRow = null; // Reset currentRow to null for adding a new entry
+    currentRowIndex = null; // Reset currentRowIndex to null for adding a new entry
     modal.style.display = 'block';
 });
 
@@ -53,7 +95,7 @@ form.addEventListener('submit', function (event) {
         amount: formData.get('amount'),
     };
 
-    if (currentRow) {
+    if (currentRowIndex !== null) {
         // Prompt user to confirm update
         Swal.fire({
             title: 'Are you sure you want to update this entry?',
@@ -65,11 +107,9 @@ form.addEventListener('submit', function (event) {
         }).then(result => {
             if (result.isConfirmed) {
                 // Update existing row
-                const cells = currentRow.getElementsByTagName('td');
-                Object.values(newRowData).forEach((value, index) => {
-                    cells[index].textContent = value;
-                });
-                currentRow = null; // Reset currentRow
+                tableData[currentRowIndex] = newRowData;
+                reloadTable(); // Reload the table with updated data
+                currentRowIndex = null; // Reset currentRowIndex
 
                 // Show success message
                 Swal.fire({
@@ -92,20 +132,8 @@ form.addEventListener('submit', function (event) {
         }).then(result => {
             if (result.isConfirmed) {
                 // Add new row
-                const tableBody = document.querySelector('#dataTable tbody');
-                const newRow = tableBody.insertRow();
-
-                Object.values(newRowData).forEach(value => {
-                    const cell = newRow.insertCell();
-                    cell.textContent = value;
-                });
-
-                // Add action buttons
-                const actionCell = newRow.insertCell();
-                actionCell.innerHTML = `
-                    <button class="update-btn">Update</button>
-                    <button class="delete-btn">Delete</button>
-                `;
+                tableData.push(newRowData);
+                reloadTable(); // Reload the table with new data
 
                 // Show success message
                 Swal.fire({
@@ -136,8 +164,9 @@ document.querySelector('#dataTable').addEventListener('click', function (event) 
             reverseButtons: true
         }).then(result => {
             if (result.isConfirmed) {
-                const row = event.target.closest('tr');
-                row.remove();
+                const rowIndex = Array.from(event.target.closest('tr').parentNode.children).indexOf(event.target.closest('tr'));
+                tableData.splice(rowIndex, 1); // Remove from data source
+                reloadTable(); // Reload the table with updated data
 
                 // Show success message
                 Swal.fire({
@@ -150,17 +179,17 @@ document.querySelector('#dataTable').addEventListener('click', function (event) 
         });
     } else if (event.target.classList.contains('update-btn')) {
         // Populate the modal with existing data
-        currentRow = event.target.closest('tr');
-        const cells = currentRow.getElementsByTagName('td');
+        currentRowIndex = Array.from(event.target.closest('tr').parentNode.children).indexOf(event.target.closest('tr'));
+        const rowData = tableData[currentRowIndex];
 
-        form.name.value = cells[0].textContent;
-        form.area.value = cells[1].textContent;
-        form.current.value = cells[2].textContent;
-        form.previous.value = cells[3].textContent;
-        form.date.value = cells[4].textContent;
-        form.initialAmount.value = cells[5].textContent;
-        form.cuM.value = cells[6].textContent;
-        form.amount.value = cells[7].textContent;
+        form.name.value = rowData.name;
+        form.area.value = rowData.area;
+        form.current.value = rowData.current;
+        form.previous.value = rowData.previous;
+        form.date.value = rowData.date;
+        form.initialAmount.value = rowData.initialAmount;
+        form.cuM.value = rowData.cuM;
+        form.amount.value = rowData.amount;
 
         // Show the modal for editing
         modal.style.display = 'block';
@@ -168,7 +197,9 @@ document.querySelector('#dataTable').addEventListener('click', function (event) 
 });
 
 // Search functionality
-document.getElementById('searchInput').addEventListener('input', function () {
+const searchInput = document.getElementById('searchInput');
+
+searchInput.addEventListener('input', function () {
     const searchValue = this.value.toLowerCase();
     const rows = document.querySelectorAll('#dataTable tbody tr');
     let anyRowVisible = false;
@@ -201,13 +232,35 @@ document.getElementById('searchInput').addEventListener('input', function () {
             confirmButtonText: 'OK'
         }).then(() => {
             // Clear the search input after showing the alert
-            document.getElementById('searchInput').value = '';
+            searchInput.value = '';
+            reloadTable(); // Reload the table data
         });
     }
 });
 
+// Initialize table data on page load
+document.addEventListener('DOMContentLoaded', () => {
+    initializeTableData(); // Populate initial data
+    reloadTable(); // Load table initially
 
-//active for billmanager
+    const currentPath = window.location.pathname;
+    const dashButton = document.getElementById('billsButton');
+    
+    // Check if the current page is the dashboard
+    if (currentPath.includes('billManager')) {
+        if (dashButton) {
+            dashButton.classList.add('active');
+        }
+    } else {
+        // Remove the active class if not on the dashboard page
+        if (dashButton) {
+            dashButton.classList.remove('active');
+        }
+    }
+});
+
+
+// Active state for bill manager
 document.addEventListener('DOMContentLoaded', () => {
     const currentPath = window.location.pathname;
     const dashButton = document.getElementById('billsButton');
