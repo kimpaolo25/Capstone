@@ -303,12 +303,25 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeTableData(); // Populate initial data
     reloadTable(); // Load table initially
 
-    // Set the default date value to today on page load
-    const dateInput = document.getElementById('date');
-    if (dateInput) {
-        dateInput.value = getTodayDate();
+    const currentPath = window.location.pathname;
+    const dashButton = document.getElementById('billsButton');
+    
+    // Check if the current page is the dashboard
+    if (currentPath.includes('billManager')) {
+        if (dashButton) {
+            dashButton.classList.add('active');
+        }
+    } else {
+        // Remove the active class if not on the dashboard page
+        if (dashButton) {
+            dashButton.classList.remove('active');
+        }
     }
+});
 
+
+// Active state for bill manager
+document.addEventListener('DOMContentLoaded', () => {
     const currentPath = window.location.pathname;
     const dashButton = document.getElementById('billsButton');
     
