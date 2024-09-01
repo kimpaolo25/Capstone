@@ -44,10 +44,17 @@
                     
                     <div class="input-wrapper">
                         <input type="submit"
-                        id="loginButton"
+                        id="loginButton1"
                         class="input-login"
                         value="Login" />
                     </div>
+                    <!-- For Testing only -->
+                    <script>
+                    document.getElementById('loginButton1').addEventListener('click', function() {
+                        window.location.href = 'admin.php';
+                        });
+</script>
+
             </div>
         </div>
     </div>

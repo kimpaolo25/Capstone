@@ -55,7 +55,22 @@ function reloadTable() {
     });
 }
 
-// Show the modal for adding a new entry
+// Function to auto-fill the form fields based on the latest record for the same name
+function autoFillFields(name) {
+    const latestRecord = tableData
+        .filter(record => record.name === name)
+        .pop(); // Get the most recent record for that name
+
+    if (latestRecord) {
+        form.area.value = latestRecord.area;
+        form.previous.value = latestRecord.current; // Previous should be filled with the current value of the latest record
+    } else {
+        form.area.value = '';
+        form.previous.value = '';
+    }
+}
+
+// Update the modal display logic to include auto-fill functionality
 addButton.addEventListener('click', function () {
     form.reset(); // Clear the form
     currentRowIndex = null; // Reset currentRowIndex to null for adding a new entry
@@ -76,6 +91,12 @@ window.addEventListener('click', function (event) {
     if (event.target === modal) {
         modal.style.display = 'none';
     }
+});
+
+// Auto-fill fields when the name input changes
+form.name.addEventListener('input', function () {
+    const name = this.value.trim();
+    autoFillFields(name);
 });
 
 // Handle form submission
@@ -260,8 +281,34 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// Active state for bill manager
+// Function to get today's date in 'YYYY-MM-DD' format
+function getTodayDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based in JavaScript
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+// Populate the form fields when opening the modal, including auto-filling the date
+addButton.addEventListener('click', function () {
+    form.reset(); // Clear the form
+    form.date.value = getTodayDate(); // Set the date input to today's date
+    currentRowIndex = null; // Reset currentRowIndex to null for adding a new entry
+    modal.style.display = 'block';
+});
+
+// Initialize table data on page load
 document.addEventListener('DOMContentLoaded', () => {
+    initializeTableData(); // Populate initial data
+    reloadTable(); // Load table initially
+
+    // Set the default date value to today on page load
+    const dateInput = document.getElementById('date');
+    if (dateInput) {
+        dateInput.value = getTodayDate();
+    }
+
     const currentPath = window.location.pathname;
     const dashButton = document.getElementById('billsButton');
     
@@ -277,3 +324,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
