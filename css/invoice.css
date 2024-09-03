@@ -1,0 +1,89 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+.main-table {
+    width: 100%;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.header {
+    text-align: center;
+    padding: 10px;
+}
+
+.header h2, .header h3 {
+    margin: 5px 0;
+}
+
+.content {
+    width: 60%;
+    vertical-align: top;
+    padding: 10px;
+}
+
+.warning {
+    text-align: center;
+    font-weight: bold;
+}
+
+.invoice {
+    width: 40%;
+    vertical-align: top;
+    padding: 10px;
+}
+
+.invoice-table {
+    margin-top: 5%;
+    width: 100%;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.invoice-table th{
+    border: 1px solid black;
+    padding: 5px;
+    text-align: left;
+}
+
+.invoice-table th {
+    background-color: #f2f2f2;
+}
+
+.invoice-table tr th {
+    text-align: center;
+    font-weight: bold;
+}
+
+.invoice-table .total-bill {
+    text-align: left;
+    font-weight: bold;
+}
+
+.invoice-table tr td {
+    height: 25px;
+}
+
+.invoice-table .total-bill {
+    text-align: left; /* Align "Total Bill" to the left */
+    font-weight: bold; /* Optional: Make "Total Bill" bold */
+}
+
+/* Set page size for printing */
+@media print {
+    body {
+        width: 8.5in;      /* Set the width to 8.5 inches */
+        height: 5.5in;     /* Set the height to 5.5 inches */
+        margin: 0;         /* Remove default margins */
+        padding: 10px;     /* Add padding for print */
+        font-size: 12px;   /* Adjust font size for better print readability */
+    }
+    
+    .main-table {
+        width: 100%;
+        border: none;
+    }
+}
