@@ -70,9 +70,160 @@ function autoFillFields(name) {
     }
 }
 
+
+
+function openAndPrintInvoice(data) {
+    
+    // Create a new iframe
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = 'none';
+    document.body.appendChild(iframe);
+
+    // Ensure data.dueDate is defined and has a correct format
+    function formatDate(dateString) {
+        if (!dateString) {
+            console.error('Date string is undefined or empty');
+            return 'Invalid Date';
+        }
+
+        // Assuming dateString is in mm/dd/yyyy format
+        const parts = dateString.split('/');
+        if (parts.length !== 3) {
+            console.error('Date string is not in mm/dd/yyyy format');
+            return 'Invalid Date';
+        }
+
+        const [month, day, year] = parts;
+        return `${month}/${day}/${year}`;
+    }
+
+    // Debugging to check the data
+    console.log('Invoice Data:', data);
+    console.log('Formatted Due Date:', formatDate(data.dueDate));
+
+    // Define the content of the invoice
+    const invoiceContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Disconnection Notice</title>
+        <link rel="stylesheet" href="./css/invoice.css">
+    </head>
+    <body>
+        <table class="main-table">
+            <tr>
+                <td colspan="2" class="header">
+                    <h2>PANSOL RURAL WATERWORKS ASSOCIATION INC.</h2>
+                    <p>Pansol, Padre Garcia, Batangas</p>
+                    <p>Tel. No.: (043) 515-8533 / CEL. No.: 09084088762</p>
+                    <p>GCASH NO. 09464608562 AIZA D. WITH 10.00 service fee</p>
+                    <h3>BABALA</h3>
+                    <h3>COLLECTION/DISCONNECTION NOTICE</h3>
+                </td>
+            </tr>
+            <tr>
+                <td class="content">
+                    <p><strong>${data.name}</strong><br>Pansol, Padre Garcia, Batangas</p>
+                    <p>Ipinagbibigay-alam po namin sa inyo na sa darating na <strong>${data.billMonth}</strong> ay magkakaroon po ulit tayo ng <strong>disconnection o pamumutol</strong> para sa mga hindi nakabayad ng utang sa ating patubig. Mula ika-21-25 ng buwan may penalty na po tayo na 100.00 piso at mula 26-31 ay tuluyan ng tatanggalin ang serbisyo ng patubig at may reconnection na po na 500.00.</p>
+                    <p>Ang inyo pong pagkakautang na dapat mabayaran ay nagkakahalaga ng <strong>${data.amount}</strong> para sa buwan/ mga buwan ng <strong>${data.date}</strong>.</p>
+                    <p>Ang inyo pong pagwawalang bahala sa paalalang ito ay magiging dahilan upang kayo ay alisan ng serbisyo ng tubig may tao man o wala sa inyong tahanan.</p>
+                    <p class="warning"><strong>IPAGPAPAWALANG-BAHALA NA LAMANG PO ANG PAALALANG ITO KUNG KAYO AY NAKABAYAD NA.</strong></p>
+                    <p>Lubos na gumagalang,<br>Pamunuan ng Patubig</p>
+                </td>
+                <td class="invoice">
+                    <table class="invoice-table">
+                        <tr>
+                            <th colspan="2">BILLING INVOICE</th>
+                        </tr>
+                        <tr>
+                            <td>Name:</td>
+                            <td><strong>${data.name}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Bill Month:</td>
+                            <td><strong>${data.date}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Due Date:</td>
+                            <td><strong>${formatDate(data.dueDate)}</strong></td>
+                        </tr>
+                        <tr>
+                            <th colspan="2">READING</th>
+                        </tr>
+                        <tr>
+                            <td>Present:</td>
+                            <td><strong>${data.current}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Previous:</td>
+                            <td><strong>${data.previous}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>C.U.M:</td>
+                            <td><strong>${data.cuM}</strong></td>
+                        </tr>
+                        <tr>
+                            <th colspan="2" class="total-bill">Total Bill:</th>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><strong>${data.amount}</strong></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>
+    `;
+
+    // Write content to the iframe
+    iframe.contentWindow.document.open();
+    iframe.contentWindow.document.write(invoiceContent);
+    iframe.contentWindow.document.close();
+
+    // Print the document from the iframe
+    iframe.onload = function() {
+        setTimeout(() => {
+            iframe.contentWindow.print();
+            // Redirect after printing
+        }, 500); // Delay to ensure content is fully loaded
+    };
+
+    // Redirect if the window is closed before printing starts
+    iframe.onbeforeunload = function () {
+        window.location.href = 'billManager.php';
+    };
+}
+
+
+
+
+
+
 // Update the modal display logic to include auto-fill functionality
 addButton.addEventListener('click', function () {
     form.reset(); // Clear the form
+    currentRowIndex = null; // Reset currentRowIndex to null for adding a new entry
+    modal.style.display = 'block';
+});
+
+
+// Function to set the date input to today's date
+function setTodayDate() {
+    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+    form.date.value = today; // Set the value of the date input
+}
+
+// Update the modal display logic to include auto-fill functionality
+addButton.addEventListener('click', function () {
+    form.reset(); // Clear the form
+    setTodayDate(); // Set the date to today's date
     currentRowIndex = null; // Reset currentRowIndex to null for adding a new entry
     modal.style.display = 'block';
 });
@@ -132,12 +283,14 @@ form.addEventListener('submit', function (event) {
                 reloadTable(); // Reload the table with updated data
                 currentRowIndex = null; // Reset currentRowIndex
 
-                // Show success message
+                // Show success message and print invoice
                 Swal.fire({
                     icon: 'success',
                     title: 'Entry updated successfully!',
                     showConfirmButton: false,
                     timer: 1500
+                }).then(() => {
+                    openAndPrintInvoice(newRowData); // Open and print invoice after updating
                 });
             }
         });
@@ -156,12 +309,14 @@ form.addEventListener('submit', function (event) {
                 tableData.push(newRowData);
                 reloadTable(); // Reload the table with new data
 
-                // Show success message
+                // Show success message and print invoice
                 Swal.fire({
                     icon: 'success',
                     title: 'Entry added successfully!',
                     showConfirmButton: false,
                     timer: 1500
+                }).then(() => {
+                    openAndPrintInvoice(newRowData); // Open and print invoice after adding
                 });
             }
         });
@@ -199,10 +354,10 @@ document.querySelector('#dataTable').addEventListener('click', function (event) 
             }
         });
     } else if (event.target.classList.contains('update-btn')) {
-        // Populate the modal with existing data
         currentRowIndex = Array.from(event.target.closest('tr').parentNode.children).indexOf(event.target.closest('tr'));
         const rowData = tableData[currentRowIndex];
 
+        // Populate form fields with selected row data
         form.name.value = rowData.name;
         form.area.value = rowData.area;
         form.current.value = rowData.current;
@@ -212,129 +367,6 @@ document.querySelector('#dataTable').addEventListener('click', function (event) 
         form.cuM.value = rowData.cuM;
         form.amount.value = rowData.amount;
 
-        // Show the modal for editing
-        modal.style.display = 'block';
+        modal.style.display = 'block'; // Show the modal
     }
 });
-
-// Search functionality
-const searchInput = document.getElementById('searchInput');
-
-searchInput.addEventListener('input', function () {
-    const searchValue = this.value.toLowerCase();
-    const rows = document.querySelectorAll('#dataTable tbody tr');
-    let anyRowVisible = false;
-
-    rows.forEach(row => {
-        const cells = row.getElementsByTagName('td');
-        let match = false;
-
-        // Assuming the name is in the first column (index 0)
-        const nameCell = cells[0];
-        
-        if (nameCell) {
-            if (nameCell.textContent.toLowerCase().includes(searchValue)) {
-                match = true;
-            }
-        }
-
-        row.style.display = match ? '' : 'none';
-        if (match) {
-            anyRowVisible = true;
-        }
-    });
-
-    // Show SweetAlert2 and clear search input if no records are found
-    if (!anyRowVisible && searchValue !== '') {
-        Swal.fire({
-            title: 'No records found',
-            text: 'No results match your search criteria.',
-            icon: 'info',
-            confirmButtonText: 'OK'
-        }).then(() => {
-            // Clear the search input after showing the alert
-            searchInput.value = '';
-            reloadTable(); // Reload the table data
-        });
-    }
-});
-
-// Initialize table data on page load
-document.addEventListener('DOMContentLoaded', () => {
-    initializeTableData(); // Populate initial data
-    reloadTable(); // Load table initially
-
-    const currentPath = window.location.pathname;
-    const dashButton = document.getElementById('billsButton');
-    
-    // Check if the current page is the dashboard
-    if (currentPath.includes('billManager')) {
-        if (dashButton) {
-            dashButton.classList.add('active');
-        }
-    } else {
-        // Remove the active class if not on the dashboard page
-        if (dashButton) {
-            dashButton.classList.remove('active');
-        }
-    }
-});
-
-
-// Function to get today's date in 'YYYY-MM-DD' format
-function getTodayDate() {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-based in JavaScript
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
-// Populate the form fields when opening the modal, including auto-filling the date
-addButton.addEventListener('click', function () {
-    form.reset(); // Clear the form
-    form.date.value = getTodayDate(); // Set the date input to today's date
-    currentRowIndex = null; // Reset currentRowIndex to null for adding a new entry
-    modal.style.display = 'block';
-});
-
-// Initialize table data on page load
-document.addEventListener('DOMContentLoaded', () => {
-    initializeTableData(); // Populate initial data
-    reloadTable(); // Load table initially
-
-    const currentPath = window.location.pathname;
-    const dashButton = document.getElementById('billsButton');
-    
-    // Check if the current page is the dashboard
-    if (currentPath.includes('billManager')) {
-        if (dashButton) {
-            dashButton.classList.add('active');
-        }
-    } else {
-        // Remove the active class if not on the dashboard page
-        if (dashButton) {
-            dashButton.classList.remove('active');
-        }
-    }
-});
-
-
-// Active state for bill manager
-document.addEventListener('DOMContentLoaded', () => {
-    const currentPath = window.location.pathname;
-    const dashButton = document.getElementById('billsButton');
-    
-    // Check if the current page is the dashboard
-    if (currentPath.includes('billManager')) {
-        if (dashButton) {
-            dashButton.classList.add('active');
-        }
-    } else {
-        // Remove the active class if not on the dashboard page
-        if (dashButton) {
-            dashButton.classList.remove('active');
-        }
-    }
-});
-

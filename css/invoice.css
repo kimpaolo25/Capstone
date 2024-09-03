@@ -58,20 +58,9 @@ body {
     font-weight: bold;
 }
 
-.invoice-table .total-bill {
-    text-align: left;
-    font-weight: bold;
-}
-
 .invoice-table tr td {
     height: 25px;
 }
-
-.invoice-table .total-bill {
-    text-align: left; /* Align "Total Bill" to the left */
-    font-weight: bold; /* Optional: Make "Total Bill" bold */
-}
-
 /* Set page size for printing */
 @media print {
     body {
