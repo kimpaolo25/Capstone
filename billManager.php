@@ -157,6 +157,7 @@
         </tbody>
     </table>
     <script src="./Javascript/billManager.js"></script>
+    <script src="./Javascript/invoicePrint.js"></script>
     <script src="./Javascript/billManagerfilter.js"></script>
     <script src="./Javascript/dlPrint.js"></script>
 </body>
