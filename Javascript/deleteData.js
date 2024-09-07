@@ -47,11 +47,13 @@ function handleDelete(id) {
             .then(data => {
                 console.log("Response from server:", data); // Debug log
                 if (data.success) {
-                    Swal.fire(
-                        'Deleted!',
-                        'Your record has been deleted.',
-                        'success'
-                    );
+                    Swal.fire({
+                        title:'Deleted!',
+                        text:'Your record has been deleted.',
+                        icon:'success',
+                        showConfirmButton: false,
+                        timer: 1500  
+                });
                     // Remove the row from the table
                     const row = document.querySelector(`button.delete-btn[data-id="${id}"]`).closest('tr');
                     row.remove();
