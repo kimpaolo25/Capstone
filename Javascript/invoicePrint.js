@@ -42,23 +42,20 @@ function openAndPrintInvoice(data) {
         return cutDate.toLocaleDateString('en-US'); // Format mm/dd/yyyy
     }
 
-     // Function to get the current date in mm/dd/yyyy format
+// Function to get the current date in YYYY-Month format
 function formatDate() {
     const today = new Date(); // Get the current date
-    const month = today.getMonth() + 1; // getMonth() returns month index (0-11), so add 1
-    const day = today.getDate(); // Get the day of the month (1-31)
     const year = today.getFullYear(); // Get the full year (e.g., 2024)
+    
+    // Array of month names
+    const monthNames = [
+        "January", "February", "March", "April", "May", "June", 
+        "July", "August", "September", "October", "November", "December"
+    ];
+    const month = monthNames[today.getMonth()]; // Get the full month name
 
-    // Format the date as mm/dd/yyyy
-    return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
-}
-
- // Function to format the amount as PHP currency
- function formatCurrency(amount) {
-    return new Intl.NumberFormat('en-PH', {
-        style: 'currency',
-        currency: 'PHP'
-    }).format(amount);
+    // Format the date as YYYY-Month
+    return `${year}-${month}`;
 }
 
     // Debugging to check the data
@@ -92,7 +89,7 @@ function formatDate() {
                 <td class="content">
                     <p><strong>${data.name}</strong><br>Pansol, Padre Garcia, Batangas</p>
                     <p>Ipinagbibigay-alam po namin sa inyo na sa darating na <strong>${calculateCutOff()}</strong> ay magkakaroon po ulit tayo ng <strong>disconnection o pamumutol</strong> para sa mga hindi nakabayad ng utang sa ating patubig. Mula ika-21-25 ng buwan may penalty na po tayo na 100.00 piso at mula 26-31 ay tuluyan ng tatanggalin ang serbisyo ng patubig at may reconnection na po na 500.00.</p>
-                    <p>Ang inyo pong pagkakautang na dapat mabayaran ay nagkakahalaga ng <strong>${data.amount}</strong> para sa buwan/ mga buwan ng <strong>${formatDate(data.date)}</strong>.</p>
+                    <p>Ang inyo pong pagkakautang na dapat mabayaran ay nagkakahalaga ng <strong>${(data.amount)}</strong> para sa buwan/ mga buwan ng <strong>${formatDate(data.date)}</strong>.</p>
                     <p>Ang inyo pong pagwawalang bahala sa paalalang ito ay magiging dahilan upang kayo ay alisan ng serbisyo ng tubig may tao man o wala sa inyong tahanan.</p>
                     <p class="warning"><strong>IPAGPAPAWALANG-BAHALA NA LAMANG PO ANG PAALALANG ITO KUNG KAYO AY NAKABAYAD NA.</strong></p>
                     <p>Lubos na gumagalang,<br><strong>Pamunuan ng Patubig</strong></p>
@@ -134,7 +131,7 @@ function formatDate() {
                         </tr>
                         <tr>
                             <td></td>
-                            <td><strong>${formatCurrency(data.amount)}</strong></td>
+                            <td><strong>${(data.amount)}</strong></td>
                         </tr>
                     </table>
                 </td>

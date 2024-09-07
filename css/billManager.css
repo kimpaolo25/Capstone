@@ -73,10 +73,20 @@ header {
 }
 
 /* Basic styling for the table */
-table {
+
+.table-container {
     width: 90%;
-    border-collapse: collapse;
     margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid #1d3ceb;
+    overflow-y: auto; /* Enable vertical scrolling */
+    max-height: 470px; /* Adjust as needed */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
     border: 2px solid #ddd;
     margin-left: auto;
     margin-right: auto;
@@ -87,7 +97,7 @@ th, td {
     border: 1px solid #ddd;
 }
 th {
-    background-color: #f4f4f4;
+    background-color: #4169e1;
 }
 /* Styling for buttons and search input */
 .table-controls {
@@ -207,7 +217,7 @@ th {
 }
 
 /* Centering the h2 element */
-.login-header{
+.modal-header{
     display: flex;
     position: absolute;
     top: 0%;
@@ -222,7 +232,7 @@ th {
     font-size: clamp(1rem, 3vw, 2rem);
 }
 
-.login-header::before{
+.modal-header::before{
     content: "";
     position: absolute;
     top: 0;
@@ -234,7 +244,7 @@ th {
     box-shadow: 15px 0 0 0 #4169e1;
 }
 
-.login-header::after{
+.modal-header::after{
     content: "";
     position: absolute;
     top: 0;
@@ -443,4 +453,61 @@ th {
         opacity: 1;
     }
 }
+
+
+/*Action Bution in TAble*/
+.table-container button {
+    margin: 3px;
+}
+
+.table-container button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.table-container .update-btn {
+    background-color: #4CAF50; /* Green */
+}
+
+.table-container .update-btn:hover {
+    background-color: #45a049;
+}
+
+.table-container .update-btn:active {
+    background-color: #388e3c;
+}
+
+.table-container .delete-btn {
+    background-color: #f44336; /* Red */
+}
+
+.table-container .delete-btn:hover {
+    background-color: #e53935;
+}
+
+.table-container .delete-btn:active {
+    background-color: #c62828;
+}
+
+.table-container .print-btn {
+    background-color: #2196F3; /* Blue */
+}
+
+.table-container .print-btn:hover {
+    background-color: #1976D2;
+}
+
+.table-container .print-btn:active {
+    background-color: #1565C0;
+}
+
+.bill-id{
+    display: none;
+}
+
 
