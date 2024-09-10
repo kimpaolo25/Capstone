@@ -9,52 +9,41 @@
 </head>
 <body>
     <header>
-    <a href="index.php" class="logo-button" id="logoButton">
-        <img src="./image/icon.png" alt="Logo" class="logo">
-        <a href="#" class="login-button" id="loginButton">Admin Login</a>
+        <a href="index.php" class="logo-button" id="logoButton">
+            <img src="./image/icon.png" alt="Logo" class="logo">
+        </a>
+        <a href="#" class="login-button" id="loginButton" onclick="showLoginModal()">Admin Login</a>
     </header>
 
     <!-- Login Modal -->
-    <div id="loginModal" class="wrapper">
+    <div id="loginModal" class="wrapper" style="display: none;">
         <div class="login-wrapper">
-            <span class="close-button" onclick="document.getElementById('loginModal').style.display='none'"></span>
+            <span class="close-button" onclick="hideLoginModal()">&times;</span>
             <div class="login-header">Login</div>
             <div class="login-form">
+                <form id="loginForm">
                     <div class="input-wrapper">
-                        <input type="text" id="username" 
-                        class="input-field" required/>
-                        <label for="username"
-                        class="label">Username</label>
-                        <i class="bx bx-user icon"></i>
+                        <input type="text" id="username" name="username" class="input-field" required />
+                        <label for="username" class="label">Username</label>
                         <span class="icon">&#128100;</span>
                     </div>
 
                     <div class="input-wrapper">
-                        <input type="password" id="password" 
-                        class="input-field" required/>
-                        <label for="password"
-                        class="label">Password</label>
-                        <i class="bx bx-lock-alt icon"></i>
+                        <input type="password" id="password" name="password" class="input-field" required />
+                        <label for="password" class="label">Password</label>
                         <span class="icon">&#128274;</span>
                     </div>
 
                     <div class="checkbox-container">
-                            <input type="checkbox" id="chk"> Show Password
-                        </div>
-                    
-                    <div class="input-wrapper">
-                        <input type="submit"
-                        id="loginButton1"
-                        class="input-login"
-                        value="Login" />
+                        <input type="checkbox" id="chk" onclick="togglePasswordVisibility()"> Show Password
                     </div>
-                    <!-- For Testing only -->
-                    <script>
-                    document.getElementById('loginButton1').addEventListener('click', function() {
-                        window.location.href = 'admin.php';
-                        });
-</script>
 
+                    <div class="input-wrapper">
+                        <input type="submit" id="loginButton1" class="input-login" value="Login" />
+                    </div>
+
+                    <div id="loginError" style="color: red;"></div>
+                </form>
             </div>
         </div>
     </div>
@@ -72,5 +61,19 @@
     <script src="./Javascript/modal_login.js"></script>
     <script src="./Javascript/password.js"></script>
 
+    <script>
+        function showLoginModal() {
+            document.getElementById('loginModal').style.display = 'block';
+        }
+
+        function hideLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function togglePasswordVisibility() {
+            const passwordField = document.getElementById('password');
+            passwordField.type = (passwordField.type === 'password') ? 'text' : 'password';
+        }
+    </script>
 </body>
 </html>
