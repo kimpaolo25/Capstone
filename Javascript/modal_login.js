@@ -20,14 +20,13 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Handle form submission via AJAX
     document.getElementById('loginForm').addEventListener('submit', function (e) {
         e.preventDefault(); // Prevent default form submission
-
+    
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-
-        fetch('php/login.php', {
+    
+        fetch('./php/login.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -37,14 +36,30 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                window.location.href = 'admin.php'; // Redirect to admin.php on success
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login Successful!',
+                    text: 'You will be redirected shortly.',
+                    timer: 1500,
+                    showConfirmButton: false,
+                }).then(() => {
+                    window.location.href = 'admin.php'; // Redirect to admin.php on success
+                });
             } else {
-                document.getElementById('loginError').textContent = 'Invalid login credentials.';
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: 'Invalid login credentials. Please try again.',
+                });
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            document.getElementById('loginError').textContent = 'An error occurred. Please try again.';
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred. Please try again later.',
+            });
         });
     });
-});
+})    

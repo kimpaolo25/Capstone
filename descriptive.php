@@ -18,7 +18,7 @@
     <!-- Login Modal -->
     <div id="loginModal" class="wrapper" style="display: none;">
         <div class="login-wrapper">
-            <span class="close-button" onclick="hideLoginModal()">&times;</span>
+            <span class="close-button" onclick="hideLoginModal()"></span>
             <div class="login-header">Login</div>
             <div class="login-form">
                 <form id="loginForm">
@@ -60,20 +60,5 @@
 
     <script src="./Javascript/modal_login.js"></script>
     <script src="./Javascript/password.js"></script>
-
-    <script>
-        function showLoginModal() {
-            document.getElementById('loginModal').style.display = 'block';
-        }
-
-        function hideLoginModal() {
-            document.getElementById('loginModal').style.display = 'none';
-        }
-
-        function togglePasswordVisibility() {
-            const passwordField = document.getElementById('password');
-            passwordField.type = (passwordField.type === 'password') ? 'text' : 'password';
-        }
-    </script>
 </body>
 </html>
