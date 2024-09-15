@@ -1,8 +1,18 @@
-
-
+// Function to initialize table data with SweetAlert2 loading notification
 function initializeTableData() {
     const limit = 1000; // Example limit
     const offset = 0; // Example offset
+
+    // Show loading alert
+    Swal.fire({
+        title: 'Loading Data',
+        text: 'Please wait while we fetch the data.',
+        icon: 'info',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading(); // Show the loading spinner
+        }
+    });
 
     fetch(`./php/fetch_data.php?limit=${limit}&offset=${offset}`)
         .then(response => {
@@ -12,6 +22,9 @@ function initializeTableData() {
             return response.json();
         })
         .then(data => {
+            // Hide loading alert
+            Swal.close(); 
+
             // Sort data by date in descending order
             tableData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -19,11 +32,17 @@ function initializeTableData() {
             reloadTable();
         })
         .catch(error => {
+            // Hide loading alert and show error message
+            Swal.close();
             console.error('Error fetching data:', error.message);
-            alert('Failed to fetch data. Please try again later.');
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to fetch data. Please try again later.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         });
 }
-
 
 // Function to search and filter table rows by name
 function searchTable() {
@@ -106,9 +125,7 @@ function reloadTable() {
     searchTable();
 }
 
-
-
-
+// Mapping of area names to numbers
 const areaNameToNumber = {
     "Kanluran": "1",
     "Gitna": "2",
@@ -118,7 +135,6 @@ const areaNameToNumber = {
     "Purok 6": "6"
     // Add more mappings as needed
 };
-
 
 // Function to auto-fill the form fields based on the most recent record for the same name
 function autoFillFields(name) {
@@ -165,10 +181,8 @@ document.querySelector('#current').addEventListener('input', updateCuM);
 document.querySelector('#previous').addEventListener('input', updateCuM); // Ensure this triggers updateCuM
 document.querySelector('#initialAmount').addEventListener('input', updateCuM);
 
-
 // Initialize table data when the document is loaded
 document.addEventListener('DOMContentLoaded', initializeTableData);
-
 
 // Function to provide autocomplete suggestions based on the name input
 function autocompleteSuggestions() {
@@ -220,4 +234,3 @@ document.addEventListener('click', (event) => {
 
 // Add event listener to the name input field for autocomplete
 document.getElementById('name').addEventListener('input', autocompleteSuggestions);
-

@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="./css/admin.css">
-    <script src="./Javascript/sweetalert.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./javascript/admin.js" defer></script>
+    <script src="./javascript/prediction.js" defer></script>
 </head>
 <body>
     <header>
@@ -18,16 +21,29 @@
     </header>
 
     <div class="dashboard">
-        <div class="card">Paid this Month</div>
-        <div class="card">Month Income</div>
-        <div class="card">Year Income</div>
-        <div class="card chart">Total Amount Income per Year</div>
-        <div class="card chart">Total Income per Area</div>
-        <div class="card chart">Income per Month</div>
-        <div class="card chart">Cubic meter Consumption per Month</div>
+        <!-- Card for Monthly Income Chart -->
+        <div class="card_chart">
+            <h2>Predicted Monthly Income</h2>
+            <canvas id="monthlyIncomeChart"></canvas>
+        </div>
+
+        <!-- Card for Monthly CU_M Chart -->
+        <div class="card_chart">
+            <h2>Predicted Monthly CU_M</h2>
+            <canvas id="monthlyCUMChart"></canvas>
+        </div>
+
+        <!-- Card for Predicted Income per Area Number -->
+        <div class="card_chart">
+            <h2>Predicted Income per Area</h2>
+            <canvas id="incomePerAreaChart"></canvas>
+        </div>
+
+        <!-- Card for Predicted CU_M per Area Number -->
+        <div class="card_chart">
+            <h2>Predicted CU_M per Area</h2>
+            <canvas id="cumPerAreaChart"></canvas>
+        </div>
     </div>
-
-    <script src="./Javascript/admin.js"></script>
-
 </body>
 </html>

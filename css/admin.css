@@ -85,21 +85,16 @@ header {
 
 .dashboard {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 20px;
     padding: 20px;
 }
 
-.card {
+.card_chart {
     background-color: #d3d3d3;
-    padding: 20px;
     border-radius: 10px;
     text-align: center;
     font-size: 18px;
-}
-
-.chart {
-    height: 200px;
 }
 
 /* Define keyframes for fade-in and fade-out */
