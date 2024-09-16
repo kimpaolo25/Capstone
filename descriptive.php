@@ -49,15 +49,27 @@
     </div>
 
     <div class="dashboard">
-        <div class="card">Paid this Month</div>
-        <div class="card">Month Income</div>
-        <div class="card">Year Income</div>
-        <div class="card chart">Total Amount Income per Year</div>
-        <div class="card chart">Total Income per Area</div>
-        <div class="card chart">Income per Month</div>
-        <div class="card chart">Cubic meter Consumption per Month</div>
+    <!-- Card for Number of Bills This Month -->
+    <div class="card_chart">
+        <h2>Number of Bills This Month</h2>
+        <div id="billsThisMonth">Loading...</div>
     </div>
 
+    <!-- Card for Number of Bills This Year -->
+    <div class="card_chart">
+        <h2>Number of Bills This Year</h2>
+        <div id="billsThisYear">Loading...</div>
+    </div>
+
+    <!-- Card for Overall Income -->
+    <div class="card_chart">
+        <h2>Overall Expected Income</h2>
+        <div id="overallIncome">Loading...</div>
+    </div>
+</div>
+
+
+    <script src="./Javascript/descriptive.js"></script>
     <script src="./Javascript/modal_login.js"></script>
     <script src="./Javascript/password.js"></script>
 </body>
