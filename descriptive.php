@@ -67,11 +67,14 @@
             <h2>Overall Expected Income</h2>
             <div id="overallIncome">Loading...</div>
         </div>
+        </div>
 
+
+    <div class="dashboard2">
         <!-- New Cards -->
         <!-- Chart for Total Amount Income per Year -->
 <div class="card_chart">
-    <h2>Total Amount Income per Year</h2>
+    <h2>Total Income per Year</h2>
     <canvas id="incomeChart"></canvas>
 </div>
 

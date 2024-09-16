@@ -46,9 +46,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 options: {
                     responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false // Hide labels at the top
+                        }
+                    },
                     scales: {
                         x: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Year' // X-axis label
+                            }
                         },
                         y: {
                             beginAtZero: true,
@@ -56,43 +65,93 @@ document.addEventListener('DOMContentLoaded', function() {
                                 callback: function(value) {
                                     return currencyFormatter.format(value);
                                 }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Total Income (PHP)' // Y-axis label
                             }
                         }
                     }
                 }
             });
+            
+            
 
+            
             // Ensure 'total_income' is parsed as a number
-const labelsArea = data.totalIncomePerArea.map(item => item.places_name);
-const valuesArea = data.totalIncomePerArea.map(item => parseFloat(item.total_income)); // Explicitly parse as float
-
-const ctxArea = document.getElementById('incomeAreaChart').getContext('2d');
-new Chart(ctxArea, {
-    type: 'bar',
-    data: {
-        labels: labelsArea,
-        datasets: [{
-            label: 'Total Income per Area',
-            data: valuesArea,
-            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-            borderColor: 'rgba(153, 102, 255, 1)',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    callback: function(value) {
-                        return currencyFormatter.format(value);
+            const labelsArea = data.totalIncomePerArea.map(item => item.places_name);
+            const valuesArea = data.totalIncomePerArea.map(item => parseFloat(item.total_income)); // Explicitly parse as float
+            
+            // Generate a color for each area
+            const backgroundColorsArea = valuesArea.map((_, index) => {
+                const colors = [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                ];
+                return colors[index % colors.length]; // Loop through the colors array
+            });
+            
+            // Generate border colors
+            const borderColorsArea = valuesArea.map((_, index) => {
+                const borderColors = [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                ];
+                return borderColors[index % borderColors.length];
+            });
+            
+            const ctxArea = document.getElementById('incomeAreaChart').getContext('2d');
+            new Chart(ctxArea, {
+                type: 'bar',
+                data: {
+                    labels: labelsArea,
+                    datasets: [{
+                        data: valuesArea,
+                        backgroundColor: backgroundColorsArea,
+                        borderColor: borderColorsArea,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false // Hide labels at the top
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Area' // X-axis label
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return currencyFormatter.format(value);
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Total Income (PHP)' // Y-axis label
+                            }
+                        }
                     }
                 }
-            }
-        }
-    }
-});
+            });
+            
+            
+            
 
 
             // Total income per month chart
@@ -120,18 +179,35 @@ new Chart(ctxArea, {
                 },
                 options: {
                     responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false // Hide labels at the top
+                        }
+                    },
                     scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Month' // X-axis label
+                            }
+                        },
                         y: {
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value) {
                                     return currencyFormatter.format(value);
                                 }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Total Income (PHP)' // Y-axis label
                             }
                         }
                     }
                 }
             });
+            
+            
 
             // Cubic meter consumption per month chart
             const labelsCubicMeter = data.cubicMeterPerMonth.map(item => item.Date_column);
@@ -158,18 +234,35 @@ new Chart(ctxArea, {
                 },
                 options: {
                     responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false // Hide labels at the top
+                        }
+                    },
                     scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Month' // X-axis label
+                            }
+                        },
                         y: {
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value) {
                                     return value + ' m³';  // Display cubic meters (m³)
                                 }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Cubic Meters (m³)' // Y-axis label
                             }
                         }
                     }
                 }
             });
+            
+            
 
         })
         .catch(error => console.error('Error fetching data:', error));
