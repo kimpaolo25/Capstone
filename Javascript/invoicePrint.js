@@ -1,5 +1,4 @@
 function openAndPrintInvoice(data) {
-    
     // Create a new iframe
     const iframe = document.createElement('iframe');
     iframe.style.position = 'absolute';
@@ -8,11 +7,11 @@ function openAndPrintInvoice(data) {
     iframe.style.border = 'none';
     document.body.appendChild(iframe);
 
-    // Calculate the due date as the 15th of the next month
-    function calculateDueDate() {
-        const today = new Date();
-        let dueMonth = today.getMonth() + 1; // Next month (0-11)
-        let dueYear = today.getFullYear();
+    // Function to calculate the due date (15th of the next month)
+    function calculateDueDate(billDate) {
+        const bill = new Date(billDate); // Use the date from the table
+        let dueMonth = bill.getMonth() + 1; // Next month (0-11, so +1)
+        let dueYear = bill.getFullYear();
 
         // If the current month is December, set dueMonth to January of next year
         if (dueMonth > 11) {
@@ -25,42 +24,42 @@ function openAndPrintInvoice(data) {
         return dueDate.toLocaleDateString('en-US'); // Format mm/dd/yyyy
     }
 
-    // Calculate the due date as the 15th of the next month
-    function calculateCutOff() {
-        const today = new Date();
-        let cutMonth = today.getMonth() + 1; // Next month (0-11)
-        let cutYear = today.getFullYear();
+    // Function to calculate the cutoff date (21st of the next month)
+    function calculateCutOff(billDate) {
+        const bill = new Date(billDate); // Use the date from the table
+        let cutMonth = bill.getMonth() + 1; // Next month
+        let cutYear = bill.getFullYear();
 
-        // If the current month is December, set dueMonth to January of next year
         if (cutMonth > 11) {
             cutMonth = 0;
             cutYear += 1;
         }
 
-        // Create the due date as the 15th of the next month
+        // Create the cutoff date as the 21st of the next month
         const cutDate = new Date(cutYear, cutMonth, 21);
         return cutDate.toLocaleDateString('en-US'); // Format mm/dd/yyyy
     }
 
-// Function to get the current date in YYYY-Month format
-function formatDate() {
-    const today = new Date(); // Get the current date
-    const year = today.getFullYear(); // Get the full year (e.g., 2024)
-    
-    // Array of month names
-    const monthNames = [
-        "January", "February", "March", "April", "May", "June", 
-        "July", "August", "September", "October", "November", "December"
-    ];
-    const month = monthNames[today.getMonth()]; // Get the full month name
+    // Function to format the date in 'YYYY-Month' format based on the table date
+    function formatDate(billDate) {
+        const dateObj = new Date(billDate); // Convert the provided date into a Date object
+        const year = dateObj.getFullYear(); // Get the year
 
-    // Format the date as YYYY-Month
-    return `${year}-${month}`;
-}
+        // Array of month names
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        const month = monthNames[dateObj.getMonth()]; // Get the full month name
+
+        // Format the date as YYYY-Month
+        return `${year}-${month}`;
+    }
 
     // Debugging to check the data
     console.log('Invoice Data:', data);
-    console.log('Calculated Due Date:', calculateDueDate());
+    console.log('Calculated Due Date:', calculateDueDate(data.date));
     console.log('Formatted Bill Month:', formatDate(data.date));
 
     // Define the content of the invoice
@@ -88,7 +87,7 @@ function formatDate() {
             <tr>
                 <td class="content">
                     <p><strong>${data.name}</strong><br>Pansol, Padre Garcia, Batangas</p>
-                    <p>Ipinagbibigay-alam po namin sa inyo na sa darating na <strong>${calculateCutOff()}</strong> ay magkakaroon po ulit tayo ng <strong>disconnection o pamumutol</strong> para sa mga hindi nakabayad ng utang sa ating patubig. Mula ika-21-25 ng buwan may penalty na po tayo na 100.00 piso at mula 26-31 ay tuluyan ng tatanggalin ang serbisyo ng patubig at may reconnection na po na 500.00.</p>
+                    <p>Ipinagbibigay-alam po namin sa inyo na sa darating na <strong>${calculateCutOff(data.date)}</strong> ay magkakaroon po ulit tayo ng <strong>disconnection o pamumutol</strong> para sa mga hindi nakabayad ng utang sa ating patubig. Mula ika-21-25 ng buwan may penalty na po tayo na 100.00 piso at mula 26-31 ay tuluyan ng tatanggalin ang serbisyo ng patubig at may reconnection na po na 500.00.</p>
                     <p>Ang inyo pong pagkakautang na dapat mabayaran ay nagkakahalaga ng <strong>${(data.amount)}</strong> para sa buwan/ mga buwan ng <strong>${formatDate(data.date)}</strong>.</p>
                     <p>Ang inyo pong pagwawalang bahala sa paalalang ito ay magiging dahilan upang kayo ay alisan ng serbisyo ng tubig may tao man o wala sa inyong tahanan.</p>
                     <p class="warning"><strong>IPAGPAPAWALANG-BAHALA NA LAMANG PO ANG PAALALANG ITO KUNG KAYO AY NAKABAYAD NA.</strong></p>
@@ -109,7 +108,7 @@ function formatDate() {
                         </tr>
                         <tr>
                             <td>Due Date:</td>
-                            <td><strong>${calculateDueDate()}</strong></td>
+                            <td><strong>${calculateDueDate(data.date)}</strong></td>
                         </tr>
                         <tr>
                             <th colspan="2">READING</th>

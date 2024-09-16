@@ -9,10 +9,39 @@ $name = $_POST['name'];
 $area = $_POST['area'];
 $current = $_POST['current'];
 $previous = $_POST['previous'];
-$date = $_POST['date']; // This should be in YYYY-Month format
+$date = $_POST['date']; // This should be in the format 'YYYY-MM' (e.g., '2024-09')
 $initialAmount = $_POST['initialAmount'];
 $cuM = $_POST['cuM'];
 $amount = $_POST['amount'];
+
+// Split the date string into year and month
+list($year, $monthNumber) = explode('-', $date);
+
+// Array mapping month numbers to month names
+$months = array(
+    '01' => 'Jan',
+    '02' => 'Feb',
+    '03' => 'Mar',
+    '04' => 'Apr',
+    '05' => 'May',
+    '06' => 'June',
+    '07' => 'July',
+    '08' => 'Aug',
+    '09' => 'Sept',
+    '10' => 'Oct',
+    '11' => 'Nov',
+    '12' => 'Dec'
+);
+
+// Replace the month number with the month name
+if (isset($months[$monthNumber])) {
+    $formattedDate = $year . '-' . $months[$monthNumber]; // Format: YYYY-Month
+} else {
+    $response['message'] = 'Invalid month number in date.';
+    file_put_contents('debug.log', print_r($response, true), FILE_APPEND);
+    echo json_encode($response);
+    exit;
+}
 
 // SQL query to insert new data
 $sql = "INSERT INTO customers (Name, Area_Number, Present, Previous, Date_column, Initial, CU_M, Amount)
@@ -20,7 +49,8 @@ $sql = "INSERT INTO customers (Name, Area_Number, Present, Previous, Date_column
 
 $stmt = $conn->prepare($sql);
 if ($stmt) {
-    $stmt->bind_param('ssddsddd', $name, $area, $current, $previous, $date, $initialAmount, $cuM, $amount);
+    // Bind parameters with the formatted date as a string
+    $stmt->bind_param('ssddsddd', $name, $area, $current, $previous, $formattedDate, $initialAmount, $cuM, $amount);
     if ($stmt->execute()) {
         $response['success'] = true;
     } else {

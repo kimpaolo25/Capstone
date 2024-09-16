@@ -53,7 +53,9 @@ function handleDelete(id) {
                         icon:'success',
                         showConfirmButton: false,
                         timer: 1500  
-                });
+                    }).then(() => {
+                        window.location.reload();
+                    });
                     // Remove the row from the table
                     const row = document.querySelector(`button.delete-btn[data-id="${id}"]`).closest('tr');
                     row.remove();

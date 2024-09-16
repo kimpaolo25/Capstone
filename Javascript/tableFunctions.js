@@ -170,10 +170,10 @@ function updateCuM() {
     // Calculate amount based on cuM
     const cuMValue = parseFloat(cuM);
     const initial = parseFloat(document.querySelector('#initialAmount').value) || 0;
-    const amount = (cuMValue - 8) * 16 + 130;
+    const amount = (cuMValue - 8) * 20 + 180;
 
     // Set amount based on the condition
-    document.querySelector('#amount').value = amount > 119 ? amount.toFixed(2) : initial.toFixed(2);
+    document.querySelector('#amount').value = amount > 179 ? amount.toFixed(2) : initial.toFixed(2);
 }
 
 // Add event listeners to the fields that affect the amount calculation

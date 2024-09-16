@@ -102,9 +102,16 @@
     </div>
 
     <div class="modal-field">
-        <input type="text" id="area" name="area" class="input-field" required />
-        <label for="area" class="label">Area</label>
-    </div>
+                    <select name="area" class="area" id="area">
+                        <option value="">Select Area</option>
+                        <option value="1">Kanluran</option>
+                        <option value="2">Gitna</option>
+                        <option value="3">Silangan</option>
+                        <option value="4">Maramaine</option>
+                        <option value="5">Patik</option>
+                        <option value="6">Purok 6</option>
+                    </select>
+                </div>
 
     <div class="modal-field">
         <input type="number" id="current" name="current" class="input-field" required />

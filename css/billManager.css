@@ -274,6 +274,15 @@ th {
     border-radius: 10px;
 }
 
+.area{
+    width: 88%;
+    padding: 15px;
+    border: 2px solid #4169e1;
+    border-radius: 10px;
+    color: black;
+    font-size:medium;
+}
+
 /* Modal buttons */
 .modal-buttons {
     text-align: center;
