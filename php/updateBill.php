@@ -18,6 +18,9 @@ try {
             $cuM = $_POST['cuM'];
             $amount = $_POST['amount'];
 
+            // Format the date to YYYY-MMM
+            $date = date('Y-M', strtotime($date));
+
             // Ensure $conn is available and connected
             if (!$conn) {
                 throw new Exception('Database connection failed');
@@ -51,6 +54,8 @@ try {
             $record = $result->fetch_assoc();
 
             if ($record) {
+                // Format the date to YYYY-MMM for consistency
+                $record['Date_column'] = date('Y-M', strtotime($record['Date_column']));
                 echo json_encode($record);
             } else {
                 echo json_encode(['error' => 'Record not found']);

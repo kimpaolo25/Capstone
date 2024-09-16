@@ -15,3 +15,15 @@ Array
     [success] => 
     [message] => Error formatting the date: Invalid date format.
 )
+Array
+(
+    [error] => Invalid date format. Expected format: YYYY-MM.
+)
+Array
+(
+    [error] => Invalid date format. Expected format: YYYY-MM.
+)
+Array
+(
+    [error] => Invalid date format. Expected format: YYYY-MM.
+)
