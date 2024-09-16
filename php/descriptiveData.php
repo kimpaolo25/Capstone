@@ -41,6 +41,66 @@ $sqlOverallIncome = "SELECT IFNULL(SUM(Amount), 0) AS total FROM customers";
 $resultOverallIncome = $conn->query($sqlOverallIncome);
 $overallIncome = $resultOverallIncome->fetch_assoc()['total'];
 
+// Query for total income per year (for all years)
+$sqlTotalIncomePerYear = "
+    SELECT 
+        SUBSTRING(Date_column, 1, 4) AS year, 
+        IFNULL(SUM(Amount), 0) AS total 
+    FROM customers 
+    GROUP BY year 
+    ORDER BY year";
+$resultTotalIncomePerYear = $conn->query($sqlTotalIncomePerYear);
+
+$totalIncomePerYear = [];
+while ($row = $resultTotalIncomePerYear->fetch_assoc()) 
+    $totalIncomePerYear[] = $row;
+
+// Query for total income per area with area names
+$sqlTotalIncomePerArea = "
+    SELECT p.places_name, IFNULL(SUM(c.Amount), 0) AS total_income 
+    FROM customers c
+    JOIN places p ON c.Area_Number = p.Area_Number
+    GROUP BY p.places_name
+    ORDER BY p.places_name";
+$resultTotalIncomePerArea = $conn->query($sqlTotalIncomePerArea);
+
+$totalIncomePerArea = [];
+while ($row = $resultTotalIncomePerArea->fetch_assoc()) {
+    $totalIncomePerArea[] = [
+        'places_name' => $row['places_name'],
+        'total_income' => (float)$row['total_income'] // Explicitly cast to float
+    ];
+}
+
+// Query for total income per month in chronological order
+$sqlIncomePerMonth = "
+    SELECT Date_column, IFNULL(SUM(Amount), 0) AS total 
+    FROM customers 
+    GROUP BY Date_column
+    ORDER BY 
+        SUBSTRING(Date_column, 1, 4) ASC, -- Sort by year first
+        FIELD(SUBSTRING(Date_column, 6, 3), 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec') ASC"; // Sort months in correct order
+$resultIncomePerMonth = $conn->query($sqlIncomePerMonth);
+
+$incomePerMonth = [];
+while ($row = $resultIncomePerMonth->fetch_assoc()) 
+    $incomePerMonth[] = $row;
+
+// Query for cubic meter consumption per month in chronological order
+$sqlCubicMeterPerMonth = "
+    SELECT Date_column, IFNULL(SUM(CU_M), 0) AS total 
+    FROM customers 
+    GROUP BY Date_column
+    ORDER BY 
+        SUBSTRING(Date_column, 1, 4) ASC, -- Sort by year
+        FIELD(SUBSTRING(Date_column, 6, 3), 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec') ASC"; // Sort by month
+$resultCubicMeterPerMonth = $conn->query($sqlCubicMeterPerMonth);
+
+$cubicMeterPerMonth = [];
+while ($row = $resultCubicMeterPerMonth->fetch_assoc()) {
+    $cubicMeterPerMonth[] = $row;
+}
+
 // Close connection
 $conn->close();
 
@@ -48,6 +108,10 @@ $conn->close();
 echo json_encode([
     'billsThisMonth' => $billsThisMonth,
     'billsThisYear' => $billsThisYear,
-    'overallIncome' => (float) $overallIncome // Ensure this is a float
+    'overallIncome' => (float) $overallIncome,
+    'totalIncomePerYear' => $totalIncomePerYear, // Include total income per year data
+    'totalIncomePerArea' => $totalIncomePerArea, // Include total income per area
+    'incomePerMonth' => $incomePerMonth,         // Include total income per month
+    'cubicMeterPerMonth' => $cubicMeterPerMonth  // Cubic meter consumption per month
 ]);
 ?>

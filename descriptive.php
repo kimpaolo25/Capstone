@@ -6,6 +6,7 @@
     <title>Descriptive Dashboard</title>
     <link rel="stylesheet" href="./css/descriptive.css">
     <script src="./Javascript/sweetalert.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
@@ -49,25 +50,49 @@
     </div>
 
     <div class="dashboard">
-    <!-- Card for Number of Bills This Month -->
-    <div class="card_chart">
-        <h2>Number of Bills This Month</h2>
-        <div id="billsThisMonth">Loading...</div>
-    </div>
+        <!-- Card for Number of Bills This Month -->
+        <div class="card_chart">
+            <h2>Number of Bills This Month</h2>
+            <div id="billsThisMonth">Loading...</div>
+        </div>
 
-    <!-- Card for Number of Bills This Year -->
-    <div class="card_chart">
-        <h2>Number of Bills This Year</h2>
-        <div id="billsThisYear">Loading...</div>
-    </div>
+        <!-- Card for Number of Bills This Year -->
+        <div class="card_chart">
+            <h2>Number of Bills This Year</h2>
+            <div id="billsThisYear">Loading...</div>
+        </div>
 
-    <!-- Card for Overall Income -->
-    <div class="card_chart">
-        <h2>Overall Expected Income</h2>
-        <div id="overallIncome">Loading...</div>
-    </div>
+        <!-- Card for Overall Income -->
+        <div class="card_chart">
+            <h2>Overall Expected Income</h2>
+            <div id="overallIncome">Loading...</div>
+        </div>
+
+        <!-- New Cards -->
+        <!-- Chart for Total Amount Income per Year -->
+<div class="card_chart">
+    <h2>Total Amount Income per Year</h2>
+    <canvas id="incomeChart"></canvas>
 </div>
 
+
+<div class="card_chart">
+    <h2>Total Income per Area</h2>
+    <canvas id="incomeAreaChart"></canvas>
+</div>
+
+
+<div class="card_chart">
+    <h2>Total Income per Month</h2>
+    <canvas id="incomeMonthChart"></canvas>
+</div>
+
+
+        <div class="card_chart">
+            <h2>Cubic meter Consumption per Month</h2>
+            <canvas id="cubicMeterChart"></canvas>
+        </div>
+    </div>
 
     <script src="./Javascript/descriptive.js"></script>
     <script src="./Javascript/modal_login.js"></script>
