@@ -29,7 +29,7 @@
 
         <!-- Card for Monthly CU_M Chart -->
         <div class="card_chart">
-            <h2>Predicted Monthly CU_M</h2>
+            <h2>Predicted Monthly Cubic Meter</h2>
             <canvas id="monthlyCUMChart"></canvas>
         </div>
     </div>

@@ -46,6 +46,7 @@ def predict():
         print("Monthly aggregated data:")
         print(df_monthly)
 
+        # Forecasting Amount
         # Apply log transformation to Amount
         df_monthly['Log_Amount'] = np.log(df_monthly['Amount'].replace(0, np.nan))  # Replace 0 with NaN to avoid log(0)
 
@@ -62,7 +63,7 @@ def predict():
         model_income_fit = model_income.fit()
 
         # Create a forecast
-        forecast_steps = 12
+        forecast_steps = 15  # Updated to forecast up to December 2025
         forecast_trend_removed = model_income_fit.forecast(steps=forecast_steps, exog=df_monthly['CU_M'].iloc[-forecast_steps:])
 
         # Revert forecast to original scale by adding back the trend and applying exp
@@ -72,12 +73,45 @@ def predict():
         forecast_log_income = forecast_trend_removed + trend_future
         forecast_income = np.exp(forecast_log_income)  # Revert back to original scale
 
-        future_dates = [df_monthly.index[-1] + pd.DateOffset(months=i) for i in range(1, forecast_steps + 1)]
+        future_dates_income = [df_monthly.index[-1] + pd.DateOffset(months=i) for i in range(1, forecast_steps + 1)]
+
+        # Forecasting CU_M
+        # Decompose CU_M to remove trend and seasonality
+        decomposition_cum = seasonal_decompose(df_monthly['CU_M'], model='additive', period=12)
+        trend_cum = decomposition_cum.trend.dropna()
+        seasonal_cum = decomposition_cum.seasonal.dropna()
+
+        # Remove trend and seasonal components from CU_M
+        trend_seasonal_removed_cum = df_monthly['CU_M'] - trend_cum - seasonal_cum
+        trend_seasonal_removed_cum = trend_seasonal_removed_cum.dropna()
+
+        # Fit ARIMA model on trend-seasonal-removed (stationary) data
+        model_cum = ARIMA(
+            trend_seasonal_removed_cum,
+            exog=df_monthly['Amount'].loc[trend_seasonal_removed_cum.index],
+            order=(1, 0, 0)
+        )
+        model_cum_fit = model_cum.fit()
+
+        # Create a forecast
+        forecast_trend_seasonal_removed_cum = model_cum_fit.forecast(steps=forecast_steps, exog=df_monthly['Amount'].iloc[-forecast_steps:])
+
+        # Revert forecast to original scale by adding back the trend and seasonal components
+        trend_future_cum = trend_cum[-forecast_steps:].values
+        seasonal_future_cum = seasonal_cum[-forecast_steps:].values
+        if len(trend_future_cum) < forecast_steps:
+            trend_future_cum = np.pad(trend_future_cum, (0, forecast_steps - len(trend_future_cum)), 'constant', constant_values=(0))
+            seasonal_future_cum = np.pad(seasonal_future_cum, (0, forecast_steps - len(seasonal_future_cum)), 'constant', constant_values=(0))
+        forecast_cum = forecast_trend_seasonal_removed_cum + trend_future_cum + seasonal_future_cum
+
+        future_dates_cum = [df_monthly.index[-1] + pd.DateOffset(months=i) for i in range(1, forecast_steps + 1)]
 
         response = {
-            'dates': [date.strftime('%Y-%m') for date in df_monthly.index] + [date.strftime('%Y-%m') for date in future_dates],
+            'dates': [date.strftime('%Y-%m') for date in df_monthly.index] + [date.strftime('%Y-%m') for date in future_dates_income],
             'historical_amounts': [float(value) for value in df_monthly['Amount'].tolist()],
-            'forecasted_amounts': [None] * len(df_monthly['Amount'].tolist()) + [float(value) for value in forecast_income.tolist()]
+            'forecasted_amounts': [None] * len(df_monthly['Amount'].tolist()) + [float(value) for value in forecast_income.tolist()],
+            'historical_cum': [float(value) for value in df_monthly['CU_M'].tolist()],
+            'forecasted_cum': [None] * len(df_monthly['CU_M'].tolist()) + [float(value) for value in forecast_cum.tolist()]
         }
 
         return jsonify(response)
@@ -86,7 +120,6 @@ def predict():
         import traceback
         app.logger.error("Error occurred:\n%s", traceback.format_exc())
         return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
-
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
