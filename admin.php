@@ -32,18 +32,6 @@
             <h2>Predicted Monthly CU_M</h2>
             <canvas id="monthlyCUMChart"></canvas>
         </div>
-
-        <!-- Card for Predicted Income per Area Number -->
-        <div class="card_chart">
-            <h2>Predicted Income per Area</h2>
-            <canvas id="incomePerAreaChart"></canvas>
-        </div>
-
-        <!-- Card for Predicted CU_M per Area Number -->
-        <div class="card_chart">
-            <h2>Predicted CU_M per Area</h2>
-            <canvas id="cumPerAreaChart"></canvas>
-        </div>
     </div>
 </body>
 </html>
