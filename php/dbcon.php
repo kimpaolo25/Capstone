@@ -1,7 +1,7 @@
 <?php
-$servername = "renderhost";
-$username = "capstone";
-$password = "12345";
+$servername = "localhost";
+$username = "root";
+$password = "";
 $dbname = "prwai_data";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
