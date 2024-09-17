@@ -99,6 +99,19 @@ th, td {
 th {
     background-color: #4169e1;
 }
+
+/* Add transition for smooth zoom effect */
+table tr {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Hover effect for table rows */
+table tr:hover {
+    background-color: #6f8de682; /* Slightly modified color */
+    cursor: pointer; /* Change cursor to a pointer to indicate it's clickable */
+    transform: scale(1.01); /* Slightly zoom in the row */
+}
+
 /* Styling for buttons and search input */
 .table-controls {
     display: flex;

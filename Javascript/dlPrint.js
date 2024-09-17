@@ -19,9 +19,9 @@ function printTable() {
     printWindow.document.write('</head><body>');
     
     // Add title
-    printWindow.document.write('<h1>Pansol Rural Waterworks Association Incorporation</h1>');
+    printWindow.document.write(`<h1>Pansol Rural Waterworks Association Incorporation - ${selectedArea}</h1>`);
 
-    printWindow.document.write('<p><strong>Bill Reports</strong> </p>');
+    printWindow.document.write('<p><strong>Bill Reports</strong></p>');
 
     // Add area information
     printWindow.document.write('<p><strong>Area:</strong> ' + selectedArea + '</p>');
@@ -55,17 +55,23 @@ function printTable() {
 
 // Function to download the table data as a CSV file
 function downloadTableAsCSV() {
+    // Get the selected area from the filter
+    const selectedArea = document.getElementById('areaFilter').value || 'All_Areas';
+
     let csvContent = "data:text/csv;charset=utf-8,";
     const table = document.getElementById('dataTable');
-    const rows = table.querySelectorAll('tr');
+    const rows = table.querySelectorAll('tbody tr');
 
     rows.forEach((row, index) => {
-        const cells = row.querySelectorAll('th, td');
-        const cellValues = Array.from(cells).map(cell => `"${cell.textContent.replace(/"/g, '""')}"`).join(',');
-        if (index === 0) {
-            csvContent += `${cellValues}\r\n`; // Add headers
-        } else {
-            csvContent += `${cellValues}\r\n`; // Add row values
+        // Only process visible rows
+        if (row.style.display !== 'none') {
+            const cells = row.querySelectorAll('th, td');
+            const cellValues = Array.from(cells).map(cell => `"${cell.textContent.replace(/"/g, '""')}"`).join(',');
+            if (index === 0) {
+                csvContent += `${cellValues}\r\n`; // Add headers (header row needs to be included in this context)
+            } else {
+                csvContent += `${cellValues}\r\n`; // Add row values
+            }
         }
     });
 
@@ -79,14 +85,19 @@ function downloadTableAsCSV() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'table_data.csv');
+    link.setAttribute('download', `prwai_data_${selectedArea}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 }
 
+
+
 // Function to download the table data as an Excel file
 function downloadTableAsExcel() {
+    // Get the selected area from the filter
+    const selectedArea = document.getElementById('areaFilter').value || 'All_Areas';
+
     const wb = XLSX.utils.book_new();
     const ws_data = [];
 
@@ -96,10 +107,13 @@ function downloadTableAsExcel() {
 
     // Get table rows and their data
     document.querySelectorAll('#dataTable tbody tr').forEach(row => {
-        const rowData = Array.from(row.querySelectorAll('td')).map(td => td.textContent);
-        // Exclude the last column (Action column)
-        rowData.pop();
-        ws_data.push(rowData);
+        // Only process visible rows
+        if (row.style.display !== 'none') {
+            const rowData = Array.from(row.querySelectorAll('td')).map(td => td.textContent);
+            // Exclude the last column (Action column)
+            rowData.pop();
+            ws_data.push(rowData);
+        }
     });
 
     // Create a worksheet from the data
@@ -109,8 +123,9 @@ function downloadTableAsExcel() {
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
 
     // Generate a binary Excel file and initiate download
-    XLSX.writeFile(wb, 'table_data.xlsx');
+    XLSX.writeFile(wb, `prwai_data_${selectedArea}.xlsx`);
 }
+
 
 // Event listeners for print and download options
 document.getElementById('printOption').addEventListener('click', printTable);
