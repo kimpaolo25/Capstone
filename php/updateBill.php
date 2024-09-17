@@ -13,13 +13,10 @@ try {
             $area = $_POST['area'];
             $current = $_POST['current'];
             $previous = $_POST['previous'];
-            $date = $_POST['date'];
+            $date = $_POST['date']; // This should be in YYYY-Sep format
             $initialAmount = $_POST['initialAmount'];
             $cuM = $_POST['cuM'];
             $amount = $_POST['amount'];
-
-            // Format the date to YYYY-MMM
-            $date = date('Y-M', strtotime($date));
 
             // Ensure $conn is available and connected
             if (!$conn) {
@@ -54,8 +51,7 @@ try {
             $record = $result->fetch_assoc();
 
             if ($record) {
-                // Format the date to YYYY-MMM for consistency
-                $record['Date_column'] = date('Y-M', strtotime($record['Date_column']));
+                // Date is already in YYYY-Sep format
                 echo json_encode($record);
             } else {
                 echo json_encode(['error' => 'Record not found']);

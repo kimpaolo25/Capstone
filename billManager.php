@@ -192,8 +192,8 @@
 </div>
 <div class="modal-section">
     <div class="modal-field">
-        <input type="date" id="updateDate" name="date" class="input-field" required />
-        
+        <input type="text" id="updateDate" name="date" class="input-field" required />
+        <label for="date" class="label">Date</label>
     </div>
 
     <div class="modal-field">
