@@ -1,5 +1,6 @@
 <?php
 session_start();
+session_regenerate_id(true); // Regenerate session ID after login
 include 'dbcon.php'; // Include the MySQLi database connection
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
