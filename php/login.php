@@ -16,10 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Check if user exists and password is valid
     if ($user && password_verify($password, $user['password_hash'])) {
         // Set session variables for logged-in user
-        $_SESSION['loggedin'] = true; // Set the logged-in flag
+        $_SESSION['loggedin'] = true;
         $_SESSION['username'] = $user['username'];
-        $_SESSION['is_admin'] = true; // Admin flag for now, adjust based on your system
-
+        $_SESSION['is_admin'] = true; // Admin flag
+        
         echo json_encode(['success' => true]);
     } else {
         echo json_encode(['success' => false]);
