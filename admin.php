@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./javascript/admin.js" defer></script>
     <script src="./javascript/prediction.js" defer></script>
+    <script src="./javascript/descriptive.js" defer></script>
 </head>
 <body>
     <header>
@@ -19,6 +20,59 @@
             <img src="./image/out.png" alt="Exit">
         </a>
     </header>
+
+    <h2 class="desc">Descriptive Analytics</h2>
+
+    <div class="descDashboard">
+        <!-- Card for Number of Bills This Month -->
+        <div class="card_chart">
+            <h2>Number of Bills This Month</h2>
+            <div id="billsThisMonth">Loading...</div>
+        </div>
+
+        <!-- Card for Number of Bills This Year -->
+        <div class="card_chart">
+            <h2>Number of Bills This Year</h2>
+            <div id="billsThisYear">Loading...</div>
+        </div>
+
+        <!-- Card for Overall Income -->
+        <div class="card_chart">
+            <h2>Overall Expected Income</h2>
+            <div id="overallIncome">Loading...</div>
+        </div>
+        </div>
+
+
+    <div class="descDashboard2">
+        <!-- New Cards -->
+        <!-- Chart for Total Amount Income per Year -->
+<div class="card_chart">
+    <h2>Total Income per Year</h2>
+    <canvas id="incomeChart"></canvas>
+</div>
+
+
+<div class="card_chart">
+    <h2>Total Income per Area</h2>
+    <canvas id="incomeAreaChart"></canvas>
+</div>
+
+
+<div class="card_chart">
+    <h2>Total Income per Month</h2>
+    <canvas id="incomeMonthChart"></canvas>
+</div>
+
+
+        <div class="card_chart">
+            <h2>Cubic meter Consumption per Month</h2>
+            <canvas id="cubicMeterChart"></canvas>
+        </div>
+    </div>
+
+
+    <h2 class="desc">Predictive Analytics</h2>
 
     <div class="dashboard">
         <!-- Card for Monthly Income Chart -->
