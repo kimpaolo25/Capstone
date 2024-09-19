@@ -107,7 +107,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         <form id="addBillForm">
         <div class="modal-section">
     <div class="modal-field">
-        <input type="text" id="name" name="name" class="input-field" required />
+        <input type="text" id="name" name="name" class="input-field" />
         <label for="name" class="label">Name</label>
         <ul id="suggestions" style="display: none; position: absolute; border: 1px solid #ccc; background-color: white; list-style: none; padding: 0; margin: 0; width: 200px; z-index: 1000;"></ul>
     </div>
@@ -125,34 +125,34 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 </div>
 
     <div class="modal-field">
-        <input type="number" id="current" name="current" class="input-field" required />
+        <input type="number" id="current" name="current" class="input-field"  />
         <label for="current" class="label">Current</label>
     </div>
 
     <div class="modal-field">
-        <input type="number" id="previous" name="previous" class="input-field" required />
+        <input type="number" id="previous" name="previous" class="input-field"  />
         <label for="previous" class="label">Previous</label>
     </div>
 
 </div>
 <div class="modal-section">
     <div class="modal-field">
-        <input type="date" id="date" name="date" class="input-field" required />
+        <input type="date" id="date" name="date" class="input-field"  />
         
     </div>
 
     <div class="modal-field">
-        <input type="number" id="initialAmount" name="initialAmount" class="input-field" required />
+        <input type="number" id="initialAmount" name="initialAmount" class="input-field"  />
         <label for="initialAmount" class="label">Initial Amount</label>
     </div>
 
     <div class="modal-field">
-        <input type="number" id="cuM" name="cuM" class="input-field" required />
+        <input type="number" id="cuM" name="cuM" class="input-field"  />
         <label for="cuM" class="label">Cu.M</label>
     </div>
     
     <div class="modal-field">
-        <input type="number" id="amount" name="amount" class="input-field" required />
+        <input type="number" id="amount" name="amount" class="input-field"  />
         <label for="amount" class="label">Amount</label>
     </div>
 </div>

@@ -1,3 +1,14 @@
+// Function to check if all required fields are filled out
+function validateFormFields(formData) {
+    const requiredFields = ['name', 'area', 'current', 'previous', 'date', 'initialAmount', 'cuM', 'amount'];
+    for (const field of requiredFields) {
+        if (!formData.get(field)) {
+            return false; // Return false if any required field is empty
+        }
+    }
+    return true; // All required fields are filled
+}
+
 // Handle form submission
 form.addEventListener('submit', function (event) {
     event.preventDefault(); // Prevent default form submission
@@ -14,6 +25,18 @@ form.addEventListener('submit', function (event) {
         cuM: formData.get('cuM'),
         amount: formData.get('amount'),
     };
+
+    // Check if all required fields are filled
+    if (!validateFormFields(formData)) {
+        Swal.fire({
+            title: 'Incomplete Form',
+            text: 'Please fill out all required fields before submitting.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        modal.style.display = 'block'
+        return; // Stop form submission
+    }
 
     // URL and method for adding a new entry
     const url = './php/addBill.php';
@@ -40,13 +63,16 @@ form.addEventListener('submit', function (event) {
                     // Update tableData with newRowData
                     tableData.push(newRowData);
 
-                    // Show success message, print invoice, and reload table
+                    // Show success message and reload table
                     Swal.fire({
                         icon: 'success',
                         title: 'Entry added successfully!',
                         showConfirmButton: false,
                         timer: 1500
                     }).then(() => {
+                        // Close the modal and reset the form
+                        modal.style.display = 'none';
+                        form.reset();
                         window.location.reload();
                     });
                 } else {
@@ -65,10 +91,6 @@ form.addEventListener('submit', function (event) {
                     text: 'Failed to process the request. Please try again later.',
                 });
             });
-
-            // Close the modal and reset the form
-            modal.style.display = 'none';
-            form.reset();
         } else {
             // If the user cancels, do nothing or handle the cancellation
             Swal.fire({
