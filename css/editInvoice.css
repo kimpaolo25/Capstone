@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: white; /* Set background color */
+}
+.button-container {
+    text-align: right;
+    margin: 10px;
+}
+.button-container button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+.button-container button:hover {
+    background-color: #0056b3;
+}
+#cancelButton {
+    background-color: #dc3545;
+}
+#cancelButton:hover {
+    background-color: #c82333;
+}
+#editButton {
+    background-color: #28a745;
+}
+#editButton:hover {
+    background-color: #218838;
+}
+.main-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.header, .invoice-table {
+    width: 100%;
+}
+.content, .invoice {
+    padding: 10px;
+}
+.warning {
+    color: red;
+}
