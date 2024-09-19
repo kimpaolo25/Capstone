@@ -73,7 +73,7 @@ form.addEventListener('submit', function (event) {
                         // Close the modal and reset the form
                         modal.style.display = 'none';
                         form.reset();
-                        window.location.reload();
+                        fetchDataAndReloadTable();
                     });
                 } else {
                     Swal.fire({

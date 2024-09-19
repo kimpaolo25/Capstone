@@ -54,7 +54,7 @@ function handleDelete(id) {
                         showConfirmButton: false,
                         timer: 1500  
                     }).then(() => {
-                        window.location.reload();
+                        fetchDataAndReloadTable();
                     });
                     // Remove the row from the table
                     const row = document.querySelector(`button.delete-btn[data-id="${id}"]`).closest('tr');

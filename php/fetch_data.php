@@ -76,7 +76,7 @@ class AdminBillDisplay {
 }
 
 // Fetch data with pagination parameters
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 1000;
 $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
 
 $billDisplay = new AdminBillDisplay($conn);

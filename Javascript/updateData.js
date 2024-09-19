@@ -24,52 +24,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateForm.addEventListener('submit', function(event) {
         event.preventDefault();
-
-        const name = nameField.value;
-        const area = areaField.value;
-        const current = currentField.value;
-        const previous = previousField.value;
-        const date = dateField.value;
-        const initialAmount = initialAmountField.value;
-        const cuM = cuMField.value;
-        const amount = amountField.value;
-
-        fetch('./php/updateBill.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                action: 'update',
-                id: currentId,
-                name: name,
-                area: area,
-                current: current,
-                previous: previous,
-                date: date,
-                initialAmount: initialAmount,
-                cuM: cuM,
-                amount: amount
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Your record has been updated!',
-                    showConfirmButton: false,
-                    timer: 1500
-                }).then(() => {
-                    window.location.reload();
-                });
-                // Update the table row as needed
-            } else {
-                Swal.fire('Error!', data.message || 'There was a problem updating the record.', 'error');
+    
+        // Display SweetAlert confirmation dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to update this record?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, update it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed with the update if confirmed
+                const name = nameField.value;
+                const area = areaField.value;
+                const current = currentField.value;
+                const previous = previousField.value;
+                const date = dateField.value;
+                const initialAmount = initialAmountField.value;
+                const cuM = cuMField.value;
+                const amount = amountField.value;
+    
+                fetch('./php/updateBill.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        action: 'update',
+                        id: currentId,
+                        name: name,
+                        area: area,
+                        current: current,
+                        previous: previous,
+                        date: date,
+                        initialAmount: initialAmount,
+                        cuM: cuM,
+                        amount: amount
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Your record has been updated!',
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            updateModal.style.display = 'none';
+                            updateForm.reset();
+                            fetchDataAndReloadTable();
+                        });
+                    } else {
+                        Swal.fire('Error!', data.message || 'There was a problem updating the record.', 'error');
+                    }
+                })
+                .catch(error => Swal.fire('Error!', 'An error occurred while updating the record.', 'error'));
             }
-        })
-        .catch(error => Swal.fire('Error!', 'An error occurred while updating the record.', 'error'));
-        
+        });
     });
 
 

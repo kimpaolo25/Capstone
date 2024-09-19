@@ -98,6 +98,14 @@ function reloadTable() {
     const tableBody = document.querySelector('#dataTable tbody');
     tableBody.innerHTML = ''; // Clear existing rows
 
+    // Sort tableData in descending order by bill_id
+    tableData.sort((a, b) => {
+        // Ensure bill_id is treated as a number
+        const idA = Number(a.bill_id);
+        const idB = Number(b.bill_id);
+        return idB - idA;
+    });
+
     tableData.forEach((row) => {
         const newRow = tableBody.insertRow();
 
@@ -111,6 +119,7 @@ function reloadTable() {
                 cell.classList.add('bill-id'); // Add a class to identify Bill ID cells
             }
         });
+
 
         // Add action buttons with correct data-id
         const actionCell = newRow.insertCell();
@@ -234,3 +243,16 @@ document.addEventListener('click', (event) => {
 
 // Add event listener to the name input field for autocomplete
 document.getElementById('name').addEventListener('input', autocompleteSuggestions);
+
+
+// Example function to fetch data and reload table
+async function fetchDataAndReloadTable() {
+    try {
+        const response = await fetch('./php/fetch_data.php'); // Adjust the URL and parameters
+        const data = await response.json();
+        tableData = data; // Update tableData with fetched data
+        reloadTable(); // Call your function to update the table
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+}

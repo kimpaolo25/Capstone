@@ -55,7 +55,7 @@ function filterTable() {
                 confirmButtonText: 'OK'
             }).then(() => {
                 // Reload the page after the user presses "OK"
-                window.location.reload();
+                fetchDataAndReloadTable();
             });
         }
     }, 100); // Adjust timeout as needed to ensure loading spinner is visible
