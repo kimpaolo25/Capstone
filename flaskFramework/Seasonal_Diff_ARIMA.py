@@ -41,17 +41,14 @@ def predict():
             'CU_M': 'sum'
         })
 
-        # Apply log transformation to 'Amount' and 'CU_M'
-        df_monthly['Amount_log'] = np.log(df_monthly['Amount'].replace(0, np.nan))
-        df_monthly['CU_M_log'] = np.log(df_monthly['CU_M'].replace(0, np.nan))
+        # Print df_monthly for debugging
+        print("Monthly aggregated data:")
+        print(df_monthly)
 
-        # Apply seasonal differencing to the log-transformed 'Amount' and 'CU_M'
-        seasonal_period = 12  # Monthly data, so seasonal period is 12
-        df_monthly['Amount_log_seasonal_diff'] = df_monthly['Amount_log'] - df_monthly['Amount_log'].shift(seasonal_period)
-        df_monthly['CU_M_log_seasonal_diff'] = df_monthly['CU_M_log'] - df_monthly['CU_M_log'].shift(seasonal_period)
-
-        # Use the existing data for forecasting, no need to drop NA here
-        df_monthly.fillna(0, inplace=True)  # Fill NA values for differencing, if necessary
+        # Apply seasonal differencing to 'Amount' and 'CU_M' to make them stationary
+        seasonal_period = 12  # Assuming monthly data with yearly seasonality
+        df_monthly['Amount_diff'] = df_monthly['Amount'].diff(seasonal_period).dropna()
+        df_monthly['CU_M_diff'] = df_monthly['CU_M'].diff(seasonal_period).dropna()
 
         # Split data into training and testing sets
         train_size = int(len(df_monthly) * 0.8)  # 80% for training
@@ -60,72 +57,68 @@ def predict():
         # Print train and test sizes for debugging
         print(f"Training data size: {len(train)}, Testing data size: {len(test)}")
 
-        # ---- ARIMA for Amount_log_seasonal_diff ----
-        # Fit auto_arima model to find the best order for 'Amount_log_seasonal_diff'
+        # ---- ARIMA for Amount_diff ----
+        # Fit auto_arima model to find the best order for 'Amount_diff'
         model_auto_arima_amount = auto_arima(
-            train['Amount_log_seasonal_diff'],
-            seasonal=False,  # No additional seasonal component needed
+            train['Amount_diff'].dropna(),
+            seasonal=False,  # No seasonal component in ARIMA
             stepwise=True,
             trace=True
         )
 
-        # Print the best order found by auto_arima for 'Amount_log_seasonal_diff'
-        print(f"Best order found for Amount_log_seasonal_diff: {model_auto_arima_amount.order}")
+        # Print the best order found by auto_arima for 'Amount_diff'
+        print(f"Best order found for Amount_diff: {model_auto_arima_amount.order}")
 
         # Use the best order found by auto_arima
         best_order_amount = model_auto_arima_amount.order
 
-        # Fit ARIMA model for 'Amount_log_seasonal_diff'
+        # Fit ARIMA model for 'Amount_diff' (no seasonal order)
         model_amount = ARIMA(
-            train['Amount_log_seasonal_diff'],
+            train['Amount_diff'].dropna(),
             order=best_order_amount
         )
         model_amount_fit = model_amount.fit()
 
-        # Create a forecast for 'Amount_log_seasonal_diff'
+        # Create a forecast for 'Amount_diff'
         forecast_steps = len(test)
-        forecast_amount_log_seasonal_diff = model_amount_fit.get_forecast(steps=forecast_steps)
-        forecast_amount_log_seasonal_diff_mean = forecast_amount_log_seasonal_diff.predicted_mean
+        forecast_amount_diff = model_amount_fit.get_forecast(steps=forecast_steps)
+        forecast_amount_diff_mean = forecast_amount_diff.predicted_mean
 
-        # Revert the seasonal differencing and log transformation
-        last_observed_value_amount_log = df_monthly['Amount_log'].iloc[-1]
-        forecast_amount_log = forecast_amount_log_seasonal_diff_mean + df_monthly['Amount_log'].iloc[-len(forecast_amount_log_seasonal_diff_mean):].values
-        forecast_amount = np.exp(forecast_amount_log)
+        # Revert the differencing to get the original scale forecast
+        forecast_amount = forecast_amount_diff_mean + df_monthly['Amount'].shift(seasonal_period)[-forecast_steps:].values
 
-        future_dates_amount = pd.date_range(start=df_monthly.index[-1] + pd.DateOffset(months=1), periods=forecast_steps, freq='M')
+        future_dates_amount = [test.index[i] for i in range(forecast_steps)]
 
-        # ---- ARIMA for CU_M_log_seasonal_diff ----
-        # Fit auto_arima model to find the best order for 'CU_M_log_seasonal_diff'
+        # ---- ARIMA for CU_M_diff ----
+        # Fit auto_arima model to find the best order for 'CU_M_diff'
         model_auto_arima_cum = auto_arima(
-            train['CU_M_log_seasonal_diff'],
-            seasonal=False,  # No additional seasonal component needed
+            train['CU_M_diff'].dropna(),
+            seasonal=False,  # No seasonal component in ARIMA
             stepwise=True,
             trace=True
         )
 
-        # Print the best order found by auto_arima for 'CU_M_log_seasonal_diff'
-        print(f"Best order found for CU_M_log_seasonal_diff: {model_auto_arima_cum.order}")
+        # Print the best order found by auto_arima for 'CU_M_diff'
+        print(f"Best order found for CU_M_diff: {model_auto_arima_cum.order}")
 
         # Use the best order found by auto_arima
         best_order_cum = model_auto_arima_cum.order
 
-        # Fit ARIMA model for 'CU_M_log_seasonal_diff'
+        # Fit ARIMA model for 'CU_M_diff' (no seasonal order)
         model_cum = ARIMA(
-            train['CU_M_log_seasonal_diff'],
+            train['CU_M_diff'].dropna(),
             order=best_order_cum
         )
         model_cum_fit = model_cum.fit()
 
-        # Create a forecast for 'CU_M_log_seasonal_diff'
-        forecast_cum_log_seasonal_diff = model_cum_fit.get_forecast(steps=forecast_steps)
-        forecast_cum_log_seasonal_diff_mean = forecast_cum_log_seasonal_diff.predicted_mean
+        # Create a forecast for 'CU_M_diff'
+        forecast_cum_diff = model_cum_fit.get_forecast(steps=forecast_steps)
+        forecast_cum_diff_mean = forecast_cum_diff.predicted_mean
 
-        # Revert the seasonal differencing and log transformation
-        last_observed_value_cum_log = df_monthly['CU_M_log'].iloc[-1]
-        forecast_cum_log = forecast_cum_log_seasonal_diff_mean + df_monthly['CU_M_log'].iloc[-len(forecast_cum_log_seasonal_diff_mean):].values
-        forecast_cum = np.exp(forecast_cum_log)
+        # Revert the differencing to get the original scale forecast for CU_M
+        forecast_cum = forecast_cum_diff_mean + df_monthly['CU_M'].shift(seasonal_period)[-forecast_steps:].values
 
-        future_dates_cum = pd.date_range(start=df_monthly.index[-1] + pd.DateOffset(months=1), periods=forecast_steps, freq='M')
+        future_dates_cum = [test.index[i] for i in range(forecast_steps)]
 
         # Accuracy checking using testing data
         test_amount = test['Amount']
@@ -150,9 +143,9 @@ def predict():
         # Prepare the response
         response = {
             'dates': [date.strftime('%Y-%m') for date in df_monthly.index] + [date.strftime('%Y-%m') for date in future_dates_amount],
-            'historical_amounts': [float(value) for value in np.exp(df_monthly['Amount_log'].replace(np.nan, 0)).tolist()],
+            'historical_amounts': [float(value) for value in df_monthly['Amount'].tolist()],
             'forecasted_amounts': [None] * len(df_monthly['Amount'].tolist()) + [float(value) for value in forecast_amount.tolist()],
-            'historical_cum': [float(value) for value in np.exp(df_monthly['CU_M_log'].replace(np.nan, 0)).tolist()],
+            'historical_cum': [float(value) for value in df_monthly['CU_M'].tolist()],
             'forecasted_cum': [None] * len(df_monthly['CU_M'].tolist()) + [float(value) for value in forecast_cum.tolist()],
         }
 

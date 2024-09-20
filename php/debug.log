@@ -27,3 +27,8 @@ Array
 (
     [error] => Invalid date format. Expected format: YYYY-MM.
 )
+Array
+(
+    [success] => 
+    [message] => Error executing the query: Incorrect integer value: '' for column `prwai_data`.`customers`.`Area_Number` at row 1
+)
