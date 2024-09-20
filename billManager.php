@@ -1,4 +1,4 @@
-<?php
+<input?php
 session_start();
 
 // Check if the user is logged in
@@ -49,6 +49,51 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         <div class="add-button-container">
             <button id="addButton">Add</button>
         </div>
+
+        <div class="set-button-container">
+            <button id="setButton">Modify Invoice</button>
+        </div>
+
+        <!-- Invoice Modal Structure -->
+    <div id="invDateModal" class="invModal">
+        <div class="invModal-content">
+        <span id="close"></span>
+        <div class="invModal-header">Modify Invoice</div>
+
+            <div class="invModal-field"></>
+            <input type="date" id="invDateInput" name="invDateInput" class="invInput-field" >
+            <label for="invDateInput" class="invLabel">Cutoff Date</label>
+            </div>
+
+            <div class="invModal-field">
+                <input type="firstPen" id="firstPen" name="firstPen" class="invInput-field"  />
+                <label for="firstPen" class="invLabel">First Penalty</label>
+            </div>
+
+            <div class="invModal-field">
+                <input type="secondPen" id="secondPen" name="secondPen" class="invInput-field"  />
+                <label for="secondPen" class="invLabel">Second Penalty</label>
+            </div>
+
+            <div class="invModal-field">
+                <input type="gcashInf" id="gcashInf" name="gcashInf" class="invInput-field"  />
+                <label for="gcashInf" class="invLabel">Gcash Information</label>
+            </div>
+
+            <div class="invModal-field">
+                <input type="gcashFee" id="gcashFee" name="gcashFee" class="invInput-field"  />
+                <label for="gcashFee" class="invLabel">Gcash Fee</label>
+            </div>
+
+            <div class="invModal-button">
+            <button id="updateButton">Update</button>
+            <button id="resetModalButton">Reset Date</button>
+            </div>
+        </div>
+    </div>
+
+
+
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search...">
         </div>
@@ -137,8 +182,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 </div>
 <div class="modal-section">
     <div class="modal-field">
-        <input type="date" id="date" name="date" class="input-field"  />
-        
+        <input type="date" id="date" name="date" class="input-field"  /> 
     </div>
 
     <div class="modal-field">
@@ -254,6 +298,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         </tbody>
     </table>
 </div>
+    <script src="./Javascript/invoiceDetail.js"></script>
     <script src="./Javascript/tableFunctions.js"></script>
     <script src="./Javascript/modalFunctions.js"></script>
     <script src="./Javascript/addData.js"></script>

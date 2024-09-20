@@ -76,26 +76,3 @@ body {
         border: none;
     }
 }
-
-
-#editButton {
-    position: fixed; /* Fixed positioning for visibility */
-    top: 10px;
-    right: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    color: #fff;
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 1000; /* Ensure it stays on top */
-}
-#editButton:hover {
-    background-color: #0056b3;
-}
-/* Ensure other content in the iframe does not overlap the button */
-body {
-    margin: 0;
-    padding: 0;
-}
