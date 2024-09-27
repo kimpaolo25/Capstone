@@ -1,7 +1,21 @@
-// Function to initialize table data with SweetAlert2 loading notification
+// Declare necessary variables
+let tableData = []; 
+let limit = 100; // Set the number of records to load per request
+let offset = 0; // Initialize offset for pagination
+let isLoading = false; // Flag to prevent multiple fetch calls
+let allDataLoaded = false; // Flag to indicate if all data has been loaded
+
+// Function to initialize table data
 function initializeTableData() {
-    const limit = 1000; // Example limit
-    const offset = 0; // Example offset
+    loadTableData(); // Load initial data
+    const container = document.querySelector('.table-container');
+    container.addEventListener('scroll', handleScroll); // Add scroll event listener to the table container
+}
+
+// Function to load table data
+function loadTableData() {
+    if (isLoading || allDataLoaded) return; // Prevent loading if already in progress or if all data is loaded
+    isLoading = true; // Set loading flag
 
     // Show loading alert
     Swal.fire({
@@ -14,6 +28,7 @@ function initializeTableData() {
         }
     });
 
+    // Fetch data from the server
     fetch(`./php/fetch_data.php?limit=${limit}&offset=${offset}`)
         .then(response => {
             if (!response.ok) {
@@ -23,13 +38,29 @@ function initializeTableData() {
         })
         .then(data => {
             // Hide loading alert
-            Swal.close(); 
+            Swal.close();
+
+            console.log('Data received:', data); // Log the data received for debugging
+
+            // If no data is returned, set flag and return
+            if (data.length === 0) {
+                allDataLoaded = true; // Mark all data as loaded
+                console.log('All data has been loaded.'); // Log for debugging
+                return; // Exit function if no more data
+            }
+
+            // Concatenate new data to existing tableData
+            tableData = tableData.concat(data);
 
             // Sort data by date in descending order
-            tableData = data.sort((a, b) => new Date(b.date) - new Date(a.date));
+            tableData.sort((a, b) => new Date(b.date) - new Date(a.date));
 
             // Reload the table with the sorted data
             reloadTable();
+
+            // Increment offset for the next request
+            offset += limit;
+            isLoading = false; // Reset loading flag
         })
         .catch(error => {
             // Hide loading alert and show error message
@@ -41,53 +72,129 @@ function initializeTableData() {
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
+            isLoading = false; // Reset loading flag on error
         });
 }
 
+// Function to handle scroll event for lazy loading
+function handleScroll() {
+    const container = document.querySelector('.table-container');
+    const scrollPosition = container.scrollTop + container.clientHeight;
+    const threshold = container.scrollHeight - 100; // Trigger loading when nearing bottom
+
+    console.log('Scroll position:', scrollPosition, 'Threshold:', threshold); // Log for debugging
+
+    if (scrollPosition >= threshold) {
+        loadTableData(); // Load more data when threshold is reached
+    }
+}
+
+
+// Mapping of area numbers to names
+const areaNumberToName = {
+    "1": "Kanluran",
+    "2": "Gitna",
+    "3": "Silangan",
+    "4": "Marmaine",
+    "5": "Patik",
+    "6": "Purok 6"
+    // Add more mappings as needed
+};
+
 // Function to search and filter table rows by name
 function searchTable() {
-    const searchQuery = document.getElementById('searchInput').value.toLowerCase();
-    const rows = document.querySelectorAll('#dataTable tbody tr');
-    let recordsFound = false;
+    const searchQuery = document.getElementById('searchInput').value;
 
-    rows.forEach(row => {
-        const cells = row.getElementsByTagName('td');
-        
-        // Assuming 'name' is in the second cell (index 1)
-        const nameCell = cells[1];
-        
-        if (nameCell) {
-            const nameText = nameCell.textContent.toLowerCase();
-            if (nameText.includes(searchQuery)) {
-                row.style.display = '';
-                recordsFound = true;
-            } else {
-                row.style.display = 'none';
-            }
-        }
-    });
-
-    if (!recordsFound && searchQuery !== '') {
-        // Show SweetAlert2 if no records are found
-        Swal.fire({
-            title: 'No Records Found',
-            text: 'No records match your search criteria.',
-            icon: 'info',
-            confirmButtonText: 'OK'
-        }).then(() => {
-            // Reset the table after alert is dismissed
-            resetTable();
-        });
+    if (searchQuery.length === 0) {
+        // Reset the table if the search query is empty
+        resetTable();
+        return;
     }
+
+    // Make an AJAX request to search in the database
+    fetch(`./php/search.php?query=${encodeURIComponent(searchQuery)}`)
+        .then(response => response.json())
+        .then(data => {
+            const tableBody = document.querySelector('#dataTable tbody');
+            tableBody.innerHTML = ''; // Clear the existing rows
+
+            if (data.length === 0) {
+                // Show SweetAlert2 if no records are found
+                Swal.fire({
+                    title: 'No Records Found',
+                    text: 'No records match your search criteria.',
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Reset the table after alert is dismissed
+                    document.getElementById('searchInput').value = '';
+                    reloadTable();
+                });
+            } else {
+                // Sort data by ID in descending order
+                data.sort((a, b) => b.bill_id - a.bill_id);
+
+                // Populate the table with the search results
+                data.forEach(record => {
+                    const row = document.createElement('tr');
+
+                    // Convert area number to area name using the mapping
+                    const areaName = areaNumberToName[record.Area_Number] || record.Area_Number; // Default to original if not found
+
+                    row.innerHTML = `
+                        <td>${record.Name}</td>
+                        <td>${areaName}</td>  <!-- Use mapped area name here -->
+                        <td>${record.Present}</td>
+                        <td>${record.Previous}</td>
+                        <td>${record.Date_column}</td>
+                        <td>${record.Initial}</td>
+                        <td>${record.CU_M}</td>
+                        <td>${record.Amount}</td>
+                    `;
+
+                    // Add action buttons with correct data-id
+                    const actionCell = row.insertCell(); // Create a new cell for actions
+                    actionCell.innerHTML = `
+                        <button class="update-btn" data-id="${record.bill_id}" onclick="editRecord(${record.bill_id})">Update</button>
+                        <button class="delete-btn" data-id="${record.bill_id}" onclick="deleteRecord(${record.bill_id})">Delete</button><br>
+                        <button class="print-btn" data-id="${record.bill_id}" onclick="printInvoice(${record.bill_id})">Print Invoice</button>
+                    `;
+
+                    // Append the new row to the table body
+                    tableBody.appendChild(row);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
 }
 
 // Function to reset the table (show all rows)
 function resetTable() {
-    const rows = document.querySelectorAll('#dataTable tbody tr');
+    const rows = Array.from(document.querySelectorAll('#dataTable tbody tr'));
+
+    // Show all rows
     rows.forEach(row => {
         row.style.display = ''; // Show all rows
     });
-    document.getElementById('searchInput').value = ''; // Clear the search input
+
+    // Clear the search input
+    document.getElementById('searchInput').value = ''; 
+
+    // Sort rows by ID in descending order (assuming ID is in the first column)
+    rows.sort((a, b) => {
+        const idA = parseInt(a.cells[0].textContent); // Get ID from the first column
+        const idB = parseInt(b.cells[0].textContent);
+        return idB - idA; // Sort in descending order
+    });
+
+    // Append sorted rows back to the table body
+    const tbody = document.querySelector('#dataTable tbody');
+    tbody.innerHTML = ''; // Clear existing rows
+    rows.forEach(row => {
+        tbody.appendChild(row); // Append sorted rows
+    });
 }
 
 // Add event listener to search input
@@ -119,7 +226,6 @@ function reloadTable() {
                 cell.classList.add('bill-id'); // Add a class to identify Bill ID cells
             }
         });
-
 
         // Add action buttons with correct data-id
         const actionCell = newRow.insertCell();
