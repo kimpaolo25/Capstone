@@ -64,7 +64,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 <div id="addModal" class="add_acc">
     <div class="manage_acc-content">
         <span id="close" class="close-button" onclick="closeModal()"></span>
-        <div class="manage_acc-header">Update Account</div>
+        <div class="manage_acc-header">Add Account</div>
 
         <form id="addUserForm"> <!-- Ensure this ID matches -->
             <div class="manage_acc-field">
