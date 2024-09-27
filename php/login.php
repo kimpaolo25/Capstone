@@ -19,11 +19,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Set session variables for logged-in user
         $_SESSION['loggedin'] = true;
         $_SESSION['username'] = $user['username'];
+        $_SESSION['name'] = $user['name']; // Add this to store user's name
         $_SESSION['is_admin'] = true; // Admin flag
-        
+
+        // Return success response
         echo json_encode(['success' => true]);
     } else {
-        echo json_encode(['success' => false]);
+        // Return error response
+        echo json_encode(['success' => false, 'message' => 'Invalid credentials.']);
     }
 
     $stmt->close(); // Close the statement

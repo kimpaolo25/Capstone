@@ -1,0 +1,412 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #b0c4de;
+}
+
+
+header {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #4169e1;
+    color: #ffffff;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-left: 10px;
+}
+
+
+/* Styling for buttons and search input */
+.table-controls {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; /* Align items vertically centered */
+    margin: 20px 5%; 
+}
+
+.table-controls input, .table-controls button {
+    padding: 10px;
+    font-size: 16px;
+}
+.table-controls .search-container {
+    margin-left: auto;
+}
+.table-controls .add-button-container,
+.table-controls .set-button-container {
+margin-right: 10px; /* Adjust margin for better spacing */
+}
+.table-controls button {
+    cursor: pointer;
+}
+
+/* Specific styling for the "Add" button */
+#addButton {
+    background-color: white; 
+    color: black; 
+    font-weight: bold; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 2px solid #4169e1; 
+    width: 100px;
+    border-radius: 5px;  
+}
+#addButton:hover{
+    background-color: #86dbf3;
+}
+
+#setButton {
+    background-color: white; 
+    color: black; 
+    font-weight: bold; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 2px solid #4169e1; 
+    width: 150px;
+    border-radius: 5px;  
+}
+
+
+.dashboard-button {
+    position: relative;
+    color: #ffffff;
+    padding: 10px 5px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    margin-left: 10px;
+}
+
+.bills-button {
+    position: relative;
+    color: #ffffff;
+    padding: 10px 5px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    margin-left: 10px;
+}
+
+.accs-button {
+    position: relative;
+    color: #ffffff;
+    padding: 10px 5px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    margin-left: 5px;
+}
+
+.dashboard-button::before,
+.dashboard-button::after {
+    content: "|";
+    flex-grow: 1;
+    height: 5px;
+    background-color: #ffffff;
+    margin: 10px;
+}
+
+.bills-button::before,
+.bills-button::after {
+    content: "|";
+    flex-grow: 1;
+    height: 5px;
+    background-color: #ffffff;
+    margin: 10px;
+}
+
+.accs-button::before,
+.accs-button::after {
+    content: "|";
+    flex-grow: 1;
+    height: 5px;
+    background-color: #ffffff;
+    margin: 10px;
+}
+
+
+/* Active button style */
+.accs-button.active {
+    background-color: #1d3ceb; /* Active color */
+    color: white;
+    font-weight: bold;
+}
+
+.accs-button:hover {
+    background-color: #1d3ceb;
+    padding: 10px 5px;
+}
+
+.bills-button:hover {
+    background-color: #1d3ceb;
+    padding: 10px 5px;
+}
+
+.dashboard-button:hover {
+    background-color: #1d3ceb;
+    padding: 10px 5px;
+}
+
+.exit-button {
+    margin-left: auto; /* Pushes the exit button to the right */
+}
+
+.exit-button img {
+    width: 40px; /* Adjust icon size as needed */
+    height: auto;
+    cursor: pointer;
+}
+
+
+h1, h2 {
+    text-align: center;
+    color: #333;
+}
+
+
+/* Basic styling for the table */
+
+.table-container {
+    width: 90%;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid #1d3ceb;
+    max-height: 470px; /* Adjust as needed */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid #ddd;
+    margin-left: auto;
+    margin-right: auto;
+}
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+th {
+    background-color: #4169e1;
+}
+
+/* Add transition for smooth zoom effect */
+table tr {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Hover effect for table rows */
+table tr:hover {
+    background-color: #6f8de682; /* Slightly modified color */
+    cursor: pointer; /* Change cursor to a pointer to indicate it's clickable */
+    transform: scale(1.01); /* Slightly zoom in the row */
+}
+
+
+.modify-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.table-container .modify-btn {
+    background-color: #2196F3; /* Blue */
+}
+
+.table-container .modify-btn:hover {
+    background-color: #1976D2;
+}
+
+.delete-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.table-container .delete-btn {
+    background-color: #f32c21;
+}
+
+.table-container .delete-btn:hover {
+    background-color: #e53935;
+}
+
+.account-id{
+    display: none;
+}
+
+.manage_acc {
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1rem;
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+    backdrop-filter: blur(5px); /* Blurring effect on the background */
+    animation: fadeIn 0.5s; /* Fade-in animation */
+}
+
+.add_acc {
+    display: none; /* Hidden by default */
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 1rem;
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+    backdrop-filter: blur(5px); /* Blurring effect on the background */
+    animation: fadeIn 0.5s; /* Fade-in animation */
+}
+
+.manage_acc-content {
+    background-color: white;
+    align-items: center;
+    position: fixed center;
+    margin: 5% auto; 
+    padding: 50px;
+    border: 3px solid #4169e1;
+    width: 40%; 
+    max-width: 900px; 
+    border-radius: 8px; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    display: flex;
+    flex-direction: column;
+    transform: scale(1); /* Initial scale for zoom-in effect */
+    animation: zoomIn 0.3s; /* Zoom-in animation */
+}
+
+.manageAccInput-field {
+    margin-left: 10%;
+    width: 100%;
+    align-items: center;
+    padding: 0.6rem;
+    border: 2px solid #4169e1;
+    border-radius: 30px;
+    background: white;
+    font-size: clamp(1rem, 3vw, 1.3rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: lighter;
+}
+
+.manage_acc-field {
+    display: flex;
+    position: relative;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+.manageAccLabel {
+    position: absolute;
+    margin-left: 10%;
+    top: 50%;
+    left: 5%;
+    transform: translateY(-50%);
+    transition: 0.2s;
+    color: black;
+}   
+
+.manageAccInput-field:focus ~ .manageAccLabel,
+.manageAccInput-field:valid ~ .manageAccLabel {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    padding: 0 10px;
+    border-radius: 30px;
+    background-color: #4169e1;
+    color: white;
+}
+
+/* Centering the h2 element */
+.manage_acc-header {
+    display: flex;
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
+    transform: translateX(-50%);
+    border-radius: 0 0 20px 20px;
+    background-color: #4169e1;
+    color: white;
+    font-size: clamp(1rem, 3vw, 2rem);
+}
+
+.manage_acc-header::before{
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -30px;
+    width: 30px;
+    height: 30px;
+    border-top-right-radius: 50%;
+    background: transparent;
+    box-shadow: 15px 0 0 0 #4169e1;
+}
+
+.manage_acc-header::after{
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -30px;
+    width: 30px;
+    height: 30px;
+    border-top-left-radius: 50%;
+    background: transparent;
+    box-shadow: -15px 0 0 0 #4169e1;
+}
+
+.checkbox-container{
+    color: black;
+    margin-top: 1.5rem;
+    margin-left: 30px;
+}
+
+.manage_acc-button {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.manage_acc-button button {
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+    border: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 2px solid #4169e1;
+}
+
+.manage_acc-button button:hover {
+    border: 2px solid #4169e1;
+    opacity: 0.9;
+}

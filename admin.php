@@ -3,10 +3,12 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    // Redirect to login page if not logged in
-    header("Location: index.php");
+    header("Location: index.php"); // Redirect to login page if not logged in
     exit();
 }
+
+// Set user name and handle potential errors
+$userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback to 'Guest' if name not set
 ?>
 
 <!DOCTYPE html>
@@ -27,10 +29,13 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         <img src="./image/icon.png" alt="Logo" class="logo">
         <a href="#" class="dashboard-button" id="dashButton">Dashboard</a>
         <a href="billManager.php" class="bills-button" id="billsButton">Bill Manager</a>
+        <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
         <a href="logout.php" class="exit-button" id="exitButton">
             <img src="./image/out.png" alt="Exit">
         </a>
     </header>
+
+    <h2 class="userName">Good Day, <?php echo htmlspecialchars($userName); ?>!</h2> <!-- Personalized Greeting -->
 
     <h2 class="desc">Descriptive Analytics</h2>
 
@@ -52,36 +57,31 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             <h2>Overall Expected Income</h2>
             <div id="overallIncome">Loading...</div>
         </div>
-        </div>
-
+    </div>
 
     <div class="descDashboard2">
         <!-- New Cards -->
         <!-- Chart for Total Amount Income per Year -->
-<div class="card_chart">
-    <h2>Total Income per Year</h2>
-    <canvas id="incomeChart"></canvas>
-</div>
+        <div class="card_chart">
+            <h2>Total Income per Year</h2>
+            <canvas id="incomeChart"></canvas>
+        </div>
 
+        <div class="card_chart">
+            <h2>Total Income per Area</h2>
+            <canvas id="incomeAreaChart"></canvas>
+        </div>
 
-<div class="card_chart">
-    <h2>Total Income per Area</h2>
-    <canvas id="incomeAreaChart"></canvas>
-</div>
-
-
-<div class="card_chart">
-    <h2>Total Income per Month</h2>
-    <canvas id="incomeMonthChart"></canvas>
-</div>
-
+        <div class="card_chart">
+            <h2>Total Income per Month</h2>
+            <canvas id="incomeMonthChart"></canvas>
+        </div>
 
         <div class="card_chart">
             <h2>Cubic meter Consumption per Month</h2>
             <canvas id="cubicMeterChart"></canvas>
         </div>
     </div>
-
 
     <h2 class="desc">Predictive Analytics</h2>
 

@@ -1,12 +1,14 @@
-<input?php
+<?php
 session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    // Redirect to login page if not logged in
-    header("Location: index.php");
+    header("Location: index.php"); // Redirect to login page if not logged in
     exit();
 }
+
+// Set user name and handle potential errors
+$userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback to 'Guest' if name not set
 ?>
 
 <!DOCTYPE html>
@@ -26,6 +28,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     <img src="./image/icon.png" alt="Logo" class="logo">
     <a href="admin.php" class="dashboard-button" id="dashButton">Dashboard</a>
     <a href="billManager.php" class="bills-button" id="billsButton">Bill Manager</a>
+    <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
 
     <!-- Dropdown menu with a down arrow icon -->
     <div class="dropdown">
@@ -44,6 +47,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     </div>
 </header>
 
+<h2 class="userName">Good Day, <?php echo htmlspecialchars($userName); ?>!</h2> <!-- Personalized Greeting -->
 
     <div class="table-controls">
         <div class="add-button-container">
@@ -273,6 +277,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         </form>
     </div>
 </div>
+
+
+
 
 
 <div class="table-container">

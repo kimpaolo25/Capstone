@@ -1,0 +1,237 @@
+document.addEventListener("DOMContentLoaded", function() {
+    var addModal = document.getElementById("addModal");
+    var updateModal = document.getElementById("updateModal");
+    var addButton = document.getElementById("addButton");
+
+    // Function to open the Add Account modal
+    addButton.addEventListener("click", function() {
+        addModal.style.display = "flex"; // Show the add modal
+    });
+
+    // Close modal when clicking outside the modal content for both modals
+    window.onclick = function(event) {
+        if (event.target === addModal) {
+            closeModal(); // Close add modal on outside click
+        } else if (event.target === updateModal) {
+            closeModal(); // Close update modal on outside click
+        }
+    };
+
+    // Fetch user data and populate the table
+    fetchUserData(); // Call this directly when DOM is loaded
+});
+
+function closeModal() {
+    addModal.style.display = "none"; // Hide the add modal
+    updateModal.style.display = "none"; // Hide the update modal
+}
+
+// Fetch user data and populate the table
+function fetchUserData() {
+    fetch('./php/manage_acc.php')
+        .then(response => response.json())
+        .then(data => {
+            let tableBody = document.querySelector("#dataTable tbody");
+            tableBody.innerHTML = ''; // Clear any existing rows
+
+            data.forEach(user => {
+                let row = document.createElement('tr');
+
+                // Create cells for id, name, username, and action
+                let idCell = document.createElement('td');
+                idCell.textContent = user.id;
+                idCell.style.display = "none"; // Hide the ID column
+
+                let nameCell = document.createElement('td');
+                nameCell.textContent = user.name;
+
+                let usernameCell = document.createElement('td');
+                usernameCell.textContent = user.username;
+
+                let actionCell = document.createElement('td');
+
+                // Modify Button
+                let modifyButton = document.createElement('button');
+                modifyButton.textContent = "Modify";
+                modifyButton.classList.add('modify-btn');
+                modifyButton.setAttribute('data-id', user.id);
+
+                // Add event listener to modify button to open modal
+                modifyButton.addEventListener('click', function() {
+                    openUpdateModal(user.id); // Call function to open modal with user ID
+                });
+
+                // Delete Button
+                let deleteButton = document.createElement('button');
+                deleteButton.textContent = "Delete";
+                deleteButton.classList.add('delete-btn');
+                deleteButton.setAttribute('data-id', user.id);
+
+                // Add event listener to delete button
+                deleteButton.addEventListener('click', function() {
+                    deleteUser(user.id); // Call function to delete user
+                });
+
+                actionCell.appendChild(modifyButton);
+                actionCell.appendChild(deleteButton); // Append delete button to action cell
+
+                // Append cells to row
+                row.appendChild(idCell);
+                row.appendChild(nameCell);
+                row.appendChild(usernameCell);
+                row.appendChild(actionCell);
+
+                // Append row to table body
+                tableBody.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
+
+// Function to open update modal
+function openUpdateModal(id) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "./php/fetchAllUser.php", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText);
+            if (response) {
+                // Populate modal fields with data
+                document.getElementById("modalName").value = response.name;
+                document.getElementById("modalUname").value = response.username;
+
+                // Clear password fields
+                document.getElementById("modalCurrentpass").value = "";
+                document.getElementById("modalNewpass").value = "";
+                document.getElementById("modalConfirmpass").value = "";
+
+                // Show the modal
+                updateModal.style.display = "flex"; // Show update modal
+            }
+        } else {
+            console.error("Error fetching data:", xhr.status, xhr.statusText);
+        }
+    };
+
+    xhr.send("id=" + id);
+}
+
+// Function to delete a user
+function deleteUser(userId) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch('./php/deleteUser.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    id: userId // Send the user ID to delete
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire('Deleted!', 'User has been deleted.', 'success');
+                    fetchUserData(); // Refresh user data
+                } else {
+                    Swal.fire('Error!', data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire('Error!', 'An error occurred while deleting the user: ' + error.message, 'error');
+            });
+        }
+    });
+}
+
+
+// Listen for form submission for adding a user
+const addUserForm = document.getElementById('addUserForm');
+
+if (addUserForm) { // Ensure the form exists before adding event listener
+    addUserForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        // Gather form data
+        const formData = new FormData(addUserForm);
+
+        // Send AJAX request to addUser.php
+        fetch('./php/addUser.php', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire('Success!', data.message, 'success');
+                fetchUserData(); // Refresh user data
+                closeModal(); // Close the modal
+                addUserForm.reset(); // Reset form fields
+            } else {
+                Swal.fire('Error!', data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire('Error!', 'An error occurred while adding the user: ' + error.message, 'error');
+        });
+    });
+}
+
+// Listen for form submission for updating a user
+const updateForm = document.getElementById('updateUserForm'); // Ensure this ID matches
+
+if (updateForm) { // Ensure the form exists before adding event listener
+    updateForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // SweetAlert confirmation dialog
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to update this account?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, update it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Gather form data
+                const formData = new FormData(updateForm);
+                formData.append('action', 'update'); // Ensure the action is included
+
+                // Send AJAX request to updateUser.php
+                fetch('./php/updateUser.php', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire('Updated!', data.message, 'success');
+                        fetchUserData(); // Refresh user data
+                        closeModal(); // Close the modal
+                    } else {
+                        Swal.fire('Error!', data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire('Error!', 'An error occurred while updating the user: ' + error.message, 'error');
+                });
+            }
+        });
+    });
+}

@@ -18,6 +18,15 @@
         margin-left: 10px;
     }
 
+    .userName{
+        text-align: left;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    font-weight: bolder;
+    font-size:large;
+    }
+
     .dashboard-button {
         position: relative;
         color: #ffffff;
@@ -29,6 +38,16 @@
     }
 
     .bills-button {
+        position: relative;
+        color: #ffffff;
+        padding: 10px 5px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 16px;
+        margin-left: 10px;
+    }
+
+    .accs-button {
         position: relative;
         color: #ffffff;
         padding: 10px 5px;
@@ -56,6 +75,15 @@
         margin: 10px;
     }
 
+    .accs-button::before,
+    .accs-button::after {
+        content: "|";
+        flex-grow: 1;
+        height: 5px;
+        background-color: #ffffff;
+        margin: 10px;
+    }
+
     .dashboard-button:hover {
         background-color: #1d3ceb;
         padding: 10px 5px;
@@ -66,7 +94,18 @@
         padding: 10px 5px;
     }
 
+    .accs-button:hover {
+        background-color: #1d3ceb;
+        padding: 10px 5px;
+    }
+
     .bills-button.active {
+        background-color: #1d3ceb; /* Active color */
+        color: white;
+        font-weight: bold;
+    }
+
+    .accs-button.active {
         background-color: #1d3ceb; /* Active color */
         color: white;
         font-weight: bold;
