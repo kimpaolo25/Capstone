@@ -26,9 +26,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         <a href="admin.php" class="dashboard-button" id="dashButton">Dashboard</a>
         <a href="billManager.php" class="bills-button" id="billsButton">Bill Manager</a>
         <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
-        <a href="index.php" class="exit-button" id="exitButton">
-            <img src="./image/out.png" alt="Exit">
-        </a>
     </header>
 
     <div class="container">
