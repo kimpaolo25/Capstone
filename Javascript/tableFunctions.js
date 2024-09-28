@@ -12,7 +12,6 @@ function initializeTableData() {
     container.addEventListener('scroll', handleScroll); // Add scroll event listener to the table container
 }
 
-// Function to load table data
 function loadTableData() {
     if (isLoading || allDataLoaded) return; // Prevent loading if already in progress or if all data is loaded
     isLoading = true; // Set loading flag
@@ -42,10 +41,20 @@ function loadTableData() {
 
             console.log('Data received:', data); // Log the data received for debugging
 
-            // If no data is returned, set flag and return
+            // If no data is returned, set flag and alert user
             if (data.length === 0) {
                 allDataLoaded = true; // Mark all data as loaded
                 console.log('All data has been loaded.'); // Log for debugging
+
+                // Alert user that all data has been loaded
+                Swal.fire({
+                    title: 'End of Data',
+                    text: 'You have reached the end of the data.',
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    isLoading = false; // Reset loading flag after alert is closed
+                });
                 return; // Exit function if no more data
             }
 
@@ -71,8 +80,9 @@ function loadTableData() {
                 text: 'Failed to fetch data. Please try again later.',
                 icon: 'error',
                 confirmButtonText: 'OK'
+            }).then(() => {
+                isLoading = false; // Reset loading flag on error
             });
-            isLoading = false; // Reset loading flag on error
         });
 }
 
@@ -80,15 +90,16 @@ function loadTableData() {
 function handleScroll() {
     const container = document.querySelector('.table-container');
     const scrollPosition = container.scrollTop + container.clientHeight;
-    const threshold = container.scrollHeight - 100; // Trigger loading when nearing bottom
+    const threshold = container.scrollHeight - 500; // Trigger loading when nearing bottom
 
     console.log('Scroll position:', scrollPosition, 'Threshold:', threshold); // Log for debugging
 
-    if (scrollPosition >= threshold) {
+    // Check if we should load more data and if there's no search query
+    const searchQuery = document.getElementById('searchInput').value;
+    if (scrollPosition >= threshold && !allDataLoaded && searchQuery.length === 0) {
         loadTableData(); // Load more data when threshold is reached
     }
 }
-
 
 // Mapping of area numbers to names
 const areaNumberToName = {
@@ -106,10 +117,14 @@ function searchTable() {
     const searchQuery = document.getElementById('searchInput').value;
 
     if (searchQuery.length === 0) {
-        // Reset the table if the search query is empty
-        resetTable();
+        // When search input is empty, reset the table and fetch original data
+        resetTable(); // This should fetch the original data
         return;
     }
+
+    // Reset pagination when searching
+    offset = 0;
+    allDataLoaded = false;
 
     // Make an AJAX request to search in the database
     fetch(`./php/search.php?query=${encodeURIComponent(searchQuery)}`)
@@ -127,8 +142,7 @@ function searchTable() {
                     confirmButtonText: 'OK'
                 }).then(() => {
                     // Reset the table after alert is dismissed
-                    document.getElementById('searchInput').value = '';
-                    reloadTable();
+                    resetTable();
                 });
             } else {
                 // Sort data by ID in descending order
@@ -170,6 +184,7 @@ function searchTable() {
         });
 }
 
+
 // Function to reset the table (show all rows)
 function resetTable() {
     const rows = Array.from(document.querySelectorAll('#dataTable tbody tr'));
@@ -197,13 +212,21 @@ function resetTable() {
     });
 }
 
-// Add event listener to search input
-document.getElementById('searchInput').addEventListener('input', searchTable);
+// Add event listener to search input for Enter key press
+document.getElementById('searchInput').addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        searchTable(); // Call search function when Enter is pressed
+        event.preventDefault(); // Prevent default action if necessary
+    }
+});
+
 
 // Function to reload table data (including search functionality)
 function reloadTable() {
     const tableBody = document.querySelector('#dataTable tbody');
     tableBody.innerHTML = ''; // Clear existing rows
+
+    document.getElementById('searchInput').value = '';
 
     // Sort tableData in descending order by bill_id
     tableData.sort((a, b) => {

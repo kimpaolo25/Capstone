@@ -58,6 +58,15 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
             <button id="setButton">Modify Invoice</button>
         </div>
 
+        <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search...">
+    <button id="reloadButton" title="Reload Table" onclick="reloadTable()">
+        <i class="fas fa-sync-alt"></i> <!-- Font Awesome reload icon -->
+    </button>
+</div>
+
+    </div>
+
         <!-- Invoice Modal Structure -->
     <div id="invDateModal" class="invModal">
         <div class="invModal-content">
@@ -93,13 +102,6 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
             <button id="updateButton">Update</button>
             <button id="resetModalButton">Reset Date</button>
             </div>
-        </div>
-    </div>
-
-
-
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search...">
         </div>
     </div>
 
