@@ -1,35 +1,48 @@
 <?php
 session_start();
-session_regenerate_id(true); // Regenerate session ID after login
-include 'dbcon.php'; // Include the MySQLi database connection
+require_once 'dbcon.php'; // Use your dbcon.php file to connect to the database
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Fetch data from the login form
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Prepare and execute the query
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");
-    $stmt->bind_param("s", $username);
+    // Prepare the SQL query to get the user details
+    $sql = "SELECT id, name, username, password_hash, user_level FROM users WHERE username = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('s', $username); // Bind the username as a string
     $stmt->execute();
     $result = $stmt->get_result();
-    $user = $result->fetch_assoc();
 
-    // Check if user exists and password is valid
-    if ($user && password_verify($password, $user['password_hash'])) {
-        // Set session variables for logged-in user
-        $_SESSION['loggedin'] = true;
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['name'] = $user['name']; // Add this to store user's name
-        $_SESSION['is_admin'] = true; // Admin flag
+    if ($result->num_rows === 1) {
+        // Fetch user data
+        $user = $result->fetch_assoc();
 
-        // Return success response
-        echo json_encode(['success' => true]);
+        // Verify the entered password with the hashed password in the database
+        if (password_verify($password, $user['password_hash'])) {
+            // Start the session and set session variables
+            $_SESSION['loggedin'] = true;
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['name'] = $user['name']; // Store the name for the personalized greeting
+            $_SESSION['user_level'] = $user['user_level'];
+
+            // Return success response to JavaScript
+            echo json_encode(['success' => true]);
+            exit;
+        } else {
+            // If password is incorrect
+            echo json_encode(['success' => false, 'message' => 'Invalid login credentials']);
+            exit;
+        }
     } else {
-        // Return error response
-        echo json_encode(['success' => false, 'message' => 'Invalid credentials.']);
+        // If the user is not found in the database
+        echo json_encode(['success' => false, 'message' => 'User not found']);
+        exit;
     }
-
-    $stmt->close(); // Close the statement
-    $conn->close(); // Close the connection
+} else {
+    // Redirect to the login page if the request method is not POST
+    header('Location: ../index.php');
+    exit;
 }
 ?>

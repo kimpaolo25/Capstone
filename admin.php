@@ -3,12 +3,12 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header("Location: index.php"); // Redirect to login page if not logged in
-    exit();
+    header('Location: ../index.php'); // Redirect to login page if not logged in
+    exit;
 }
 
-// Set user name and handle potential errors
-$userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback to 'Guest' if name not set
+// Fetch the user's name from the session for the personalized greeting
+$userName = $_SESSION['name'];
 ?>
 
 <!DOCTYPE html>
@@ -30,12 +30,13 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
         <a href="#" class="dashboard-button" id="dashButton">Dashboard</a>
         <a href="billManager.php" class="bills-button" id="billsButton">Bill Manager</a>
         <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
-        <a href="logout.php" class="exit-button" id="exitButton">
+        <a href="javascript:void(0)" class="exit-button" id="exitButton" onclick="confirmLogout()">
             <img src="./image/out.png" alt="Exit">
         </a>
     </header>
 
-    <h2 class="userName">Good Day, <?php echo htmlspecialchars($userName); ?>!</h2> <!-- Personalized Greeting -->
+    <!-- Personalized Greeting -->
+    <h2 class="userName">Good Day, <?php echo htmlspecialchars($userName); ?>!</h2>
 
     <h2 class="desc">Descriptive Analytics</h2>
 
@@ -61,7 +62,6 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
 
     <div class="descDashboard2">
         <!-- New Cards -->
-        <!-- Chart for Total Amount Income per Year -->
         <div class="card_chart">
             <h2>Total Income per Year</h2>
             <canvas id="incomeChart"></canvas>

@@ -16,18 +16,18 @@ document.getElementById('exitButton').addEventListener('click', function (event)
             // Show success message
             Swal.fire({
                 icon: 'success',
-                title: 'Logout successfully!',
+                title: 'Logged out successfully!',
                 showConfirmButton: false,
                 timer: 1500
             }).then(() => {
-                // Redirect to the logout URL after the success message disappears
-                window.location.href = 'index.php';
+                // Redirect to the logout.php page after the success message disappears
+                window.location.href = '../php/logout.php';
             });
         }
     });
 });
 
-//active for dashboard
+// Active state for dashboard button
 document.addEventListener('DOMContentLoaded', () => {
     const currentPath = window.location.pathname;
     const dashButton = document.getElementById('dashButton');
