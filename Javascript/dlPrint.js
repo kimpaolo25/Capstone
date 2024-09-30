@@ -1,133 +1,120 @@
-// Function to print the table with title, area, and time
-function printTable() {
-    // Get the selected area from the filter
-    const selectedArea = document.getElementById('areaFilter').value || 'All Areas';
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to print the data directly from the server
+    function printData() {
+        const year = document.getElementById('yearFilter').value || ''; 
+        const selectedArea = document.getElementById('areaFilter').value || ''; 
+        const month = document.getElementById('monthFilter').value || ''; 
 
-    // Get the current time
-    const currentTime = new Date().toLocaleString();
+        console.log(`Printing data - Year: ${year}, Area: ${selectedArea}, Month: ${month}`); // Debugging log
 
-    // Create a new window for printing
-    const printWindow = window.open('', '', 'height=600,width=800');
-    printWindow.document.write('<html><head><title>Bill Report</title>');
-    printWindow.document.write('<style>');
-    printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
-    printWindow.document.write('th, td { border: 1px solid black; padding: 8px; text-align: left; }');
-    printWindow.document.write('th { background-color: #f2f2f2; }');
-    printWindow.document.write('h1 { font-family: "Times New Roman", Times, serif; font-weight: bold; }');
-    printWindow.document.write('p { font-family: "Times New Roman", Times, serif; }');
-    printWindow.document.write('</style>');
-    printWindow.document.write('</head><body>');
-    
-    // Add title
-    printWindow.document.write(`<h1>Pansol Rural Waterworks Association Incorporation - ${selectedArea}</h1>`);
+        // Prepare parameters for server request
+        const params = new URLSearchParams({ year, area: selectedArea, months: month });
+        
+        fetch(`../Capstone/php/filter_fetch.php?${params.toString()}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const currentTime = new Date().toLocaleString();
+                const printWindow = window.open('', '', 'height=600,width=800');
+                printWindow.document.write('<html><head><title>Bill Report</title>');
+                printWindow.document.write('<style>');
+                printWindow.document.write('table { width: 100%; border-collapse: collapse; }');
+                printWindow.document.write('th, td { border: 1px solid black; padding: 8px; text-align: left; }');
+                printWindow.document.write('th { background-color: #f2f2f2; }');
+                printWindow.document.write('h1 { font-family: "Times New Roman", Times, serif; font-weight: bold; }');
+                printWindow.document.write('p { font-family: "Times New Roman", Times, serif; }');
+                printWindow.document.write('</style>');
+                printWindow.document.write('</head><body>');
+                printWindow.document.write('<h1>Pansol Rural Waterworks Association Incorporation</h1>');
+                printWindow.document.write('<p><strong>Bill Reports</strong></p>');
+                
+                // Display "All Areas" if no specific area is selected
+                const areaDisplay = selectedArea ? selectedArea : 'All Areas';
+                printWindow.document.write('<p><strong>Area:</strong> ' + areaDisplay + '</p>');
+                printWindow.document.write('<p><strong>Time:</strong> ' + currentTime + '</p>');
+                printWindow.document.write('<table><thead><tr>');
 
-    printWindow.document.write('<p><strong>Bill Reports</strong></p>');
+                // Add table headers
+                for (const key in data[0]) {
+                    printWindow.document.write(`<th>${key}</th>`);
+                }
+                printWindow.document.write('</tr></thead><tbody>');
 
-    // Add area information
-    printWindow.document.write('<p><strong>Area:</strong> ' + selectedArea + '</p>');
+                // Add rows of data
+                data.forEach(row => {
+                    printWindow.document.write('<tr>');
+                    for (const key in row) {
+                        printWindow.document.write(`<td>${row[key]}</td>`);
+                    }
+                    printWindow.document.write('</tr>');
+                });
 
-    // Add current time
-    printWindow.document.write('<p><strong>Time:</strong> ' + currentTime + '</p>');
+                printWindow.document.write('</tbody></table>');
+                printWindow.document.write('</body></html>');
+                printWindow.document.close();
+                printWindow.focus();
+                printWindow.print();
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    }
 
-    // Create a copy of the table, excluding the last column
-    const table = document.getElementById('dataTable').cloneNode(true);
-    const headerCells = table.querySelectorAll('th');
-    const rows = table.querySelectorAll('tbody tr');
+    // Function to download the data as CSV from the server
+    function downloadDataAsCSV() {
+        const year = document.getElementById('yearFilter').value || ''; 
+        const selectedArea = document.getElementById('areaFilter').value || ''; 
+        const month = document.getElementById('monthFilter').value || ''; 
 
-    // Remove the last column from headers
-    headerCells[headerCells.length - 1].style.display = 'none';
+        console.log(`Downloading CSV - Year: ${year}, Area: ${selectedArea}, Month: ${month}`); // Debugging log
 
-    rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        cells[cells.length - 1].style.display = 'none'; // Hide the last cell in each row
+        // Prepare parameters for server request
+        const params = new URLSearchParams({ year, area: selectedArea, months: month });
+        const csvUrl = `../Capstone/php/filter_fetch.php?${params.toString()}&format=csv`;
+
+        // Create a downloadable link and trigger download
+        const link = document.createElement('a');
+        link.setAttribute('href', csvUrl);
+        link.setAttribute('download', `prwai_data_${selectedArea || 'all_areas'}.csv`); // Include 'all_areas' in the filename if no specific area is selected
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Function to download the data as Excel from the server
+    function downloadDataAsExcel() {
+        const year = document.getElementById('yearFilter').value || ''; 
+        const selectedArea = document.getElementById('areaFilter').value || ''; 
+        const month = document.getElementById('monthFilter').value || ''; 
+
+        console.log(`Downloading Excel - Year: ${year}, Area: ${selectedArea}, Month: ${month}`); // Debugging log
+
+        // Prepare parameters for server request
+        const params = new URLSearchParams({ year, area: selectedArea, months: month });
+        const excelUrl = `../Capstone/php/filter_fetch.php?${params.toString()}&format=excel`;
+
+        // Create a downloadable link and trigger download
+        const link = document.createElement('a');
+        link.setAttribute('href', excelUrl);
+        link.setAttribute('download', `prwai_data_${selectedArea || 'all_areas'}.xlsx`); // Include 'all_areas' in the filename if no specific area is selected
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Event listeners for print and download options
+    document.getElementById('printOption').addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default anchor behavior
+        printData(); // Call printData function
     });
-
-    // Add the modified table to the document
-    printWindow.document.write(table.outerHTML);
-
-    printWindow.document.write('</body></html>');
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-}
-
-
-
-// Function to download the table data as a CSV file
-function downloadTableAsCSV() {
-    // Get the selected area from the filter
-    const selectedArea = document.getElementById('areaFilter').value || 'All_Areas';
-
-    let csvContent = "data:text/csv;charset=utf-8,";
-    const table = document.getElementById('dataTable');
-    const rows = table.querySelectorAll('tbody tr');
-
-    rows.forEach((row, index) => {
-        // Only process visible rows
-        if (row.style.display !== 'none') {
-            const cells = row.querySelectorAll('th, td');
-            const cellValues = Array.from(cells).map(cell => `"${cell.textContent.replace(/"/g, '""')}"`).join(',');
-            if (index === 0) {
-                csvContent += `${cellValues}\r\n`; // Add headers (header row needs to be included in this context)
-            } else {
-                csvContent += `${cellValues}\r\n`; // Add row values
-            }
-        }
+    document.getElementById('downloadCSVOption').addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default anchor behavior
+        downloadDataAsCSV(); // Call downloadDataAsCSV function
     });
-
-    // Exclude the last column (Action column)
-    csvContent = csvContent.split('\r\n').map(line => {
-        const columns = line.split(',');
-        return columns.slice(0, -1).join(','); // Remove the last column
-    }).join('\r\n');
-
-    // Create a downloadable link and trigger download
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `prwai_data_${selectedArea}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-
-
-
-// Function to download the table data as an Excel file
-function downloadTableAsExcel() {
-    // Get the selected area from the filter
-    const selectedArea = document.getElementById('areaFilter').value || 'All_Areas';
-
-    const wb = XLSX.utils.book_new();
-    const ws_data = [];
-
-    // Get table headers
-    const headers = Array.from(document.querySelectorAll('#dataTable thead th')).map(th => th.textContent);
-    ws_data.push(headers);
-
-    // Get table rows and their data
-    document.querySelectorAll('#dataTable tbody tr').forEach(row => {
-        // Only process visible rows
-        if (row.style.display !== 'none') {
-            const rowData = Array.from(row.querySelectorAll('td')).map(td => td.textContent);
-            // Exclude the last column (Action column)
-            rowData.pop();
-            ws_data.push(rowData);
-        }
+    document.getElementById('downloadExcelOption').addEventListener('click', (event) => {
+        event.preventDefault(); // Prevent default anchor behavior
+        downloadDataAsExcel(); // Call downloadDataAsExcel function
     });
-
-    // Create a worksheet from the data
-    const ws = XLSX.utils.aoa_to_sheet(ws_data);
-
-    // Add worksheet to the workbook
-    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
-    // Generate a binary Excel file and initiate download
-    XLSX.writeFile(wb, `prwai_data_${selectedArea}.xlsx`);
-}
-
-
-// Event listeners for print and download options
-document.getElementById('printOption').addEventListener('click', printTable);
-document.getElementById('downloadCSVOption').addEventListener('click', downloadTableAsCSV);
-document.getElementById('downloadExcelOption').addEventListener('click', downloadTableAsExcel);
+});
