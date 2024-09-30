@@ -4,6 +4,7 @@ let limit = 100; // Set the number of records to load per request
 let offset = 0; // Initialize offset for pagination
 let isLoading = false; // Flag to prevent multiple fetch calls
 let allDataLoaded = false; // Flag to indicate if all data has been loaded
+let hasFilteredData = false; // Flag to indicate if data has been filtered
 
 // Function to initialize table data
 function initializeTableData() {
@@ -94,9 +95,9 @@ function handleScroll() {
 
     console.log('Scroll position:', scrollPosition, 'Threshold:', threshold); // Log for debugging
 
-    // Check if we should load more data and if there's no search query
+    // Check if we should load more data
     const searchQuery = document.getElementById('searchInput').value;
-    if (scrollPosition >= threshold && !allDataLoaded && searchQuery.length === 0) {
+    if (scrollPosition >= threshold && !allDataLoaded && !hasFilteredData && searchQuery.length === 0) {
         loadTableData(); // Load more data when threshold is reached
     }
 }

@@ -1,4 +1,9 @@
 function filterTable() {
+    // Reset offset and data loaded flags
+    offset = 0;
+    allDataLoaded = false; 
+    hasFilteredData = true; // Set flag indicating data is filtered
+
     Swal.fire({
         title: 'Filtering Data',
         text: 'Please wait while we apply the filters.',
@@ -15,7 +20,7 @@ function filterTable() {
 
     console.log(`Fetching data with filters - Year: ${year}, Area: ${area}, Month: ${month}`);
 
-    fetch(`../Capstone/php/filter_fetch.php?year=${year}&area=${area}&months=${month}`)
+    fetch(`../Capstone/php/filter_fetch.php?year=${year}&area=${area}&months=${month}&limit=${limit}&offset=${offset}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -34,6 +39,11 @@ function filterTable() {
                     icon: 'info',
                     confirmButtonText: 'OK'
                 });
+            }
+
+            // If no more data is returned, set flag
+            if (data.length < limit) {
+                allDataLoaded = true; // Mark all data as loaded
             }
         })
         .catch(error => {
@@ -85,13 +95,14 @@ function updateTable(data) {
     });
 }
 
-
 // Function to reset all filters
 function resetFilters() {
     document.getElementById('yearFilter').value = '';
     document.getElementById('areaFilter').value = '';
     document.getElementById('monthFilter').value = '';
-    loadTableData(); // Reapply the filter to show all rows
+    reloadTable(); // Reapply the filter to show all rows
+    // Scroll to the top of the table
+    document.getElementById('tableBody').scrollIntoView({ behavior: 'smooth' });
 }
 
 // Add event listeners to filter dropdowns
