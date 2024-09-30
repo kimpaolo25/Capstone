@@ -1,4 +1,26 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Function to fetch and process data
+    function fetchData(year, selectedArea, month) {
+        const params = new URLSearchParams({ year, area: selectedArea, months: month });
+        
+        return fetch(`../Capstone/php/filter_fetch.php?${params.toString()}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Ensure the data has a bill_id field and sort in descending order based on bill_id
+                if (data.length > 0 && data[0].hasOwnProperty('bill_id')) {
+                    console.log("Fetched data before sorting:", data); // Debug log for fetched data
+                    return data.sort((a, b) => b.bill_id - a.bill_id); // Apply specified sorting
+                } else {
+                    throw new Error('No valid data received or bill_id is missing.');
+                }
+            });
+    }
+
     // Function to print the data directly from the server
     function printData() {
         const year = document.getElementById('yearFilter').value || ''; 
@@ -7,16 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         console.log(`Printing data - Year: ${year}, Area: ${selectedArea}, Month: ${month}`); // Debugging log
 
-        // Prepare parameters for server request
-        const params = new URLSearchParams({ year, area: selectedArea, months: month });
-        
-        fetch(`../Capstone/php/filter_fetch.php?${params.toString()}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
+        fetchData(year, selectedArea, month)
             .then(data => {
                 const currentTime = new Date().toLocaleString();
                 const printWindow = window.open('', '', 'height=600,width=800');
@@ -59,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 printWindow.focus();
                 printWindow.print();
             })
-            .catch(error => console.error('Error fetching data:', error));
+            .catch(error => console.error('Error fetching data for print:', error));
     }
 
     // Function to download the data as CSV from the server
@@ -70,17 +83,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         console.log(`Downloading CSV - Year: ${year}, Area: ${selectedArea}, Month: ${month}`); // Debugging log
 
-        // Prepare parameters for server request
-        const params = new URLSearchParams({ year, area: selectedArea, months: month });
-        const csvUrl = `../Capstone/php/filter_fetch.php?${params.toString()}&format=csv`;
+        fetchData(year, selectedArea, month)
+            .then(data => {
+                // Convert data to CSV format
+                const csvRows = [];
+                const headers = Object.keys(data[0]);
+                csvRows.push(headers.join(',')); // Add header row
 
-        // Create a downloadable link and trigger download
-        const link = document.createElement('a');
-        link.setAttribute('href', csvUrl);
-        link.setAttribute('download', `prwai_data_${selectedArea || 'all_areas'}.csv`); // Include 'all_areas' in the filename if no specific area is selected
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+                data.forEach(row => {
+                    csvRows.push(headers.map(field => JSON.stringify(row[field], (key, value) => value === null ? '' : value)).join(','));
+                });
+
+                const csvString = csvRows.join('\n');
+                const blob = new Blob([csvString], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', `prwai_data_${selectedArea || 'all_areas'}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => console.error('Error fetching data for CSV download:', error));
     }
 
     // Function to download the data as Excel from the server
@@ -91,17 +115,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
         console.log(`Downloading Excel - Year: ${year}, Area: ${selectedArea}, Month: ${month}`); // Debugging log
 
-        // Prepare parameters for server request
-        const params = new URLSearchParams({ year, area: selectedArea, months: month });
-        const excelUrl = `../Capstone/php/filter_fetch.php?${params.toString()}&format=excel`;
+        fetchData(year, selectedArea, month)
+            .then(data => {
+                // Create an Excel file (XLSX format) using a library like SheetJS (xlsx.js)
+                const worksheet = XLSX.utils.json_to_sheet(data);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
-        // Create a downloadable link and trigger download
-        const link = document.createElement('a');
-        link.setAttribute('href', excelUrl);
-        link.setAttribute('download', `prwai_data_${selectedArea || 'all_areas'}.xlsx`); // Include 'all_areas' in the filename if no specific area is selected
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+                // Export the Excel file
+                XLSX.writeFile(workbook, `prwai_data_${selectedArea || 'all_areas'}.xlsx`);
+            })
+            .catch(error => console.error('Error fetching data for Excel download:', error));
     }
 
     // Event listeners for print and download options
