@@ -1,6 +1,6 @@
 // Declare necessary variables
 let tableData = []; 
-let limit = 100; // Set the number of records to load per request
+let limit = 500; // Set the number of records to load per request
 let offset = 0; // Initialize offset for pagination
 let isLoading = false; // Flag to prevent multiple fetch calls
 let allDataLoaded = false; // Flag to indicate if all data has been loaded
@@ -143,7 +143,8 @@ function searchTable() {
                     confirmButtonText: 'OK'
                 }).then(() => {
                     // Reset the table after alert is dismissed
-                    resetTable();
+                    reloadTable();
+                    document.getElementById('tableBody').scrollIntoView({ behavior: 'smooth' });
                 });
             } else {
                 // Sort data by ID in descending order

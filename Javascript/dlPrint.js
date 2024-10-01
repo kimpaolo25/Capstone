@@ -47,8 +47,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Display "All Areas" if no specific area is selected
                 const areaDisplay = selectedArea ? selectedArea : 'All Areas';
+                const yearDisplay = year ? year : 'All Year';
+                // Adjusting the month display
+                // Assuming month is a number from 1 to 12
+                const monthNames = [
+                    '',    // Placeholder for index 0 (not used)
+                    'January', // January
+                    'February', // February
+                    'March', // March
+                    'April', // April
+                    'May', // May
+                    'May', // June
+                    'July', // July
+                    'August', // August
+                    'September', // September
+                    'October', // October
+                    'November', // November
+                    'December'  // December
+                ];
+
+                // Use the month number to get the month abbreviation
+                const formattedMonthDisplay = month >= 1 && month <= 12 ? monthNames[month] : 'All Months';
+
+                // Print the output
                 printWindow.document.write('<p><strong>Area:</strong> ' + areaDisplay + '</p>');
-                printWindow.document.write('<p><strong>Time:</strong> ' + currentTime + '</p>');
+                printWindow.document.write('<p><strong>Month:</strong> ' + formattedMonthDisplay + '</p>');
+                printWindow.document.write('<p><strong>Year:</strong> ' + yearDisplay + '</p>');
+
+                printWindow.document.write('<p><strong>Printed on:</strong> ' + currentTime + '</p>');
                 printWindow.document.write('<table><thead><tr>');
 
                 // Add table headers

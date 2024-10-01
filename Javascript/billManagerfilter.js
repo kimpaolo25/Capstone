@@ -1,5 +1,5 @@
 function filterTable() {
-    // Reset offset and data loaded flags
+    // Reset offset and data loaded flags   
     offset = 0;
     allDataLoaded = false; 
     hasFilteredData = true; // Set flag indicating data is filtered
@@ -20,7 +20,7 @@ function filterTable() {
 
     console.log(`Fetching data with filters - Year: ${year}, Area: ${area}, Month: ${month}`);
 
-    fetch(`../Capstone/php/filter_fetch.php?year=${year}&area=${area}&months=${month}&limit=${limit}&offset=${offset}`)
+    fetch(`../Capstone/php/filterData_limit.php?year=${year}&area=${area}&months=${month}&limit=${limit}&offset=${offset}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
