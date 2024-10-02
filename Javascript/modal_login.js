@@ -43,13 +43,14 @@ document.addEventListener("DOMContentLoaded", function() {
                     timer: 1500,
                     showConfirmButton: false,
                 }).then(() => {
-                    window.location.href = 'admin.php'; // Redirect to admin.php on success
+                    // Redirect to the appropriate page based on user level
+                    window.location.href = data.redirect; 
                 });
             } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Login Failed',
-                    text: 'Invalid login credentials. Please try again.',
+                    text: data.message,
                 });
             }
         })
@@ -62,4 +63,4 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     });
-})    
+});

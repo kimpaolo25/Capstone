@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-// Check if the user is logged in
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    header('Location: ../index.php'); // Redirect to login page if not logged in
+if (!isset($_SESSION['loggedin']) || ($_SESSION['user_level'] != 1 && $_SESSION['user_level'] != 2)) {
+    // Redirect non-admin and non-staff users back to the login page or an error page
+    header('Location: index.php');
     exit;
 }
 
@@ -27,9 +27,14 @@ $userName = $_SESSION['name'];
 <body>
     <header>
         <img src="./image/icon.png" alt="Logo" class="logo">
-        <a href="#" class="dashboard-button" id="dashButton">Dashboard</a>
+        
+        <!-- Navigation Links -->
+        <a href="admin.php" class="dashboard-button" id="dashButton">Dashboard</a>
         <a href="billManager.php" class="bills-button" id="billsButton">Bill Manager</a>
+        <?php if (isset($_SESSION['user_level']) && $_SESSION['user_level'] == 1): ?>
+        <!-- Only show "Manage Account" if user is an admin (user_level == 1) -->
         <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
+        <?php endif; ?>
         <a href="javascript:void(0)" class="exit-button" id="exitButton" onclick="confirmLogout()">
             <img src="./image/out.png" alt="Exit">
         </a>

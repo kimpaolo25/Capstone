@@ -7,12 +7,13 @@ header('Content-Type: application/json');
 // Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve form data
-    $name = $_POST['name'] ?? null; // Using null coalescing operator to avoid undefined index notices
+    $name = $_POST['name'] ?? null;
     $username = $_POST['username'] ?? null;
     $password = $_POST['password'] ?? null;
+    $user_level = $_POST['user_level'] ?? null;
 
     // Validate input
-    if (is_null($name) || is_null($username) || is_null($password)) {
+    if (is_null($name) || is_null($username) || is_null($password) || is_null($user_level)) {
         echo json_encode(['success' => false, 'message' => 'All fields are required.']);
         exit;
     }
@@ -39,9 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Hash the password for security
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // Prepare SQL query to insert the new user
-    $stmt = $conn->prepare("INSERT INTO users (name, username, password_hash) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $name, $username, $hashedPassword);
+    // Prepare SQL query to insert the new user including the user level
+    $stmt = $conn->prepare("INSERT INTO users (name, username, password_hash, user_level) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("sssi", $name, $username, $hashedPassword, $user_level);
 
     // Execute the query
     if ($stmt->execute()) {

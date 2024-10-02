@@ -587,10 +587,22 @@
         color: #cc0000;
     }
 
+    .exit-button img {
+        width: 40px; /* Adjust icon size as needed */
+        height: auto;
+        cursor: pointer;
+    }
+    .exit-button {
+        position: absolute; /* Use absolute positioning */
+        right: 10px; /* Adjust to position it closer to the right edge */
+        top: 10px; /* Align it vertically with the dropdown */
+    }
+    
     /* Dropdown container */
     .dropdown {
-        position: relative;
-        margin-left: auto; /* Pushes the dropdown to the right edge */
+        position: absolute; /* Use absolute positioning */
+        right: 70px; /* Adjust this value to set space from the right edge */
+        top: 10px; /* Adjust as necessary for vertical alignment */
     }
 
     /* Dropdown button (icon) */
@@ -764,5 +776,5 @@
     .bill-id{
         display: none;
     }
-
+    
 

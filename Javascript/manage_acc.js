@@ -1,3 +1,50 @@
+// Add event listener to the exit button
+document.getElementById('exitButton').addEventListener('click', function (event) {
+    // Prevent the default action (navigation) to handle it manually
+    event.preventDefault();
+
+    // Show SweetAlert2 confirmation dialog
+    Swal.fire({
+        title: 'Are you sure you want to logout?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes',
+        cancelButtonText: 'No',
+        reverseButtons: true
+    }).then(result => {
+        if (result.isConfirmed) {
+            // Show success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Logged out successfully!',
+                showConfirmButton: false,
+                timer: 1500
+            }).then(() => {
+                // Redirect to the logout.php page after the success message disappears
+                window.location.href = '../php/logout.php';
+            });
+        }
+    });
+});
+
+// Active state for dashboard button (if applicable)
+document.addEventListener('DOMContentLoaded', () => {
+    const currentPath = window.location.pathname;
+    const dashButton = document.getElementById('dashButton');
+    
+    // Check if the current page is the dashboard
+    if (currentPath.includes('admin')) {
+        if (dashButton) {
+            dashButton.classList.add('active');
+        }
+    } else {
+        // Remove the active class if not on the dashboard page
+        if (dashButton) {
+            dashButton.classList.remove('active');
+        }
+    }
+});
+
 document.addEventListener("DOMContentLoaded", function() {
     var addModal = document.getElementById("addModal");
     var updateModal = document.getElementById("updateModal");
@@ -235,3 +282,25 @@ if (updateForm) { // Ensure the form exists before adding event listener
         });
     });
 }
+document.addEventListener("DOMContentLoaded", function () {
+        const userLevelLabel = document.getElementById("userLevelLabel");
+        const userLevelInput = document.getElementById("userLevelInput");
+
+        // Show highlight effect on label when input is focused
+        userLevelInput.addEventListener("focus", function () {
+            userLevelLabel.classList.add("highlight");
+        });
+
+        // Remove highlight effect from label when input loses focus
+        userLevelInput.addEventListener("blur", function () {
+            userLevelLabel.classList.remove("highlight");
+            // Check if input is empty and move label back if necessary
+            if (!userLevelInput.value.trim()) {
+                userLevelLabel.style.color = "#8a8a8a"; // Reset label color
+            } else {
+                userLevelLabel.classList.add("highlight"); // Keep highlight if input has value
+            }
+        });
+    });
+
+

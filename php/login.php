@@ -27,8 +27,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['name'] = $user['name']; // Store the name for the personalized greeting
             $_SESSION['user_level'] = $user['user_level'];
 
-            // Return success response to JavaScript
-            echo json_encode(['success' => true]);
+            // Check the user level and redirect accordingly
+            if ($_SESSION['user_level'] == 1) {
+                // Admin (user_level 1) has full access to the site
+                echo json_encode(['success' => true, 'redirect' => '../admin.php']);
+            } elseif ($_SESSION['user_level'] == 2) {
+                // Staff (user_level 2) has access to the billManager.php page
+                echo json_encode(['success' => true, 'redirect' => '../billManager.php']);
+            }
             exit;
         } else {
             // If password is incorrect
@@ -45,4 +51,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: ../index.php');
     exit;
 }
-?>

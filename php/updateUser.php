@@ -15,14 +15,26 @@ try {
         if (isset($_POST['action']) && $_POST['action'] === 'update') {
             // Retrieve POST data
             $name = $_POST['name'] ?? null;
-            $username = $_POST['username'] ?? null; // Added username
+            $username = $_POST['username'] ?? null; 
             $currentPassword = $_POST['current_password'] ?? null;
             $newPassword = $_POST['new_password'] ?? null;
-            $confirmPassword = $_POST['confirm_password'] ?? null; // Added confirm password
+            $confirmPassword = $_POST['confirm_password'] ?? null;
+            $userLevel = $_POST['user_level'] ?? null; // New user level field
 
             // Validate inputs
-            if (is_null($name) || is_null($username) || is_null($currentPassword) || is_null($newPassword) || is_null($confirmPassword)) {
+            if (is_null($name) || is_null($username) || is_null($currentPassword) || is_null($newPassword) || is_null($confirmPassword) || is_null($userLevel)) {
                 echo json_encode(['success' => false, 'message' => 'All fields are required.']);
+                exit;
+            }
+
+            // Clean up and map user level from string to integer
+            $userLevel = strtolower(trim($userLevel)); // Convert to lowercase and trim spaces
+            if ($userLevel === 'admin') {
+                $userLevel = 1;
+            } elseif ($userLevel === 'staff') {
+                $userLevel = 2;
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Invalid user level.']);
                 exit;
             }
 
@@ -54,9 +66,9 @@ try {
             // Hash the new password
             $newHashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-            // Prepare the SQL UPDATE query
-            $stmt = $conn->prepare("UPDATE users SET name=?, username=?, password_hash=? WHERE username=?");
-            $stmt->bind_param("ssss", $name, $username, $newHashedPassword, $_SESSION['username']);
+            // Prepare the SQL UPDATE query to include user_level
+            $stmt = $conn->prepare("UPDATE users SET name=?, username=?, password_hash=?, user_level=? WHERE username=?");
+            $stmt->bind_param("sssis", $name, $username, $newHashedPassword, $userLevel, $_SESSION['username']);
 
             if ($stmt->execute()) {
                 echo json_encode(['success' => true, 'message' => 'User information updated successfully.']);

@@ -1,11 +1,10 @@
 <?php
 session_start();
 
-// Check if the user is logged in
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    // Redirect to login page if not logged in
-    header("Location: index.php");
-    exit();
+if (!isset($_SESSION['loggedin']) || $_SESSION['user_level'] != 1) {
+    // Redirect non-admin users back to the login page or an error page
+    header('Location: admin.php');
+    exit;
 }
 ?>
 
@@ -26,6 +25,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         <a href="admin.php" class="dashboard-button" id="dashButton">Dashboard</a>
         <a href="billManager.php" class="bills-button" id="billsButton">Bill Manager</a>
         <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
+        <a href="javascript:void(0)" class="exit-button" id="exitButton" onclick="confirmLogout()">
+            <img src="./image/out.png" alt="Exit">
+        </a>
     </header>
 
     <div class="container">
@@ -66,15 +68,15 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         <span id="close" class="close-button" onclick="closeModal()"></span>
         <div class="manage_acc-header">Add Account</div>
 
-        <form id="addUserForm"> <!-- Ensure this ID matches -->
+        <form id="addUserForm">
             <div class="manage_acc-field">
                 <input type="text" id="modalAddName" name="name" class="manageAccInput-field" required />
-                <label for="modalName" class="manageAccLabel">Name:</label>
+                <label for="modalAddName" class="manageAccLabel">Name:</label>
             </div>
 
             <div class="manage_acc-field">
                 <input type="text" id="modalAddUname" name="username" class="manageAccInput-field" required />
-                <label for="modalUname" class="manageAccLabel">Username:</label>
+                <label for="modalAddUname" class="manageAccLabel">Username:</label>
             </div>
 
             <div class="manage_acc-field">
@@ -84,7 +86,15 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 
             <div class="manage_acc-field">
                 <input type="password" id="modalAddConfirmpass" name="confirm_password" class="manageAccInput-field" required />
-                <label for="modalConfirmpass" class="manageAccLabel">Confirm Password:</label>
+                <label for="modalAddConfirmpass" class="manageAccLabel">Confirm Password:</label>
+            </div>
+
+            <div class="manage_acc-field">
+                <label for="userLevel">User Level:</label>
+                <select id="userLevel" name="user_level" class="manageAccInput-field" required>
+                    <option value="1">Admin</option>
+                    <option value="2">Staff</option>
+                </select>
             </div>
 
             <div class="checkbox-container">
@@ -97,6 +107,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
         </form>
     </div>
 </div>
+
 
 
 
@@ -133,13 +144,25 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
                 <label for="modalConfirmpass" class="manageAccLabel">Confirm Password:</label>
             </div>
 
+            <!-- Add User Level Dropdown -->
+            <div class="manage_acc-field">
+                <select id="modalUserLevel" name="user_level" class="manageAccInput-field select-dropdown" required
+                    onfocus="moveLabel(this)" onblur="resetLabel(this)">
+                    <option value="" disabled selected hidden></option> <!-- Placeholder Option -->
+                    <option value="admin">Admin</option>
+                    <option value="staff">Staff</option>
+                </select>
+                <label for="modalUserLevel" class="manageAccLabel">User Level</label>
+            </div>
+
+
             <div class="checkbox-container">
                 <input type="checkbox" id="chk" onclick="togglePasswordVisibility()"> Show Password
             </div>
 
             <div class="manage_acc-button">
                 <button type="submit" id="saveAccountButton">Save Changes</button>
-                <button type="reset" id="resetAccountButton">Reset</button>
+                <button type="reset" id="resetAccountButton" onclick="handleReset()">Reset</button>
             </div>
         </form>
     </div>
