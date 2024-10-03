@@ -588,9 +588,10 @@
     }
 
     .exit-button img {
-        width: 40px; /* Adjust icon size as needed */
+        width: 1px; /* Adjust icon size as needed */
         height: auto;
         cursor: pointer;
+        display: none;
     }
     .exit-button {
         position: absolute; /* Use absolute positioning */
@@ -601,7 +602,7 @@
     /* Dropdown container */
     .dropdown {
         position: absolute; /* Use absolute positioning */
-        right: 70px; /* Adjust this value to set space from the right edge */
+        right: 15px; /* Adjust this value to set space from the right edge */
         top: 10px; /* Adjust as necessary for vertical alignment */
     }
 

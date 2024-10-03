@@ -212,6 +212,16 @@ if (addUserForm) { // Ensure the form exists before adding event listener
     addUserForm.addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent the default form submission
 
+        // Get password and confirm password fields
+        const password = document.getElementById('modalPass').value;
+        const confirmPassword = document.getElementById('modalAddConfirmpass').value;
+
+        // Check if password and confirm password match
+        if (password !== confirmPassword) {
+            Swal.fire('Error!', 'Passwords do not match.', 'error');
+            return; // Stop form submission if passwords don't match
+        }
+
         // Gather form data
         const formData = new FormData(addUserForm);
 
@@ -237,6 +247,7 @@ if (addUserForm) { // Ensure the form exists before adding event listener
         });
     });
 }
+
 
 // Listen for form submission for updating a user
 const updateForm = document.getElementById('updateUserForm'); // Ensure this ID matches

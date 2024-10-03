@@ -90,11 +90,12 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['user_level'] != 1) {
             </div>
 
             <div class="manage_acc-field">
-                <label for="userLevel">User Level:</label>
                 <select id="userLevel" name="user_level" class="manageAccInput-field" required>
+                    <option value="" disabled selected hidden></option> <!-- Placeholder Option -->
                     <option value="1">Admin</option>
                     <option value="2">Staff</option>
                 </select>
+                <label for="modalUserLevel" class="manageAccLabel">User Role</label>
             </div>
 
             <div class="checkbox-container">
@@ -146,8 +147,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['user_level'] != 1) {
 
             <!-- Add User Level Dropdown -->
             <div class="manage_acc-field">
-                <select id="modalUserLevel" name="user_level" class="manageAccInput-field select-dropdown" required
-                    onfocus="moveLabel(this)" onblur="resetLabel(this)">
+                <select id="modalUserLevel" name="user_level" class="manageAccInput-field select-dropdown" required>
                     <option value="" disabled selected hidden></option> <!-- Placeholder Option -->
                     <option value="admin">Admin</option>
                     <option value="staff">Staff</option>
