@@ -30,10 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Check the user level and redirect accordingly
             if ($_SESSION['user_level'] == 1) {
                 // Admin (user_level 1) has full access to the site
-                echo json_encode(['success' => true, 'redirect' => '../admin.php']);
+                echo json_encode(['success' => true, 'redirect' => '../Capstone/admin.php']);
             } elseif ($_SESSION['user_level'] == 2) {
                 // Staff (user_level 2) has access to the billManager.php page
-                echo json_encode(['success' => true, 'redirect' => '../billManager.php']);
+                echo json_encode(['success' => true, 'redirect' => '../Capstone/billManager.php']);
             }
             exit;
         } else {
