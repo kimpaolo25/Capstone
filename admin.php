@@ -35,7 +35,7 @@ $userName = $_SESSION['name'];
         <!-- Only show "Manage Account" if user is an admin (user_level == 1) -->
         <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
         <?php endif; ?>
-        <a href="javascript:void(0)" class="exit-button" id="exitButton" onclick="confirmLogout()">
+        <a href="javascript:void(0)" class="exit-button" id="exitButton">
             <img src="./image/out.png" alt="Exit">
         </a>
     </header>
