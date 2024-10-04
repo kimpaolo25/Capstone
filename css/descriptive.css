@@ -6,11 +6,17 @@ body {
 }
 
 header {
+    position: fixed; /* Fix the header at the top */
+    top: 0; /* Ensure it's at the very top */
+    left: 0;
+    width: 98%; /* Make the header full width */
     display: flex;
     align-items: center;
     padding: 10px 20px;
     background-color: #4169e1;
     color: #ffffff;
+    z-index: 1000; /* Ensure it's above other content */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
 }
 
 /* Logo button styling */
@@ -67,6 +73,7 @@ header {
 }
 
 .dashboard {
+    margin-top: 100px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
@@ -252,5 +259,25 @@ header {
     to {
         transform: scale(1);
         opacity: 1;
+    }
+}
+
+/* Adjust for tablet screens */
+@media (max-width: 1024px) {
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr); /* Reduce to 2 columns */
+    }
+    .dashboard2 {
+        grid-template-columns: repeat(1, 1fr); /* Reduce to 1 column */
+    }
+}
+
+/* Adjust for mobile screens */
+@media (max-width: 768px) {
+    .descDashboard {
+        grid-template-columns: repeat(1, 1fr); /* Reduce to 1 column */
+    }
+    .descDashboard2 {
+        grid-template-columns: repeat(1, 1fr); /* 1 column for smaller screens */
     }
 }
