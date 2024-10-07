@@ -4,7 +4,7 @@ import numpy as np
 from flask_cors import CORS
 from sqlalchemy import create_engine
 from pmdarima import auto_arima
-from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 app = Flask(__name__)
@@ -56,25 +56,25 @@ def predict():
         # Print train and test sizes for debugging
         print(f"Training data size: {len(train)}, Testing data size: {len(test)}")
 
-        # ---- ARIMA for Amount_diff ----
+        # ---- SARIMAX for Amount_diff ----
         # Fit auto_arima model to find the best order for 'Amount_diff'
         model_auto_arima_amount = auto_arima(
             train['Amount_diff'].dropna(),
-            seasonal=False,  # No seasonal component in ARIMA
+            seasonal=True,  # Enable seasonal component in SARIMAX
+            m=12,  # Assuming monthly seasonality (12 periods)
             stepwise=True,
             trace=True
         )
 
-        # Print the best order found by auto_arima for 'Amount_diff'
-        print(f"Best order found for Amount_diff: {model_auto_arima_amount.order}")
+        # Print the best order and seasonal order found by auto_arima for 'Amount_diff'
+        print(f"Best order for Amount_diff: {model_auto_arima_amount.order}")
+        print(f"Best seasonal order for Amount_diff: {model_auto_arima_amount.seasonal_order}")
 
-        # Use the best order found by auto_arima
-        best_order_amount = model_auto_arima_amount.order
-
-        # Fit ARIMA model for 'Amount_diff' (no seasonal order)
-        model_amount = ARIMA(
+        # Fit SARIMAX model for 'Amount_diff' using the best order
+        model_amount = SARIMAX(
             train['Amount_diff'].dropna(),
-            order=best_order_amount
+            order=model_auto_arima_amount.order,
+            seasonal_order=model_auto_arima_amount.seasonal_order
         )
         model_amount_fit = model_amount.fit()
 
@@ -88,25 +88,25 @@ def predict():
 
         future_dates_amount = [test.index[i] for i in range(forecast_steps)]
 
-        # ---- ARIMA for CU_M_diff ----
+        # ---- SARIMAX for CU_M_diff ----
         # Fit auto_arima model to find the best order for 'CU_M_diff'
         model_auto_arima_cum = auto_arima(
             train['CU_M_diff'].dropna(),
-            seasonal=False,  # No seasonal component in ARIMA
+            seasonal=True,  # Enable seasonal component in SARIMAX
+            m=12,  # Assuming monthly seasonality (12 periods)
             stepwise=True,
             trace=True
         )
 
-        # Print the best order found by auto_arima for 'CU_M_diff'
-        print(f"Best order found for CU_M_diff: {model_auto_arima_cum.order}")
+        # Print the best order and seasonal order found by auto_arima for 'CU_M_diff'
+        print(f"Best order for CU_M_diff: {model_auto_arima_cum.order}")
+        print(f"Best seasonal order for CU_M_diff: {model_auto_arima_cum.seasonal_order}")
 
-        # Use the best order found by auto_arima
-        best_order_cum = model_auto_arima_cum.order
-
-        # Fit ARIMA model for 'CU_M_diff' (no seasonal order)
-        model_cum = ARIMA(
+        # Fit SARIMAX model for 'CU_M_diff' using the best order
+        model_cum = SARIMAX(
             train['CU_M_diff'].dropna(),
-            order=best_order_cum
+            order=model_auto_arima_cum.order,
+            seasonal_order=model_auto_arima_cum.seasonal_order
         )
         model_cum_fit = model_cum.fit()
 
