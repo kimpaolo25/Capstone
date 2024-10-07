@@ -32,21 +32,25 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
         <a href="admin.php" class="dashboard-button" id="dashButton">Dashboard</a>
         <a href="billManager.php" class="bills-button" id="billsButton">Bill Manager</a>
         <?php if (isset($_SESSION['user_level']) && $_SESSION['user_level'] == 1): ?>
-        <!-- Only show "Manage Account" if user is an admin (user_level == 1) -->
-        <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
-        <a href="javascript:void(0)" class="exit-button" id="exitButton" onclick="confirmLogout()">
-            <img src="./image/out.png" alt="Exit">
-        </a>
+            <!-- Only show "Manage Account" if user is an admin (user_level == 1) -->
+            <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
+            <a href="manage_users.php" class="user-manage" id="userManage">User Management</a>
+            <a href="javascript:void(0)" class="exit-button" id="exitButton" onclick="confirmLogout()">
+                <img src="./image/out.png" alt="Exit">
+            </a>
         <?php endif; ?>
 
-        
+
         <!-- Dropdown menu with a down arrow icon -->
         <div class="dropdown">
             <button class="dropbtn"><i class="fas fa-caret-down"></i></button>
             <div class="dropdown-content">
+
+                <!-- Print Option -->
                 <button class="sub-dropbtn">
                     <i class="fas fa-print" id="printOption" title="Print"></i>
                 </button>
+
                 <!-- Submenu for download options -->
                 <div class="sub-dropdown">
                     <button class="sub-dropbtn">
@@ -61,7 +65,6 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                             <i class="fas fa-file-excel"></i>
                         </a>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -333,6 +336,8 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
             </tbody>
         </table>
     </div>
+
+
     <script src="./Javascript/invoiceDetail.js"></script>
     <script src="./Javascript/tableFunctions.js"></script>
     <script src="./Javascript/modalFunctions.js"></script>
@@ -344,6 +349,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
     <script src="./Javascript/billManagerfilter.js"></script>
     <script src="./Javascript/dlPrint.js"></script>
     <script src="./Javascript/admin.js"></script>
+
 
 </body>
 

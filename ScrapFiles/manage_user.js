@@ -87,19 +87,21 @@ function fetchUserData() {
                 // Create cells for id, name, username, and action
                 let idCell = document.createElement('td');
                 idCell.textContent = user.id;
-                idCell.style.display = "none"; // Hide the ID column
 
                 let nameCell = document.createElement('td');
                 nameCell.textContent = user.name;
 
-                let usernameCell = document.createElement('td');
-                usernameCell.textContent = user.username;
+                let areaCell = document.createElement('td');
+                areaCell.textContent = user.area;
+
+                let statusCell = document.createElement('td');
+                statusCell.textContent = user.status;
 
                 let actionCell = document.createElement('td');
 
                 // Modify Button
                 let modifyButton = document.createElement('button');
-                modifyButton.textContent = "Modify";
+                modifyButton.textContent = "Update";
                 modifyButton.classList.add('modify-btn');
                 modifyButton.setAttribute('data-id', user.id);
 
@@ -108,24 +110,15 @@ function fetchUserData() {
                     openUpdateModal(user.id); // Call function to open modal with user ID
                 });
 
-                // Delete Button
-                let deleteButton = document.createElement('button');
-                deleteButton.textContent = "Delete";
-                deleteButton.classList.add('delete-btn');
-                deleteButton.setAttribute('data-id', user.id);
-
-                // Add event listener to delete button
-                deleteButton.addEventListener('click', function() {
-                    deleteUser(user.id); // Call function to delete user
-                });
 
                 actionCell.appendChild(modifyButton);
-                actionCell.appendChild(deleteButton); // Append delete button to action cell
+               
 
                 // Append cells to row
                 row.appendChild(idCell);
                 row.appendChild(nameCell);
-                row.appendChild(usernameCell);
+                row.appendChild(areaCell);
+                row.appendChild(statusCell);
                 row.appendChild(actionCell);
 
                 // Append row to table body
@@ -146,13 +139,10 @@ function openUpdateModal(id) {
             const response = JSON.parse(xhr.responseText);
             if (response) {
                 // Populate modal fields with data
-                document.getElementById("modalName").value = response.name;
-                document.getElementById("modalUname").value = response.username;
-
-                // Clear password fields
-                document.getElementById("modalCurrentpass").value = "";
-                document.getElementById("modalNewpass").value = "";
-                document.getElementById("modalConfirmpass").value = "";
+                document.getElementById("modalUpdateName").value = response.name;
+                document.getElementById("modalUpdateArea").value = response.name;
+                document.getElementById("modalUserStats").value = "";
+  
 
                 // Show the modal
                 updateModal.style.display = "flex"; // Show update modal
@@ -165,44 +155,7 @@ function openUpdateModal(id) {
     xhr.send("id=" + id);
 }
 
-// Function to delete a user
-function deleteUser(userId) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch('./php/deleteUser.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    id: userId // Send the user ID to delete
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire('Deleted!', 'User has been deleted.', 'success');
-                    fetchUserData(); // Refresh user data
-                } else {
-                    Swal.fire('Error!', data.message, 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire('Error!', 'An error occurred while deleting the user: ' + error.message, 'error');
-            });
-        }
-    });
-}
+
 
 
 // Listen for form submission for adding a user

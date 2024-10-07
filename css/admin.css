@@ -136,6 +136,34 @@ header {
     padding: 10px 5px;
 }
 
+.user-manage {
+    position: relative;
+    color: #ffffff;
+    padding: 10px 5px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 16px;
+    margin-left: 10px;
+}
+.user-manage::before,
+.user-manage::after {
+    content: "|";
+    flex-grow: 1;
+    height: 5px;
+    background-color: #ffffff;
+    margin: 10px;
+}
+.user-manage:hover {
+    background-color: #1d3ceb;
+    padding: 10px 5px;
+}
+.user-manage.active {
+    background-color: #1d3ceb; /* Active color */
+    color: white;
+    font-weight: bold;
+}
+
+
 .exit-button {
     margin-left: auto; /* Pushes the exit button to the right */
 }

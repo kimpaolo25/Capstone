@@ -270,11 +270,8 @@ table tr:hover {
     background-color: #e53935;
 }
 
-.account-id{
-    display: none;
-}
 
-.manage_acc {
+.update_user {
     display: none; /* Hidden by default */
     align-items: center;
     justify-content: center;
@@ -292,7 +289,7 @@ table tr:hover {
     animation: fadeIn 0.5s; /* Fade-in animation */
 }
 
-.add_acc {
+.add_user {
     display: none; /* Hidden by default */
     align-items: center;
     justify-content: center;
@@ -310,14 +307,14 @@ table tr:hover {
     animation: fadeIn 0.5s; /* Fade-in animation */
 }
 
-.manage_acc-content {
+.manage_user-content {
     background-color: white;
     align-items: center;
     position: fixed center;
     margin: 5% auto; 
     padding: 50px;
     border: 3px solid #4169e1;
-    width: 40%; 
+    width: 30%; 
     max-width: 900px; 
     border-radius: 8px; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
@@ -327,7 +324,7 @@ table tr:hover {
     animation: zoomIn 0.3s; /* Zoom-in animation */
 }
 
-.manageAccInput-field {
+.manageUserInput-field {
     margin-left: 10%;
     width: 100%;
     align-items: center;
@@ -342,14 +339,14 @@ table tr:hover {
     font-weight: lighter;
 }
 
-.manage_acc-field {
+.manage_user-field {
     display: flex;
     position: relative;
     align-items: center;
     margin-top: 1.5rem;
 }
 
-.manageAccLabel {
+.manageUserLabel {
     position: absolute;
     margin-left: 10%;
     top: 50%;
@@ -359,8 +356,8 @@ table tr:hover {
     color: black;
 }   
 
-.manageAccInput-field:focus ~ .manageAccLabel,
-.manageAccInput-field:valid ~ .manageAccLabel {
+.manageUserInput-field:focus ~ .manageUserLabel,
+.manageUserInput-field:valid ~ .manageUserLabel {
     position: absolute;
     top: 0%;
     left: 0%;
@@ -371,7 +368,7 @@ table tr:hover {
 }
 
 /* Centering the h2 element */
-.manage_acc-header {
+.manage_user-header {
     display: flex;
     position: absolute;
     top: 0%;
@@ -386,7 +383,7 @@ table tr:hover {
     font-size: clamp(1rem, 3vw, 2rem);
 }
 
-.manage_acc-header::before{
+.manage_user-header::before{
     content: "";
     position: absolute;
     top: 0;
@@ -398,7 +395,7 @@ table tr:hover {
     box-shadow: 15px 0 0 0 #4169e1;
 }
 
-.manage_acc-header::after{
+.manage_user-header::after{
     content: "";
     position: absolute;
     top: 0;
@@ -410,18 +407,13 @@ table tr:hover {
     box-shadow: -15px 0 0 0 #4169e1;
 }
 
-.checkbox-container{
-    color: black;
-    margin-top: 1.5rem;
-    margin-left: 30px;
-}
 
-.manage_acc-button {
+.manage_user-button {
     text-align: center;
     margin-top: 50px;
 }
 
-.manage_acc-button button {
+.manage_user-button button {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
     border: none;
@@ -434,7 +426,7 @@ table tr:hover {
     border: 2px solid #4169e1;
 }
 
-.manage_acc-button button:hover {
+.manage_user-button button:hover {
     border: 2px solid #4169e1;
     opacity: 0.9;
 }

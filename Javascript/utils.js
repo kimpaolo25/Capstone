@@ -25,6 +25,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Active state for dashboard button (if applicable)
+document.addEventListener('DOMContentLoaded', () => {
+    const currentPath = window.location.pathname;
+    const dashButton = document.getElementById('userManage');
+    
+    // Check if the current page is the dashboard
+    if (currentPath.includes('manage_user')) {
+        if (dashButton) {
+            dashButton.classList.add('active');
+        }
+    } else {
+        // Remove the active class if not on the dashboard page
+        if (dashButton) {
+            dashButton.classList.remove('active');
+        }
+    }
+});
+
 
 // Show Password Functionality for Update Modal
     const currentPassword = document.getElementById("modalCurrentpass");

@@ -56,5 +56,6 @@
     </div>
     
     <script src="./Javascript/modal_login.js"></script>
+    <script src="./Javascript/password.js"></script>
 </body>
 </html>
