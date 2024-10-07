@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('billsThisYear').innerText = `${numberFormatter.format(billsThisYear)} bill/s`;
             document.getElementById('overallIncome').innerText = currencyFormatter.format(overallIncome);
 
+
+            
+
             // Total income per year chart
             const labelsYear = data.totalIncomePerYear.map(item => item.year);
             const valuesYear = data.totalIncomePerYear.map(item => {

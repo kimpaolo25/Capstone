@@ -48,19 +48,19 @@ $userName = $_SESSION['name'];
     <div class="descDashboard">
         <!-- Card for Number of Bills This Month -->
         <div class="card_chart">
-            <h2>Number of Bills This Month</h2>
+            <h2>Total Number of Bills This Month</h2>
             <div id="billsThisMonth">Loading...</div>
         </div>
 
         <!-- Card for Number of Bills This Year -->
         <div class="card_chart">
-            <h2>Number of Bills This Year</h2>
+            <h2>Total Number of Bills This Year</h2>
             <div id="billsThisYear">Loading...</div>
         </div>
 
         <!-- Card for Overall Income -->
         <div class="card_chart">
-            <h2>Overall Expected Income</h2>
+            <h2>Expected Income This Year</h2>
             <div id="overallIncome">Loading...</div>
         </div>
     </div>

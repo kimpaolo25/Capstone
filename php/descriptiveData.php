@@ -36,10 +36,14 @@ $sqlBillsThisYear = "
 $resultBillsThisYear = $conn->query($sqlBillsThisYear);
 $billsThisYear = $resultBillsThisYear->fetch_assoc()['count'];
 
-// Query for overall income
-$sqlOverallIncome = "SELECT IFNULL(SUM(Amount), 0) AS total FROM customers";
+// Query for overall income in the current year
+$currentYear = date('Y');  // Get the current year
+$sqlOverallIncome = "SELECT IFNULL(SUM(Amount), 0) AS total 
+                     FROM customers 
+                     WHERE YEAR(Date_column) = $currentYear";
 $resultOverallIncome = $conn->query($sqlOverallIncome);
 $overallIncome = $resultOverallIncome->fetch_assoc()['total'];
+
 
 // Query for total income per year (for all years)
 $sqlTotalIncomePerYear = "
