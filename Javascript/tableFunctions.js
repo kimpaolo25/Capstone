@@ -228,11 +228,16 @@ function reloadTable() {
     const tableBody = document.querySelector('#dataTable tbody');
     tableBody.innerHTML = ''; // Clear existing rows
 
+    // Clear the search input
     document.getElementById('searchInput').value = '';
+
+    // Clear filter selections
+    document.getElementById('yearFilter').value = '';
+    document.getElementById('areaFilter').value = '';
+    document.getElementById('monthFilter').value = '';
 
     // Sort tableData in descending order by bill_id
     tableData.sort((a, b) => {
-        // Ensure bill_id is treated as a number
         const idA = Number(a.bill_id);
         const idB = Number(b.bill_id);
         return idB - idA;
@@ -247,7 +252,7 @@ function reloadTable() {
             cell.textContent = row[key];
 
             // Add a class to identify Bill ID cells
-            if (key === 'bill_id') { // Adjust if your key is different
+            if (key === 'bill_id') {
                 cell.classList.add('bill-id'); // Add a class to identify Bill ID cells
             }
         });
