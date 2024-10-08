@@ -1,7 +1,7 @@
 // Function to toggle between full and minimal input modes
 function toggleInputMode(mode) {
     const fullFields = ['current', 'previous', 'cuM', 'amount'];
-
+    
     fullFields.forEach(fieldId => {
         const field = document.getElementById(fieldId);
         if (mode === 'minimal') {
@@ -40,12 +40,12 @@ function resetAddBillModal() {
     const form = document.getElementById("addBillForm");
     form.reset(); // Reset all fields in the form
 
+    // Reset input mode to full
+    toggleInputMode('full'); // Reset to full mode on opening the modal
+
     // Set the current date as default for the date field
     const today = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
     form.date.value = today; // Set the current date
-
-    // Reset input mode to full
-    toggleInputMode('full'); // Reset to full mode on opening the modal
 }
 
 // Handle form submission
@@ -111,7 +111,7 @@ form.addEventListener('submit', function (event) {
                         // Close the modal and reset the form
                         modal.style.display = 'none';
                         resetAddBillModal(); // Call reset function
-                        fetchDataAndReloadTable();
+                        fetchDataAndReloadTable(); // Function to refresh data
                     });
                 } else {
                     Swal.fire({
@@ -144,10 +144,29 @@ form.addEventListener('submit', function (event) {
 // Auto-fill fields when the name input changes
 form.name.addEventListener('input', function () {
     const name = this.value.trim();
-    autoFillFields(name);
+    autoFillFields(name); // Function to auto-fill fields based on name input
 });
 
 // Set default input mode on page load
 document.addEventListener('DOMContentLoaded', function() {
-    toggleInputMode('full'); // Set default mode to full
+    toggleInputMode('full'); // Set default mode to full/active
+});
+
+// Close modal functionality
+document.querySelectorAll('.close').forEach(closeButton => {
+    closeButton.addEventListener('click', function() {
+        // Close the modal
+        document.getElementById('addBillModal').style.display = 'none';
+        
+        // Reset the modal fields
+        resetAddBillModal(); // Ensure fields reset on close
+    });
+});
+
+// Open modal functionality
+document.getElementById("addButton").addEventListener('click', function() {
+    document.getElementById('addBillModal').style.display = 'block';
+    
+    // Reset the modal fields when opening
+    resetAddBillModal();
 });
