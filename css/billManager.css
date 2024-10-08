@@ -809,3 +809,19 @@
     }
     
 
+    #suggestions {
+        display: none; /* Hidden by default */
+        position: absolute; /* Position it absolutely below the input field */
+        border-radius: 10px;
+    }
+    
+    #suggestions li {
+        padding: 5px; /* Padding for each suggestion */
+        cursor: pointer; /* Pointer cursor on hover */
+    }
+    
+    #suggestions li:hover {
+        background-color: #7fb1e6; /* Highlight effect on hover */
+    }
+    
+

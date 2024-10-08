@@ -40,10 +40,9 @@ $billsThisYear = $resultBillsThisYear->fetch_assoc()['count'];
 $currentYear = date('Y');  // Get the current year
 $sqlOverallIncome = "SELECT IFNULL(SUM(Amount), 0) AS total 
                      FROM customers 
-                     WHERE YEAR(Date_column) = $currentYear";
+                     WHERE Date_column LIKE CONCAT('$currentYear', '-%')";
 $resultOverallIncome = $conn->query($sqlOverallIncome);
 $overallIncome = $resultOverallIncome->fetch_assoc()['total'];
-
 
 // Query for total income per year (for all years)
 $sqlTotalIncomePerYear = "

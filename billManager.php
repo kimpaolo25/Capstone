@@ -183,13 +183,18 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
             <div class="modal-header">Add Bill Report</div>
             <form id="addBillForm">
                 <div class="modal-section">
-                    <div class="modal-field">
-                        <input type="text" id="name" name="name" class="input-field" />
+
+                    <div class="modal-field" style="position: relative;">
+                        <!-- Relative positioning for proper alignment -->
+                        <input type="text" id="name" name="name" class="input-field"
+                            oninput="autocompleteSuggestions()" />
                         <label for="name" class="label">Name</label>
                         <ul id="suggestions"
-                            style="display: none; position: absolute; border: 1px solid #ccc; background-color: white; list-style: none; padding: 0; margin: 0; width: 200px; z-index: 1000;">
+                            style="display: none; position: absolute; top: 100%; left: 0; border: 1px solid #2337ed; background-color: white; list-style: none; padding: 0; margin: 0; width: 89%; z-index: 1;">
                         </ul>
                     </div>
+
+
 
                     <div class="modal-field">
                         <select name="area" class="area" id="area">

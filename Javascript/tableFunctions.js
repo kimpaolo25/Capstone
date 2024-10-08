@@ -305,6 +305,7 @@ function autoFillFields(name) {
     }
 }
 
+
 // Function to update the cuM field based on the current and previous values
 function updateCuM() {
     const current = parseFloat(document.querySelector('#current').value) || 0;
@@ -315,11 +316,12 @@ function updateCuM() {
     // Calculate amount based on cuM
     const cuMValue = parseFloat(cuM);
     const initial = parseFloat(document.querySelector('#initialAmount').value) || 0;
-    const amount = (cuMValue - 8) * 20 + 180;
+    const amount = (cuMValue - 8) * 20 + initial;
 
     // Set amount based on the condition
     document.querySelector('#amount').value = amount > 179 ? amount.toFixed(2) : initial.toFixed(2);
 }
+
 
 // Add event listeners to the fields that affect the amount calculation
 document.querySelector('#current').addEventListener('input', updateCuM);
@@ -351,8 +353,6 @@ function autocompleteSuggestions() {
             matchingNames.forEach(name => {
                 const li = document.createElement('li');
                 li.textContent = name;
-                li.style.padding = '8px';
-                li.style.cursor = 'pointer';
                 li.addEventListener('click', () => {
                     input.value = name;
                     suggestionsList.style.display = 'none';
@@ -367,6 +367,7 @@ function autocompleteSuggestions() {
         suggestionsList.style.display = 'none';
     }
 }
+
 
 // Function to hide suggestions list when clicking outside
 document.addEventListener('click', (event) => {
