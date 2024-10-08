@@ -25,7 +25,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['user_level'] != 1) {
         <a href="admin.php" class="dashboard-button" id="dashButton">Dashboard</a>
         <a href="billManager.php" class="bills-button" id="billsButton">Bill Manager</a>
         <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
-        <a href="manage_users.php" class="user-manage" id="userManage">User Management</a>
         <a href="javascript:void(0)" class="exit-button" id="exitButton">
             <img src="./image/out.png" alt="Exit">
         </a>
