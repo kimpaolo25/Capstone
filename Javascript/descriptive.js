@@ -24,6 +24,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
             
 
+            // Function to generate random RGBA color
+            function getRandomColor() {
+                const r = Math.floor(Math.random() * 256); // Random red
+                const g = Math.floor(Math.random() * 256); // Random green
+                const b = Math.floor(Math.random() * 256); // Random blue
+                const a = 0.2; // Set a fixed alpha for transparency
+                return `rgba(${r}, ${g}, ${b}, ${a})`; // Return random color
+            }
+
             // Total income per year chart
             const labelsYear = data.totalIncomePerYear.map(item => item.year);
             const valuesYear = data.totalIncomePerYear.map(item => {
@@ -34,31 +43,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 return isNaN(value) ? 0 : value;
             });
 
+            // Prepare datasets for each year with random colors
+            const datasets = labelsYear.map((year, index) => ({
+                label: year, // Set the label for each year
+                data: [valuesYear[index]], // Wrap the value in an array to match the x-axis labels
+                backgroundColor: getRandomColor(), // Generate random background color
+                borderColor: getRandomColor(), // Generate random border color
+                borderWidth: 1
+            }));
+
             const ctxYear = document.getElementById('incomeChart').getContext('2d');
-            new Chart(ctxYear, {
-                type: 'line',
+            const incomeChart = new Chart(ctxYear, {
+                type: 'bar', // Change to 'bar'
                 data: {
-                    labels: labelsYear,
-                    datasets: [{
-                        label: 'Total Income per Year',
-                        data: valuesYear,
-                        borderColor: 'rgba(0, 123, 255, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderWidth: 1
-                    }]
+                    labels: ['Income Per Year'],
+                    datasets: datasets // Use the prepared datasets
                 },
                 options: {
                     responsive: true,
                     plugins: {
                         legend: {
-                            display: false // Hide labels at the top
+                            display: true, // Show the legend
+                            onClick: function(event, legendItem) {
+                                const index = legendItem.datasetIndex;
+                                const chart = this.chart;
+
+                                // Toggle the dataset visibility
+                                const meta = chart.getDatasetMeta(index);
+                                meta.hidden = !meta.hidden; // Toggle the visibility
+                                chart.update(); // Update the chart
+                            }
                         }
                     },
                     scales: {
                         x: {
                             beginAtZero: true,
                             title: {
-                                display: true,
+                                display: false,
                                 text: 'Year' // X-axis label
                             }
                         },
@@ -77,8 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             });
-            
-            
 
             
             // Ensure 'total_income' is parsed as a number
@@ -112,36 +131,52 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             const ctxArea = document.getElementById('incomeAreaChart').getContext('2d');
-            new Chart(ctxArea, {
+
+            // Create individual datasets for each area
+            const datasetsArea = labelsArea.map((area, index) => ({
+                label: area, // The area name will be used as the label for each dataset
+                data: [valuesArea[index]], // Each dataset will contain the income value for that area
+                backgroundColor: backgroundColorsArea[index], // Assign the specific background color
+                borderColor: borderColorsArea[index], // Assign the specific border color
+                borderWidth: 1
+            }));
+
+            const incomeAreaChart = new Chart(ctxArea, {
                 type: 'bar',
                 data: {
-                    labels: labelsArea,
-                    datasets: [{
-                        data: valuesArea,
-                        backgroundColor: backgroundColorsArea,
-                        borderColor: borderColorsArea,
-                        borderWidth: 1
-                    }]
+                    labels: ['Total Income per Area'], // We can use a generic label for the X-axis
+                    datasets: datasetsArea // Use the individual datasets for each area
                 },
                 options: {
                     responsive: true,
                     plugins: {
                         legend: {
-                            display: false // Hide labels at the top
+                            display: true, // Enable the legend to show area-based labels
+                            onClick: function(e, legendItem) {
+                                const chart = this.chart;
+                                const datasetIndex = legendItem.datasetIndex;
+
+                                // Toggle the visibility of the selected dataset (area)
+                                const meta = chart.getDatasetMeta(datasetIndex);
+                                meta.hidden = meta.hidden === null ? !chart.data.datasets[datasetIndex].hidden : null;
+
+                                // Update the chart to reflect changes
+                                chart.update();
+                            }
                         }
                     },
                     scales: {
                         x: {
                             title: {
-                                display: true,
-                                text: 'Area' // X-axis label
+                                display: false,
+                                text: 'Area' // X-axis label (it will just display "Total Income" in this case)
                             }
                         },
                         y: {
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value) {
-                                    return currencyFormatter.format(value);
+                                    return currencyFormatter.format(value); // Format Y-axis values as currency
                                 }
                             },
                             title: {
@@ -152,8 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             });
-            
-            
+
             
 
 
