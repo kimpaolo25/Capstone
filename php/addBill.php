@@ -7,12 +7,14 @@ $response = array('success' => false);
 // Collect form data
 $name = $_POST['name'];
 $area = $_POST['area'];
-$current = $_POST['current'];
-$previous = $_POST['previous'];
 $date = $_POST['date']; // This should be in the format 'YYYY-MM' (e.g., '2024-09')
 $initialAmount = $_POST['initialAmount'];
-$cuM = $_POST['cuM'];
-$amount = $_POST['amount'];
+
+// Collect form data with null defaults for optional fields
+$current = isset($_POST['current']) && $_POST['current'] !== '' ? $_POST['current'] : null;
+$previous = isset($_POST['previous']) && $_POST['previous'] !== '' ? $_POST['previous'] : null;
+$cuM = isset($_POST['cuM']) && $_POST['cuM'] !== '' ? $_POST['cuM'] : null;
+$amount = isset($_POST['amount']) && $_POST['amount'] !== '' ? $_POST['amount'] : null;
 
 // Split the date string into year and month
 list($year, $monthNumber) = explode('-', $date);
