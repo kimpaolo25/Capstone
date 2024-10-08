@@ -19,6 +19,10 @@ if ($conn->connect_error) {
 $currentYear = date('Y');
 $currentMonth = date('M'); // Use 'M' to match the format in the database
 
+// Get current year and month
+$currentYear = date('Y');
+$currentMonth = date('M'); // Use 'M' to match the format in the database
+
 // Query for number of bills this month
 $sqlBillsThisMonth = "
     SELECT COUNT(*) AS count 
@@ -37,12 +41,31 @@ $resultBillsThisYear = $conn->query($sqlBillsThisYear);
 $billsThisYear = $resultBillsThisYear->fetch_assoc()['count'];
 
 // Query for overall income in the current year
-$currentYear = date('Y');  // Get the current year
 $sqlOverallIncome = "SELECT IFNULL(SUM(Amount), 0) AS total 
                      FROM customers 
                      WHERE Date_column LIKE CONCAT('$currentYear', '-%')";
 $resultOverallIncome = $conn->query($sqlOverallIncome);
 $overallIncome = $resultOverallIncome->fetch_assoc()['total'];
+
+// Query for inactive records this month (Amount = 0.00)
+$sqlInactive = "
+    SELECT COUNT(*) AS inactive_count 
+    FROM customers 
+    WHERE SUBSTRING(Date_column, 1, 4) = '$currentYear' 
+      AND SUBSTRING(Date_column, 6, 3) = '$currentMonth' 
+      AND Amount = 0.00";
+$resultInactive = $conn->query($sqlInactive);
+$inactiveCount = $resultInactive->fetch_assoc()['inactive_count'];
+
+// Calculate active count
+$activeCount = $billsThisMonth - $inactiveCount;
+
+// Prepare data for pie chart
+$chartData = [
+    'Active' => $activeCount,
+    'Inactive' => $inactiveCount
+];
+
 
 // Query for total income per year (for all years)
 $sqlTotalIncomePerYear = "
@@ -115,6 +138,8 @@ echo json_encode([
     'totalIncomePerYear' => $totalIncomePerYear, // Include total income per year data
     'totalIncomePerArea' => $totalIncomePerArea, // Include total income per area
     'incomePerMonth' => $incomePerMonth,         // Include total income per month
-    'cubicMeterPerMonth' => $cubicMeterPerMonth  // Cubic meter consumption per month
+    'cubicMeterPerMonth' => $cubicMeterPerMonth,  // Cubic meter consumption per month
+    'activeCount' => $activeCount,
+    'inactiveCount' => $inactiveCount,
 ]);
 ?>

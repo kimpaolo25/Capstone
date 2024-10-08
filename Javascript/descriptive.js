@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     fetch('./php/descriptiveData.php')
         .then(response => response.json())
         .then(data => {
@@ -8,6 +8,21 @@ document.addEventListener('DOMContentLoaded', function() {
             const overallIncome = parseFloat(data.overallIncome);
             const billsThisMonth = parseInt(data.billsThisMonth, 10);
             const billsThisYear = parseInt(data.billsThisYear, 10);
+            const activeCount = parseInt(data.activeCount, 10);
+            const inactiveCount = parseInt(data.inactiveCount, 10);
+
+            // Log values to check if they are valid
+            console.log('Overall Income:', overallIncome);
+            console.log('Bills This Month:', billsThisMonth);
+            console.log('Bills This Year:', billsThisYear);
+            console.log('Active Count:', activeCount);
+            console.log('Inactive Count:', inactiveCount);
+
+            // Check for NaN values
+            if (isNaN(activeCount) || isNaN(inactiveCount)) {
+                console.error('Active or Inactive count is NaN');
+                return; // Stop execution if values are invalid
+            }
 
             // Create formatters
             const currencyFormatter = new Intl.NumberFormat('en-PH', {
@@ -22,7 +37,68 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('overallIncome').innerText = currencyFormatter.format(overallIncome);
 
 
-            
+            // Create the pie chart for meter status
+            const ctx = document.getElementById('meterStatusChart').getContext('2d');
+            const meterStatusChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Active', 'Inactive'],
+                    datasets: [{
+                        label: 'Meter Status',
+                        data: [activeCount, inactiveCount],
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.6)', // Active color
+                            'rgba(255, 99, 132, 0.6)'  // Inactive color
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255, 99, 132, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Allow the chart to be responsive
+                    layout: {
+                        padding: {
+                            top: 20,
+                            bottom: 20,
+                            left: 20,
+                            right: 20
+                        }
+                    },
+                    aspectRatio: 1, // Maintain a square shape for the pie chart
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Meter Status: Active vs Inactive'
+                        },
+                        datalabels: {
+                            formatter: (value, context) => {
+                                const total = context.chart.data.datasets[context.datasetIndex].data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(2) + '%'; // Calculate percentage
+                                return percentage; // Return percentage as label
+                            },
+                            color: 'white', // Change text color as needed
+                            anchor: 'center', // Set anchor to center
+                            align: 'center', // Set alignment to center
+                            font: {
+                                weight: 'bold',
+                            }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels] // Register the datalabels plugin
+            });
+
+
+
+
+
 
             // Function to generate random RGBA color
             function getRandomColor() {
@@ -64,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     plugins: {
                         legend: {
                             display: true, // Show the legend
-                            onClick: function(event, legendItem) {
+                            onClick: function (event, legendItem) {
                                 const index = legendItem.datasetIndex;
                                 const chart = this.chart;
 
@@ -86,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                callback: function(value) {
+                                callback: function (value) {
                                     return currencyFormatter.format(value);
                                 }
                             },
@@ -99,11 +175,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            
+
             // Ensure 'total_income' is parsed as a number
             const labelsArea = data.totalIncomePerArea.map(item => item.places_name);
             const valuesArea = data.totalIncomePerArea.map(item => parseFloat(item.total_income)); // Explicitly parse as float
-            
+
             // Generate a color for each area
             const backgroundColorsArea = valuesArea.map((_, index) => {
                 const colors = [
@@ -116,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ];
                 return colors[index % colors.length]; // Loop through the colors array
             });
-            
+
             // Generate border colors
             const borderColorsArea = valuesArea.map((_, index) => {
                 const borderColors = [
@@ -129,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ];
                 return borderColors[index % borderColors.length];
             });
-            
+
             const ctxArea = document.getElementById('incomeAreaChart').getContext('2d');
 
             // Create individual datasets for each area
@@ -152,7 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     plugins: {
                         legend: {
                             display: true, // Enable the legend to show area-based labels
-                            onClick: function(e, legendItem) {
+                            onClick: function (e, legendItem) {
                                 const chart = this.chart;
                                 const datasetIndex = legendItem.datasetIndex;
 
@@ -175,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                callback: function(value) {
+                                callback: function (value) {
                                     return currencyFormatter.format(value); // Format Y-axis values as currency
                                 }
                             },
@@ -188,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            
+
 
 
             // Total income per month chart
@@ -231,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                callback: function(value) {
+                                callback: function (value) {
                                     return currencyFormatter.format(value);
                                 }
                             },
@@ -243,8 +319,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             });
-            
-            
+
+
 
             // Cubic meter consumption per month chart
             const labelsCubicMeter = data.cubicMeterPerMonth.map(item => item.Date_column);
@@ -286,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                callback: function(value) {
+                                callback: function (value) {
                                     return value + ' m³';  // Display cubic meters (m³)
                                 }
                             },
@@ -298,8 +374,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             });
-            
-            
+
+
 
         })
         .catch(error => console.error('Error fetching data:', error));

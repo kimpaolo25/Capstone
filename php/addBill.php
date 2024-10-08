@@ -11,10 +11,10 @@ $date = $_POST['date']; // This should be in the format 'YYYY-MM' (e.g., '2024-0
 $initialAmount = $_POST['initialAmount'];
 
 // Collect form data with null defaults for optional fields
-$current = isset($_POST['current']) && $_POST['current'] !== '' ? $_POST['current'] : null;
-$previous = isset($_POST['previous']) && $_POST['previous'] !== '' ? $_POST['previous'] : null;
-$cuM = isset($_POST['cuM']) && $_POST['cuM'] !== '' ? $_POST['cuM'] : null;
-$amount = isset($_POST['amount']) && $_POST['amount'] !== '' ? $_POST['amount'] : null;
+$current = isset($_POST['current']) && $_POST['current'] !== '' ? $_POST['current'] : 0;
+$previous = isset($_POST['previous']) && $_POST['previous'] !== '' ? $_POST['previous'] : 0;
+$cuM = isset($_POST['cuM']) && $_POST['cuM'] !== '' ? $_POST['cuM'] : 0;
+$amount = isset($_POST['amount']) && $_POST['amount'] !== '' ? $_POST['amount'] : 0.00;
 
 // Split the date string into year and month
 list($year, $monthNumber) = explode('-', $date);

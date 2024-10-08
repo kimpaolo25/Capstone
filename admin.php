@@ -13,6 +13,7 @@ $userName = $_SESSION['name'];
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,20 +21,23 @@ $userName = $_SESSION['name'];
     <link rel="stylesheet" href="./css/admin.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
     <script src="./javascript/admin.js" defer></script>
     <script src="./javascript/prediction.js" defer></script>
     <script src="./javascript/descriptive.js" defer></script>
 </head>
+
 <body>
     <header>
         <img src="./image/icon.png" alt="Logo" class="logo">
-        
+
         <!-- Navigation Links -->
         <a href="admin.php" class="dashboard-button" id="dashButton">Dashboard</a>
         <a href="billManager.php" class="bills-button" id="billsButton">Bill Manager</a>
         <?php if (isset($_SESSION['user_level']) && $_SESSION['user_level'] == 1): ?>
-        <!-- Only show "Manage Account" if user is an admin (user_level == 1) -->
-        <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
+            <!-- Only show "Manage Account" if user is an admin (user_level == 1) -->
+            <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
         <?php endif; ?>
         <a href="javascript:void(0)" class="exit-button" id="exitButton">
             <img src="./image/out.png" alt="Exit">
@@ -62,6 +66,12 @@ $userName = $_SESSION['name'];
         <div class="card_chart">
             <h2>Expected Income This Year</h2>
             <div id="overallIncome">Loading...</div>
+        </div>
+    </div>
+
+    <div class="descDashboardPie">
+        <div class="card_chart">
+            <canvas id="meterStatusChart"></canvas>
         </div>
     </div>
 
@@ -104,4 +114,5 @@ $userName = $_SESSION['name'];
         </div>
     </div>
 </body>
+
 </html>
