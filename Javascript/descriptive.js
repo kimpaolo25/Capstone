@@ -112,52 +112,36 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             const ctxArea = document.getElementById('incomeAreaChart').getContext('2d');
-
-            // Create individual datasets for each area
-            const datasetsArea = labelsArea.map((area, index) => ({
-                label: area, // The area name will be used as the label for each dataset
-                data: [valuesArea[index]], // Each dataset will contain the income value for that area
-                backgroundColor: backgroundColorsArea[index], // Assign the specific background color
-                borderColor: borderColorsArea[index], // Assign the specific border color
-                borderWidth: 1
-            }));
-
-            const incomeAreaChart = new Chart(ctxArea, {
+            new Chart(ctxArea, {
                 type: 'bar',
                 data: {
-                    labels: ['Total Income'], // We can use a generic label for the X-axis
-                    datasets: datasetsArea // Use the individual datasets for each area
+                    labels: labelsArea,
+                    datasets: [{
+                        data: valuesArea,
+                        backgroundColor: backgroundColorsArea,
+                        borderColor: borderColorsArea,
+                        borderWidth: 1
+                    }]
                 },
                 options: {
                     responsive: true,
                     plugins: {
                         legend: {
-                            display: true, // Enable the legend to show area-based labels
-                            onClick: function(e, legendItem) {
-                                const chart = this.chart;
-                                const datasetIndex = legendItem.datasetIndex;
-
-                                // Toggle the visibility of the selected dataset (area)
-                                const meta = chart.getDatasetMeta(datasetIndex);
-                                meta.hidden = meta.hidden === null ? !chart.data.datasets[datasetIndex].hidden : null;
-
-                                // Update the chart to reflect changes
-                                chart.update();
-                            }
+                            display: false // Hide labels at the top
                         }
                     },
                     scales: {
                         x: {
                             title: {
                                 display: true,
-                                text: 'Area' // X-axis label (it will just display "Total Income" in this case)
+                                text: 'Area' // X-axis label
                             }
                         },
                         y: {
                             beginAtZero: true,
                             ticks: {
                                 callback: function(value) {
-                                    return currencyFormatter.format(value); // Format Y-axis values as currency
+                                    return currencyFormatter.format(value);
                                 }
                             },
                             title: {

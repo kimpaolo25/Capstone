@@ -104,7 +104,35 @@ header {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    padding: 20px;
+    padding: 10px;
+}
+
+h2{
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: lighter;
+    font-size: large;
+}
+
+#billsThisMonth{
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bolder;
+    font-size:x-large;
+}
+
+#billsThisYear{
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bolder;
+    font-size:x-large;
+}
+
+#overallIncome{
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: bolder;
+    font-size:x-large;
 }
 
 .descDashboard2 {
