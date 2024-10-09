@@ -1,5 +1,5 @@
 <?php
-include 'dbcon.php';
+require 'dbcon.php';
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);

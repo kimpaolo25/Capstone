@@ -149,8 +149,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['user_level'] != 1) {
             <div class="manage_acc-field">
                 <select id="modalUserLevel" name="user_level" class="manageAccInput-field select-dropdown" required>
                     <option value="" disabled selected hidden></option> <!-- Placeholder Option -->
-                    <option value="admin">Admin</option>
-                    <option value="staff">Staff</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Staff">Staff</option>
                 </select>
                 <label for="modalUserLevel" class="manageAccLabel">User Level</label>
             </div>

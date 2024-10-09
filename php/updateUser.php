@@ -1,6 +1,6 @@
 <?php
 // Include the database connection file
-include 'dbcon.php';
+require 'dbcon.php';
 
 header('Content-Type: application/json');
 
@@ -15,7 +15,7 @@ try {
         if (isset($_POST['action']) && $_POST['action'] === 'update') {
             // Retrieve POST data
             $name = $_POST['name'] ?? null;
-            $username = $_POST['username'] ?? null; 
+            $username = $_POST['username'] ?? null;
             $currentPassword = $_POST['current_password'] ?? null;
             $newPassword = $_POST['new_password'] ?? null;
             $confirmPassword = $_POST['confirm_password'] ?? null;
@@ -43,9 +43,9 @@ try {
                 throw new Exception('Database connection failed');
             }
 
-            // Prepare to check the current password
+            // Prepare to check the current password for the user being updated
             $stmt = $conn->prepare("SELECT password_hash FROM users WHERE username = ?");
-            $stmt->bind_param("s", $_SESSION['username']);
+            $stmt->bind_param("s", $username); // Verify current password for $username
             $stmt->execute();
             $stmt->bind_result($hashedPassword);
             $stmt->fetch();
@@ -68,7 +68,8 @@ try {
 
             // Prepare the SQL UPDATE query to include user_level
             $stmt = $conn->prepare("UPDATE users SET name=?, username=?, password_hash=?, user_level=? WHERE username=?");
-            $stmt->bind_param("sssis", $name, $username, $newHashedPassword, $userLevel, $_SESSION['username']);
+            $stmt->bind_param("sssis", $name, $username, $newHashedPassword, $userLevel, $username); // Update based on $username
+
 
             if ($stmt->execute()) {
                 echo json_encode(['success' => true, 'message' => 'User information updated successfully.']);

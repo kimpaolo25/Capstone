@@ -2,7 +2,7 @@
 header('Content-Type: application/json');
 
 // Database connection
-$conn = new mysqli('localhost', 'root', '', 'prwai_data');
+require 'dbcon.php';
 
 if ($conn->connect_error) {
     die(json_encode(['error' => 'Connection failed: ' . $conn->connect_error]));

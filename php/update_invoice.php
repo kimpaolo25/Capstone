@@ -1,6 +1,6 @@
 <?php
 // update_invoice.php
-include('dbcon.php'); // Database connection
+require 'dbcon.php';
 
 // Check if POST data is available
 if (isset($_POST['detailId'], $_POST['firstPenalty'], $_POST['secondPenalty'], $_POST['gcashInf'], $_POST['gcashFee'])) {

@@ -1,5 +1,5 @@
 <?php
-include 'dbcon.php';
+require 'dbcon.php';
 
 if (isset($_POST['id'])) {
     $id = $_POST['id'];

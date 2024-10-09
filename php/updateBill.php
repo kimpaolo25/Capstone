@@ -1,6 +1,6 @@
 <?php
 // Include the database connection file
-include 'dbcon.php';
+require 'dbcon.php';
 
 header('Content-Type: application/json');
 

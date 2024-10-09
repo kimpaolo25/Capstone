@@ -1,5 +1,5 @@
 <?php
-include 'dbcon.php'; // Include your database connection
+require 'dbcon.php';
 
 // Check if `id` is set in the GET request
 if (isset($_GET['id'])) {
