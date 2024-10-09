@@ -95,11 +95,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 plugins: [ChartDataLabels] // Register the datalabels plugin
             });
 
-
-
-
-
-
             // Function to generate random RGBA color
             function getRandomColor() {
                 const r = Math.floor(Math.random() * 256); // Random red
@@ -268,115 +263,247 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             // Total income per month chart
-            const labelsMonth = data.incomePerMonth.map(item => item.Date_column);
-            const valuesMonth = data.incomePerMonth.map(item => {
-                const value = parseFloat(item.total);
-                if (isNaN(value)) {
-                    console.error(`Invalid total value for Month ${item.Date_column}: ${item.total}`);
-                }
-                return isNaN(value) ? 0 : value;
-            });
+const labelsMonth = data.incomePerMonth.map(item => item.Date_column);
+const valuesMonth = data.incomePerMonth.map(item => {
+    const value = parseFloat(item.total);
+    if (isNaN(value)) {
+        console.error(`Invalid total value for Month ${item.Date_column}: ${item.total}`);
+    }
+    return isNaN(value) ? 0 : value;
+});
 
-            const ctxMonth = document.getElementById('incomeMonthChart').getContext('2d');
-            new Chart(ctxMonth, {
-                type: 'line',
-                data: {
-                    labels: labelsMonth,
-                    datasets: [{
-                        label: 'Total Income per Month',
-                        data: valuesMonth,
-                        borderColor: 'rgba(255, 159, 64, 1)',
-                        backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false // Hide labels at the top
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Month' // X-axis label
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function (value) {
-                                    return currencyFormatter.format(value);
-                                }
-                            },
-                            title: {
-                                display: true,
-                                text: 'Total Income (PHP)' // Y-axis label
-                            }
-                        }
+const ctxMonth = document.getElementById('incomeMonthChart').getContext('2d');
+totalIncomeChartInstance = new Chart(ctxMonth, {
+    type: 'line',
+    data: {
+        labels: labelsMonth,
+        datasets: [{
+            label: 'Total Income per Month',
+            data: valuesMonth,
+            borderColor: 'rgba(255, 159, 64, 1)',
+            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false // Hide labels at the top
+            }
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Month' // X-axis label
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function (value) {
+                        return currencyFormatter.format(value);
                     }
-                }
-            });
-
-
-
-            // Cubic meter consumption per month chart
-            const labelsCubicMeter = data.cubicMeterPerMonth.map(item => item.Date_column);
-            const valuesCubicMeter = data.cubicMeterPerMonth.map(item => {
-                const value = parseFloat(item.total);
-                if (isNaN(value)) {
-                    console.error(`Invalid total value for Month ${item.Date_column}: ${item.total}`);
-                }
-                return isNaN(value) ? 0 : value;
-            });
-
-            const ctxCubicMeter = document.getElementById('cubicMeterChart').getContext('2d');
-            new Chart(ctxCubicMeter, {
-                type: 'line',
-                data: {
-                    labels: labelsCubicMeter,
-                    datasets: [{
-                        label: 'Cubic Meter Consumption per Month',
-                        data: valuesCubicMeter,
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderWidth: 1
-                    }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: false // Hide labels at the top
-                        }
-                    },
-                    scales: {
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Month' // X-axis label
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function (value) {
-                                    return value + ' m³';  // Display cubic meters (m³)
-                                }
-                            },
-                            title: {
-                                display: true,
-                                text: 'Cubic Meters (m³)' // Y-axis label
-                            }
-                        }
-                    }
+                title: {
+                    display: true,
+                    text: 'Total Income (PHP)' // Y-axis label
                 }
-            });
+            }
+        }
+    }
+});
+
+// Cubic meter consumption per month chart
+const labelsCubicMeter = data.cubicMeterPerMonth.map(item => item.Date_column);
+const valuesCubicMeter = data.cubicMeterPerMonth.map(item => {
+    const value = parseFloat(item.total);
+    if (isNaN(value)) {
+        console.error(`Invalid total value for Month ${item.Date_column}: ${item.total}`);
+    }
+    return isNaN(value) ? 0 : value;
+});
+
+const ctxCubicMeter = document.getElementById('cubicMeterChart').getContext('2d');
+cubicMeterChartInstance = new Chart(ctxCubicMeter, {
+    type: 'line',
+    data: {
+        labels: labelsCubicMeter,
+        datasets: [{
+            label: 'Cubic Meter Consumption per Month',
+            data: valuesCubicMeter,
+            borderColor: 'rgba(54, 162, 235, 1)',
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                display: false // Hide labels at the top
+            }
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Month' // X-axis label
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function (value) {
+                        return value + ' m³';  // Display cubic meters (m³)
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Cubic Meters (m³)' // Y-axis label
+                }
+            }
+        }
+    }
+});
 
 
 
         })
         .catch(error => console.error('Error fetching data:', error));
 });
+
+
+// Variable to hold the chart instance for Total Income
+let totalIncomeChartInstance;
+
+// Variable to hold the chart instance for Cubic Meter Consumption
+let cubicMeterChartInstance;
+
+function updateCharts() {
+    console.log('updateCharts function called');
+    const yearDropdown = document.getElementById('yearFilter');
+    const selectedYear = yearDropdown.value;
+    console.log('Selected year:', selectedYear);
+
+    if (selectedYear) {
+        fetch(`./php/descriptiveData.php?year=${selectedYear}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Data received from server:', data); // Log the response data
+
+                // Check if the totalIncomePerYear data exists
+                if (data.totalIncomePerYear) {
+                    console.log('Total Income Data:', data.totalIncomePerYear); // Log total income data
+                    updateTotalIncomeChart(data.totalIncomePerYear);
+                } else {
+                    console.warn('Total Income data is not available for the selected year.');
+                }
+
+                // Check if the cubicMeterConsumptionPerYear data exists
+                if (data.cubicMeterConsumptionPerYear) {
+                    console.log('Cubic Meter Consumption Data:', data.cubicMeterConsumptionPerYear); // Log consumption data
+                    updateCubicMeterChart(data.cubicMeterConsumptionPerYear);
+                } else {
+                    console.warn('Cubic Meter Consumption data is not available for the selected year.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    } else {
+        console.warn('No year selected in the dropdown.');
+    }
+}
+
+// Add event listener for the dropdown change
+const yearDropdown = document.getElementById('yearFilter'); // Ensure you get the dropdown element
+yearDropdown.addEventListener('change', updateCharts);
+
+// Initial call to populate the charts
+updateCharts();
+
+// Function to update Total Income per Month chart
+function updateTotalIncomeChart(incomeData) {
+    const canvas = document.getElementById('incomeMonthChart');
+    const ctx = canvas.getContext('2d');
+
+    if (totalIncomeChartInstance) {
+        totalIncomeChartInstance.data.labels = incomeData.labels;
+        totalIncomeChartInstance.data.datasets[0].data = incomeData.values;
+        console.log('Updating existing Total Income chart with new data.'); // Log when updating
+        totalIncomeChartInstance.update();
+    } else {
+        console.log('Creating new Total Income chart instance.'); // Log when creating a new chart
+        totalIncomeChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: incomeData.labels,
+                datasets: [{
+                    label: 'Total Income (₱)',
+                    data: incomeData.values,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₱' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+// Function to update Cubic Meter Consumption per Month chart
+function updateCubicMeterChart(consumptionData) {
+    const canvas = document.getElementById('cubicMeterChart');
+    const ctx = canvas.getContext('2d');
+
+    if (cubicMeterChartInstance) {
+        cubicMeterChartInstance.data.labels = consumptionData.labels;
+        cubicMeterChartInstance.data.datasets[0].data = consumptionData.values;
+        console.log('Updating existing Cubic Meter Consumption chart with new data.'); // Log when updating
+        cubicMeterChartInstance.update();
+    } else {
+        console.log('Creating new Cubic Meter Consumption chart instance.'); // Log when creating a new chart
+        cubicMeterChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: consumptionData.labels,
+                datasets: [{
+                    label: 'Cubic Meter Consumption',
+                    data: consumptionData.values,
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' m³';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+}
+
+

@@ -87,6 +87,16 @@ $userName = $_SESSION['name'];
             <canvas id="incomeAreaChart"></canvas>
         </div>
 
+    </div>
+        <!-- Year Filter Dropdown -->
+        <div class="filter-dropdown">
+            <label for="yearFilter">Select Year:</label>
+            <select id="yearFilter" onchange="updateCharts()">
+                <option value="">--Select Year--</option>
+            </select>
+    </div>
+
+    <div class="descDashboard2">
         <div class="card_chart">
             <h2>Total Income per Month</h2>
             <canvas id="incomeMonthChart"></canvas>

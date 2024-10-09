@@ -117,7 +117,7 @@ header {
     gap: 10px;
     width: 1000px;
     max-width: 100%;
-    margin-left: 400px;
+    margin-left: 450px; /* Increase this value to move it slightly to the right */
     margin-top: 150px;
     padding: 10px;
 }
@@ -329,3 +329,38 @@ h2{
     }
 }
   
+.filter-dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Aligns items to the left */
+    margin: 10px 0; /* Reduce margin above and below the dropdown */
+    padding: 10px;
+    border-radius: 25px; /* Rounded capsule effect */
+    background-color: #f2f2f2; /* Light background color */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    width: fit-content; /* Shrink to fit content */
+    margin-left: 20px; /* Move slightly to the right */
+}
+
+.filter-dropdown label {
+    margin-right: 10px; /* Space between label and dropdown */
+}
+
+.bold-label {
+    font-weight: bold; /* Make label bold */
+}
+
+.filter-dropdown select {
+    padding: 5px 10px; /* Padding for the dropdown */
+    border: 1px solid #ccc; /* Border for the dropdown */
+    border-radius: 5px; /* Slightly rounded corners */
+    font-size: 14px; /* Font size for the dropdown */
+    background-color: #fff; /* White background for dropdown */
+    cursor: pointer; /* Change cursor on hover */
+}
+
+/* Optional: Change dropdown border on focus */
+.filter-dropdown select:focus {
+    border-color: #007BFF; /* Highlight border color */
+    outline: none; /* Remove default outline */
+}
