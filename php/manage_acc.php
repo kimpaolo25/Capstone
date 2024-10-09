@@ -1,5 +1,5 @@
 <?php
-include 'dbcon.php';
+require 'dbcon.php';
 
 $query = "SELECT id, name, username FROM users";
 $result = mysqli_query($conn, $query);

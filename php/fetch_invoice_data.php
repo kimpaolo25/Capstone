@@ -1,6 +1,6 @@
 <?php
 // fetch_invoice.php
-include('dbcon.php'); // Make sure to include your database connection
+require 'dbcon.php';
 
 $detailId = $_POST['detailId']; // Assuming you pass the detailId via POST
 

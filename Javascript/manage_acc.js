@@ -145,15 +145,22 @@ function openUpdateModal(id) {
         if (xhr.status === 200) {
             const response = JSON.parse(xhr.responseText);
             if (response) {
-                // Populate modal fields with data
+                // Set the user_level value in the dropdown
+                if (response.user_level == 1) {
+                    document.getElementById("modalUserLevel").value = "Admin"; // Set to "Admin"
+                } else if (response.user_level == 2) {
+                    document.getElementById("modalUserLevel").value = "Staff"; // Set to "Staff"
+                }
+    
+                // Populate other modal fields with data
                 document.getElementById("modalName").value = response.name;
                 document.getElementById("modalUname").value = response.username;
-
+    
                 // Clear password fields
                 document.getElementById("modalCurrentpass").value = "";
                 document.getElementById("modalNewpass").value = "";
                 document.getElementById("modalConfirmpass").value = "";
-
+    
                 // Show the modal
                 updateModal.style.display = "flex"; // Show update modal
             }
@@ -161,9 +168,9 @@ function openUpdateModal(id) {
             console.error("Error fetching data:", xhr.status, xhr.statusText);
         }
     };
-
+    
     xhr.send("id=" + id);
-}
+}    
 
 // Function to delete a user
 function deleteUser(userId) {
