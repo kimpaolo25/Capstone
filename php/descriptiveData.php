@@ -22,8 +22,8 @@ $currentMonth = date('M');
 $sqlBillsThisMonth = "
     SELECT COUNT(*) AS count 
     FROM customers 
-    WHERE SUBSTRING(Date_column, 1, 4) = '$currentYear' 
-      AND SUBSTRING(Date_column, 6, 3) = '$currentMonth'";
+    WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$currentYear' 
+      AND MONTHNAME(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$currentMonth'";
 $resultBillsThisMonth = $conn->query($sqlBillsThisMonth);
 $billsThisMonth = $resultBillsThisMonth->fetch_assoc()['count'];
 
@@ -31,14 +31,15 @@ $billsThisMonth = $resultBillsThisMonth->fetch_assoc()['count'];
 $sqlBillsThisYear = "
     SELECT COUNT(*) AS count 
     FROM customers 
-    WHERE SUBSTRING(Date_column, 1, 4) = '$currentYear'";
+    WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$currentYear'";
 $resultBillsThisYear = $conn->query($sqlBillsThisYear);
 $billsThisYear = $resultBillsThisYear->fetch_assoc()['count'];
 
 // Query for overall income in the current year
-$sqlOverallIncome = "SELECT IFNULL(SUM(Amount), 0) AS total 
-                     FROM customers 
-                     WHERE Date_column LIKE CONCAT('$currentYear', '-%')";
+$sqlOverallIncome = "
+    SELECT IFNULL(SUM(Amount), 0) AS total 
+    FROM customers 
+    WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$currentYear'";
 $resultOverallIncome = $conn->query($sqlOverallIncome);
 $overallIncome = $resultOverallIncome->fetch_assoc()['total'];
 
@@ -46,8 +47,8 @@ $overallIncome = $resultOverallIncome->fetch_assoc()['total'];
 $sqlInactive = "
     SELECT COUNT(*) AS inactive_count 
     FROM customers 
-    WHERE SUBSTRING(Date_column, 1, 4) = '$currentYear' 
-      AND SUBSTRING(Date_column, 6, 3) = '$currentMonth' 
+    WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$currentYear' 
+      AND MONTHNAME(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$currentMonth' 
       AND Amount = 0.00";
 $resultInactive = $conn->query($sqlInactive);
 $inactiveCount = $resultInactive->fetch_assoc()['inactive_count'];
@@ -64,7 +65,7 @@ $chartData = [
 // Query for total income per year (for all years)
 $sqlTotalIncomePerYear = "
     SELECT 
-        SUBSTRING(Date_column, 1, 4) AS year, 
+        YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) AS year, 
         IFNULL(SUM(Amount), 0) AS total 
     FROM customers 
     GROUP BY year 
@@ -95,12 +96,12 @@ while ($row = $resultTotalIncomePerArea->fetch_assoc()) {
 
 // Query for total income per month in chronological order
 $sqlIncomePerMonth = "
-    SELECT Date_column, IFNULL(SUM(Amount), 0) AS total 
+    SELECT STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d') AS Date_column, IFNULL(SUM(Amount), 0) AS total 
     FROM customers 
     GROUP BY Date_column
     ORDER BY 
-        SUBSTRING(Date_column, 1, 4) ASC,
-        FIELD(SUBSTRING(Date_column, 6, 3), 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec') ASC";
+        YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) ASC,
+        MONTH(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) ASC";
 $resultIncomePerMonth = $conn->query($sqlIncomePerMonth);
 
 $incomePerMonth = [];
@@ -110,12 +111,12 @@ while ($row = $resultIncomePerMonth->fetch_assoc()) {
 
 // Query for cubic meter consumption per month in chronological order
 $sqlCubicMeterPerMonth = "
-    SELECT Date_column, IFNULL(SUM(CU_M), 0) AS total 
+    SELECT STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d') AS Date_column, IFNULL(SUM(CU_M), 0) AS total 
     FROM customers 
     GROUP BY Date_column
     ORDER BY 
-        SUBSTRING(Date_column, 1, 4) ASC,
-        FIELD(SUBSTRING(Date_column, 6, 3), 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec') ASC";
+        YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) ASC,
+        MONTH(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) ASC";
 $resultCubicMeterPerMonth = $conn->query($sqlCubicMeterPerMonth);
 
 $cubicMeterPerMonth = [];
@@ -124,7 +125,6 @@ while ($row = $resultCubicMeterPerMonth->fetch_assoc()) {
 }
 
 // Additional code for filtering by year (if year parameter is provided)
-// Validate year parameter
 if ($year) {
     if (!preg_match('/^\d{4}$/', $year)) {
         die(json_encode(['error' => 'Invalid year parameter.']));
@@ -132,61 +132,43 @@ if ($year) {
 
     // Query for income per month for the specific year
     $incomeQuery = "
-        SELECT MONTH(STR_TO_DATE(Date_column, '%Y-%b')) AS month,
-               Amount 
+        SELECT MONTH(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) AS month,
+               SUM(Amount) AS totalIncome
         FROM customers 
-        WHERE YEAR(STR_TO_DATE(Date_column, '%Y-%b')) = '$year'
+        WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$year'
+        GROUP BY month
         ORDER BY month";
 
-    error_log("Income Query: " . $incomeQuery); // Log the query
     $incomeResult = $conn->query($incomeQuery);
     $incomeData = ['labels' => [], 'values' => []];
 
     if ($incomeResult) {
-        if ($incomeResult->num_rows > 0) {
-            while ($row = $incomeResult->fetch_assoc()) {
-                $incomeData['labels'][] = date('F', mktime(0, 0, 0, $row['month'], 10)); // Converts month number to name
-                $incomeData['values'][] = (float)$row['totalIncome'];
-            }
-        } else {
-            error_log("No income data found for year: $year");
+        while ($row = $incomeResult->fetch_assoc()) {
+            $incomeData['labels'][] = date('F', mktime(0, 0, 0, $row['month'], 10));
+            $incomeData['values'][] = (float)$row['totalIncome'];
         }
-    } else {
-        error_log("Error in income query: " . $conn->error);
     }
-
-    // Log income data
-    error_log("Income Data: " . print_r($incomeData, true));
 
     $response['totalIncomePerYear'] = $incomeData;
 
-     // Query for Cubic Meter Consumption per Year
-     $consumptionQuery = "
-     SELECT MONTH(STR_TO_DATE(Date_column, '%Y-%b')) AS month,
-            CU_M 
-     FROM customers 
-     WHERE YEAR(STR_TO_DATE(Date_column, '%Y-%b')) = '$year' 
-     ORDER BY month";
+    // Query for Cubic Meter Consumption per Year
+    $consumptionQuery = "
+        SELECT MONTH(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) AS month,
+               SUM(CU_M) AS totalConsumption
+        FROM customers 
+        WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$year' 
+        GROUP BY month
+        ORDER BY month";
 
-    error_log("Consumption Query: " . $consumptionQuery); // Log the query
     $consumptionResult = $conn->query($consumptionQuery);
     $consumptionData = ['labels' => [], 'values' => []];
 
     if ($consumptionResult) {
-        if ($consumptionResult->num_rows > 0) {
-            while ($row = $consumptionResult->fetch_assoc()) {
-                $consumptionData['labels'][] = date('F', mktime(0, 0, 0, $row['month'], 10)); // Converts month number to name
-                $consumptionData['values'][] = (float)$row['totalConsumption'];
-            }
-        } else {
-            error_log("No consumption data found for year: $year");
+        while ($row = $consumptionResult->fetch_assoc()) {
+            $consumptionData['labels'][] = date('F', mktime(0, 0, 0, $row['month'], 10));
+            $consumptionData['values'][] = (float)$row['totalConsumption'];
         }
-    } else {
-        error_log("Error in consumption query: " . $conn->error);
     }
-
-    // Log consumption data
-    error_log("Consumption Data: " . print_r($consumptionData, true));
 
     $response['cubicMeterConsumptionPerYear'] = $consumptionData;
 }

@@ -263,7 +263,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
             // Total income per month chart
-const labelsMonth = data.incomePerMonth.map(item => item.Date_column);
+const labelsMonth = data.incomePerMonth.map(item => {
+    const date = new Date(item.Date_column);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+});
 const valuesMonth = data.incomePerMonth.map(item => {
     const value = parseFloat(item.total);
     if (isNaN(value)) {
@@ -316,7 +319,10 @@ totalIncomeChartInstance = new Chart(ctxMonth, {
 });
 
 // Cubic meter consumption per month chart
-const labelsCubicMeter = data.cubicMeterPerMonth.map(item => item.Date_column);
+const labelsCubicMeter = data.cubicMeterPerMonth.map(item => {
+    const date = new Date(item.Date_column);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+});
 const valuesCubicMeter = data.cubicMeterPerMonth.map(item => {
     const value = parseFloat(item.total);
     if (isNaN(value)) {
