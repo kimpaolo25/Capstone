@@ -107,57 +107,95 @@ function scrollToTop() {
     }
 }
 
+let filtersActive = false; // Variable to track if filters are active
+
+// Function to check if filters are active
+function checkFilters() {
+    const yearFilter = document.getElementById('yearFilter').value.trim();
+    const areaFilter = document.getElementById('areaFilter').value.trim();
+    const monthFilter = document.getElementById('monthFilter').value.trim();
+
+    // Check if any filter is selected
+    filtersActive = yearFilter !== "" || areaFilter !== "" || monthFilter !== "";
+}
+
 // Pagination controls
 function prevPage() {
-    if (currentPage > 1) {
+    checkFilters(); // Check if filters are active
+    if (currentPage > 1 && !filtersActive) {
         currentPage--; // Decrement current page
         offset -= limit; // Decrement offset to load the previous set of data
-        loadTableData(); // Fetch new data
-        scrollToTop(); // Scroll to the top of the table
+        loadPageData(); // Fetch new data
     }
 }
 
 function nextPage() {
-    if (currentPage < totalPages && !allDataLoaded) {
+    checkFilters(); // Check if filters are active
+    if (currentPage < totalPages && !allDataLoaded && !filtersActive) {
         currentPage++; // Increment current page
         offset += limit; // Increment offset to load the next set of data
-        loadTableData(); // Fetch new data
-        scrollToTop(); // Scroll to the top of the table
-    } else if (allDataLoaded) {
-        alert('You have reached the end of the data.'); // Alert when all data is loaded
-    } else {
-        alert('No more pages to load.'); // Alert if already on the last page
+        loadPageData(); // Fetch new data
     }
 }
 
 // Function to go to the first page
 function firstPage() {
-    if (currentPage > 1) {
+    checkFilters(); // Check if filters are active
+    if (currentPage > 1 && !filtersActive) {
         currentPage = 1; // Set current page to the first page
         offset = 0; // Reset offset for the first page
-        loadTableData(); // Fetch new data
-        scrollToTop(); // Scroll to the top of the table
+        loadPageData(); // Fetch new data
     }
 }
 
 // Function to go to the last page
 function lastPage() {
-    if (currentPage < totalPages) {
+    checkFilters(); // Check if filters are active
+    if (currentPage < totalPages && !filtersActive) {
         currentPage = totalPages; // Set current page to the last page
         offset = (totalPages - 1) * limit; // Calculate offset for the last page
-        loadTableData(); // Fetch new data
-        scrollToTop(); // Scroll to the top of the table
-    } else {
-        alert('You are already on the last page.'); // Alert if already on the last page
+        loadPageData(); // Fetch new data
+    } else if (currentPage >= totalPages) {
+        // Optional: Notify user they are already on the last page without using SweetAlert
+        console.log("Already on Last Page"); // Console log for user feedback
     }
 }
 
-// Function to enable/disable pagination buttons based on page
-function checkPaginationButtons() {
+// Function to load data based on the current search or original data
+function loadPageData() {
+    const searchQuery = document.getElementById('searchInput').value.trim();
+
+    if (searchQuery.length > 0) {
+        searchTable(); // Fetch new data based on the current search query
+    } else {
+        loadTableData(); // Fetch original data if no search query
+    }
+}
+
+// Reset Filters Functionality
+document.getElementById('resetFilters').addEventListener('click', function() {
+    document.getElementById('yearFilter').value = '';
+    document.getElementById('areaFilter').value = '';
+    document.getElementById('monthFilter').value = '';
+    filtersActive = false; // Reset filters active status
+    loadPageData(); // Reload data without filters
+});
+
+
+
+
+
+// Function to enable/disable pagination buttons based on page and available data
+function checkPaginationButtons(totalCount) {
     document.getElementById('prevPageBtn').disabled = currentPage === 1; // Disable Prev on first page
-    document.getElementById('nextPageBtn').disabled = currentPage >= totalPages || allDataLoaded; // Disable Next if on last page or all data loaded
+    document.getElementById('nextPageBtn').disabled = (currentPage * limit) >= totalCount; // Disable Next if there are no more pages
     document.getElementById('firstPageBtn').disabled = currentPage === 1; // Disable First on first page
-    document.getElementById('lastPageBtn').disabled = currentPage >= totalPages; // Disable Last on last page
+    document.getElementById('lastPageBtn').disabled = (currentPage * limit) >= totalCount; // Disable Last if on last page
+}
+
+// Helper function to check if there's no more data available
+function noMoreData() {
+    return tableData.length === 0; // Check if the current page has any data
 }
 
 
@@ -177,8 +215,8 @@ const areaNumberToName = {
 function searchTable() {
     const searchQuery = document.getElementById('searchInput').value.trim(); // Trim to avoid unnecessary spaces
 
+    // When search input is empty, reset the table and fetch original data
     if (searchQuery.length === 0) {
-        // When search input is empty, reset the table and fetch original data
         resetTable();
         return;
     }
@@ -186,7 +224,7 @@ function searchTable() {
     // Reset pagination when searching
     offset = 0; // Reset to the first page
     currentPage = 1; // Set current page to 1
-    allDataLoaded = false;
+    limit = 300; // Define the limit for the search
 
     // Make an AJAX request to search in the database
     fetch(`./php/search.php?query=${encodeURIComponent(searchQuery)}&offset=${offset}&limit=${limit}`)
@@ -241,7 +279,9 @@ function searchTable() {
                     tableBody.appendChild(row);
                 });
 
-                // Optionally, update pagination controls here based on totalRecords
+                // Update pagination controls based on the new total records
+                totalPages = Math.ceil(totalRecords / limit);
+                checkPaginationButtons(totalRecords); // Update buttons' state
             }
         })
         .catch(error => {
@@ -255,13 +295,17 @@ function searchTable() {
         });
 }
 
-// Add event listener to search input for real-time search (on every keystroke)
+// Add an event listener to check pagination buttons after searching
 document.getElementById('searchInput').addEventListener('input', function () {
+    // Reset pagination when searching
+    offset = 0; // Reset offset
+    currentPage = 1; // Reset current page
     searchTable(); // Call search function on every input change
 });
 
 // Function to reset the table (show all rows)
 function resetTable() {
+    // Resetting logic to show all rows goes here (similar to your original code)
     const rows = Array.from(document.querySelectorAll('#dataTable tbody tr'));
 
     // Show all rows
@@ -285,7 +329,11 @@ function resetTable() {
 
     // Reset pagination info
     totalRecords = rows.length; // Assuming original data is all rows
+    totalPages = Math.ceil(totalRecords / limit); // Calculate total pages based on original data
+    currentPage = 1; // Reset current page
+    checkPaginationButtons(totalRecords); // Update buttons' state
 }
+
 
 
 
@@ -340,7 +388,10 @@ function reloadTable() {
             <button class="print-btn" data-id="${row['bill_id']}">Print Invoice</button>
         `;
     });
+
+    // Reset to first page after reloading the table
 }
+
 
 
 // Mapping of area names to numbers
@@ -494,4 +545,5 @@ function clearFilter() {
     document.getElementById('yearFilter').value = '';
     document.getElementById('areaFilter').value = '';
     document.getElementById('monthFilter').value = '';
+    firstPage(); // Call to navigate to the first page
 }

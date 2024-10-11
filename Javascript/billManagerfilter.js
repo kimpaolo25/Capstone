@@ -102,7 +102,7 @@ function resetFilters() {
     document.getElementById('monthFilter').value = '';
     reloadTable(); // Reapply the filter to show all rows
     // Scroll to the top of the table
-    scrollToTop()
+    scrollToTop()   
 }
 
 // Add event listeners to filter dropdowns
@@ -112,17 +112,3 @@ document.getElementById('monthFilter').addEventListener('change', filterTable);
 
 // Add event listener to reset button
 document.getElementById('resetFilters').addEventListener('click', resetFilters);
-
-// Initialize year options on document load
-document.addEventListener('DOMContentLoaded', function() {
-    const yearSelect = document.getElementById('yearFilter');
-    const startYear = 2020;
-    const currentYear = new Date().getFullYear();
-
-    for (let year = startYear; year <= currentYear; year++) {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        yearSelect.appendChild(option);
-    }
-});

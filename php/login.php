@@ -1,11 +1,14 @@
 <?php
 session_start();
-require_once 'dbcon.php'; // Use your dbcon.php file to connect to the database
+require_once 'dbcon.php'; // Include your database connection
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Fetch data from the login form
-    $username = $_POST['username'];
+    $username = $_POST['username']; // Use the username as is
     $password = $_POST['password'];
+
+    // Debugging: Print the username for checking
+    error_log("Username entered: " . $username); // Log the entered username
 
     // Prepare the SQL query to get the user details
     $sql = "SELECT id, name, username, password_hash, user_level FROM users WHERE username = ?";

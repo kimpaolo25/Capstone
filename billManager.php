@@ -84,7 +84,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
             <input type="text" id="searchInput" placeholder="Search...">
 
             <button id="reloadButton" title="Reload Table"
-                onclick="reloadTable(); scrollToTop(); firstPage(); clearFilter()">
+                onclick="reloadTable(); scrollToTop(); clearFilter()">
                 <i class="fas fa-sync-alt"></i> <!-- Font Awesome reload icon -->
             </button>
         </div>

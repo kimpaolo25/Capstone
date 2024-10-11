@@ -13,7 +13,7 @@ $searchQuery = $_GET['query'] ?? '';
 $searchQuery = $conn->real_escape_string($searchQuery); // Prevent SQL injection
 
 // Pagination parameters
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // Default to 10 records per page
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 300; // Default to 10 records per page
 $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0; // Default to start from the first record
 
 // Query to fetch records based on search query
