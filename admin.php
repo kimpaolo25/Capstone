@@ -26,6 +26,7 @@ $userName = $_SESSION['name'];
     <script src="./javascript/admin.js" defer></script>
     <script src="./javascript/prediction.js" defer></script>
     <script src="./javascript/descriptive.js" defer></script>
+    <script src="./Javascript/updateCharts.js" defer></script>
 </head>
 
 <body>
