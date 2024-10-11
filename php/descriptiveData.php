@@ -1,45 +1,53 @@
 <?php
 header('Content-Type: application/json');
 
+// Database connection
 require 'dbcon.php';
 
 // Check connection
 if ($conn->connect_error) {
-    die(json_encode(['error' => 'Connection failed: ' . $conn->connect_error]));
+    die("Connection failed: " . $conn->connect_error);
 }
 
-// Get the year parameter from the request
-$year = isset($_GET['year']) ? $conn->real_escape_string($_GET['year']) : '';
-
-// Default values
-$response = [];
-
-// Existing queries (unchanged)
+// Get current year and month
 $currentYear = date('Y');
-$currentMonth = date('M');
+$currentMonth = date('M'); // Use 'M' to match the format in the database
+
+// Get current year and month
+$currentYear = date('Y');
+$currentMonth = date('M'); // Use 'M' to match the format in the database
 
 // Query for number of bills this month
 $sqlBillsThisMonth = "
     SELECT COUNT(*) AS count 
     FROM customers 
-    WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$currentYear' 
-      AND MONTHNAME(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$currentMonth'";
+    WHERE SUBSTRING(Date_column, 1, 4) = '$currentYear' 
+      AND SUBSTRING(Date_column, 6, 3) = '$currentMonth'";
 $resultBillsThisMonth = $conn->query($sqlBillsThisMonth);
 $billsThisMonth = $resultBillsThisMonth->fetch_assoc()['count'];
+
+
+// Query for number of bills this month
+$sqlIncomesThisMonth = "
+    SELECT IFNULL(SUM(Amount), 0) AS monthTotal  
+    FROM customers 
+    WHERE SUBSTRING(Date_column, 1, 4) = '$currentYear' 
+      AND SUBSTRING(Date_column, 6, 3) = '$currentMonth'";
+$resultIncomesThisMonth = $conn->query($sqlIncomesThisMonth);
+$incomesThisMonth = $resultIncomesThisMonth->fetch_assoc()['monthTotal'];
 
 // Query for number of bills this year
 $sqlBillsThisYear = "
     SELECT COUNT(*) AS count 
     FROM customers 
-    WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$currentYear'";
+    WHERE SUBSTRING(Date_column, 1, 4) = '$currentYear'";
 $resultBillsThisYear = $conn->query($sqlBillsThisYear);
 $billsThisYear = $resultBillsThisYear->fetch_assoc()['count'];
 
 // Query for overall income in the current year
-$sqlOverallIncome = "
-    SELECT IFNULL(SUM(Amount), 0) AS total 
-    FROM customers 
-    WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$currentYear'";
+$sqlOverallIncome = "SELECT IFNULL(SUM(Amount), 0) AS total 
+                     FROM customers 
+                     WHERE Date_column LIKE CONCAT('$currentYear', '-%')";
 $resultOverallIncome = $conn->query($sqlOverallIncome);
 $overallIncome = $resultOverallIncome->fetch_assoc()['total'];
 
@@ -47,8 +55,8 @@ $overallIncome = $resultOverallIncome->fetch_assoc()['total'];
 $sqlInactive = "
     SELECT COUNT(*) AS inactive_count 
     FROM customers 
-    WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$currentYear' 
-      AND MONTHNAME(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$currentMonth' 
+    WHERE SUBSTRING(Date_column, 1, 4) = '$currentYear' 
+      AND SUBSTRING(Date_column, 6, 3) = '$currentMonth' 
       AND Amount = 0.00";
 $resultInactive = $conn->query($sqlInactive);
 $inactiveCount = $resultInactive->fetch_assoc()['inactive_count'];
@@ -62,10 +70,11 @@ $chartData = [
     'Inactive' => $inactiveCount
 ];
 
+
 // Query for total income per year (for all years)
 $sqlTotalIncomePerYear = "
     SELECT 
-        YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) AS year, 
+        SUBSTRING(Date_column, 1, 4) AS year, 
         IFNULL(SUM(Amount), 0) AS total 
     FROM customers 
     GROUP BY year 
@@ -73,9 +82,8 @@ $sqlTotalIncomePerYear = "
 $resultTotalIncomePerYear = $conn->query($sqlTotalIncomePerYear);
 
 $totalIncomePerYear = [];
-while ($row = $resultTotalIncomePerYear->fetch_assoc()) {
+while ($row = $resultTotalIncomePerYear->fetch_assoc()) 
     $totalIncomePerYear[] = $row;
-}
 
 // Query for total income per area with area names
 $sqlTotalIncomePerArea = "
@@ -90,33 +98,32 @@ $totalIncomePerArea = [];
 while ($row = $resultTotalIncomePerArea->fetch_assoc()) {
     $totalIncomePerArea[] = [
         'places_name' => $row['places_name'],
-        'total_income' => (float)$row['total_income']
+        'total_income' => (float)$row['total_income'] // Explicitly cast to float
     ];
 }
 
 // Query for total income per month in chronological order
 $sqlIncomePerMonth = "
-    SELECT STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d') AS Date_column, IFNULL(SUM(Amount), 0) AS total 
+    SELECT Date_column, IFNULL(SUM(Amount), 0) AS total 
     FROM customers 
     GROUP BY Date_column
     ORDER BY 
-        YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) ASC,
-        MONTH(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) ASC";
+        SUBSTRING(Date_column, 1, 4) ASC, -- Sort by year first
+        FIELD(SUBSTRING(Date_column, 6, 3), 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec') ASC"; // Sort months in correct order
 $resultIncomePerMonth = $conn->query($sqlIncomePerMonth);
 
 $incomePerMonth = [];
-while ($row = $resultIncomePerMonth->fetch_assoc()) {
+while ($row = $resultIncomePerMonth->fetch_assoc()) 
     $incomePerMonth[] = $row;
-}
 
 // Query for cubic meter consumption per month in chronological order
 $sqlCubicMeterPerMonth = "
-    SELECT STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d') AS Date_column, IFNULL(SUM(CU_M), 0) AS total 
+    SELECT Date_column, IFNULL(SUM(CU_M), 0) AS total 
     FROM customers 
     GROUP BY Date_column
     ORDER BY 
-        YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) ASC,
-        MONTH(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) ASC";
+        SUBSTRING(Date_column, 1, 4) ASC, -- Sort by year
+        FIELD(SUBSTRING(Date_column, 6, 3), 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec') ASC"; // Sort by month
 $resultCubicMeterPerMonth = $conn->query($sqlCubicMeterPerMonth);
 
 $cubicMeterPerMonth = [];
@@ -124,71 +131,20 @@ while ($row = $resultCubicMeterPerMonth->fetch_assoc()) {
     $cubicMeterPerMonth[] = $row;
 }
 
-// Additional code for filtering by year (if year parameter is provided)
-if ($year) {
-    if (!preg_match('/^\d{4}$/', $year)) {
-        die(json_encode(['error' => 'Invalid year parameter.']));
-    }
-
-    // Query for income per month for the specific year
-    $incomeQuery = "
-        SELECT MONTH(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) AS month,
-               SUM(Amount) AS totalIncome
-        FROM customers 
-        WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$year'
-        GROUP BY month
-        ORDER BY month";
-
-    $incomeResult = $conn->query($incomeQuery);
-    $incomeData = ['labels' => [], 'values' => []];
-
-    if ($incomeResult) {
-        while ($row = $incomeResult->fetch_assoc()) {
-            $incomeData['labels'][] = date('F', mktime(0, 0, 0, $row['month'], 10));
-            $incomeData['values'][] = (float)$row['totalIncome'];
-        }
-    }
-
-    $response['totalIncomePerYear'] = $incomeData;
-
-    // Query for Cubic Meter Consumption per Year
-    $consumptionQuery = "
-        SELECT MONTH(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) AS month,
-               SUM(CU_M) AS totalConsumption
-        FROM customers 
-        WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = '$year' 
-        GROUP BY month
-        ORDER BY month";
-
-    $consumptionResult = $conn->query($consumptionQuery);
-    $consumptionData = ['labels' => [], 'values' => []];
-
-    if ($consumptionResult) {
-        while ($row = $consumptionResult->fetch_assoc()) {
-            $consumptionData['labels'][] = date('F', mktime(0, 0, 0, $row['month'], 10));
-            $consumptionData['values'][] = (float)$row['totalConsumption'];
-        }
-    }
-
-    $response['cubicMeterConsumptionPerYear'] = $consumptionData;
-}
-
 // Close connection
 $conn->close();
 
-// Add existing data to the response
-$response = array_merge($response, [
+// Return data as JSON
+echo json_encode([
     'billsThisMonth' => $billsThisMonth,
     'billsThisYear' => $billsThisYear,
-    'overallIncome' => (float)$overallIncome,
-    'totalIncomePerYear' => $totalIncomePerYear,
-    'totalIncomePerArea' => $totalIncomePerArea,
-    'incomePerMonth' => $incomePerMonth,
-    'cubicMeterPerMonth' => $cubicMeterPerMonth,
+    'overallIncome' => (float) $overallIncome,
+    'totalIncomePerYear' => $totalIncomePerYear, // Include total income per year data
+    'totalIncomePerArea' => $totalIncomePerArea, // Include total income per area
+    'incomePerMonth' => $incomePerMonth,         // Include total income per month
+    'cubicMeterPerMonth' => $cubicMeterPerMonth,  // Cubic meter consumption per month
     'activeCount' => $activeCount,
     'inactiveCount' => $inactiveCount,
+    'incomesThisMonth' => $incomesThisMonth,
 ]);
-
-// Return the final response as JSON
-echo json_encode($response);
 ?>

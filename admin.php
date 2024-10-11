@@ -62,6 +62,12 @@ $userName = $_SESSION['name'];
             <div id="billsThisYear">Loading...</div>
         </div>
 
+        <!-- Card for Overall Income this month -->
+        <div class="card_chart">
+            <h2>Expected Income This Month</h2>
+            <div id="overallIncomeThisMonth">Loading...</div>
+        </div>
+
         <!-- Card for Overall Income -->
         <div class="card_chart">
             <h2>Expected Income This Year</h2>

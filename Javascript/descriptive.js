@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Ensure data is in the correct format
             const overallIncome = parseFloat(data.overallIncome);
+            const incomesThisMonth = parseFloat(data.incomesThisMonth);
             const billsThisMonth = parseInt(data.billsThisMonth, 10);
             const billsThisYear = parseInt(data.billsThisYear, 10);
             const activeCount = parseInt(data.activeCount, 10);
@@ -13,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Log values to check if they are valid
             console.log('Overall Income:', overallIncome);
+            console.log('Overall Income This Month:', incomesThisMonth);
             console.log('Bills This Month:', billsThisMonth);
             console.log('Bills This Year:', billsThisYear);
             console.log('Active Count:', activeCount);
@@ -35,6 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('billsThisMonth').innerText = `${numberFormatter.format(billsThisMonth)} bill/s`;
             document.getElementById('billsThisYear').innerText = `${numberFormatter.format(billsThisYear)} bill/s`;
             document.getElementById('overallIncome').innerText = currencyFormatter.format(overallIncome);
+            document.getElementById('overallIncomeThisMonth').innerText = currencyFormatter.format(incomesThisMonth);
 
 
             // Create the pie chart for meter status
