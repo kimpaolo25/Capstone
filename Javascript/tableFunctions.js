@@ -107,22 +107,9 @@ function scrollToTop() {
     }
 }
 
-let filtersActive = false; // Variable to track if filters are active
-
-// Function to check if filters are active
-function checkFilters() {
-    const yearFilter = document.getElementById('yearFilter').value.trim();
-    const areaFilter = document.getElementById('areaFilter').value.trim();
-    const monthFilter = document.getElementById('monthFilter').value.trim();
-
-    // Check if any filter is selected
-    filtersActive = yearFilter !== "" || areaFilter !== "" || monthFilter !== "";
-}
-
 // Pagination controls
 function prevPage() {
-    checkFilters(); // Check if filters are active
-    if (currentPage > 1 && !filtersActive) {
+    if (currentPage > 1) {
         currentPage--; // Decrement current page
         offset -= limit; // Decrement offset to load the previous set of data
         loadPageData(); // Fetch new data
@@ -130,18 +117,30 @@ function prevPage() {
 }
 
 function nextPage() {
-    checkFilters(); // Check if filters are active
-    if (currentPage < totalPages && !allDataLoaded && !filtersActive) {
+    if (currentPage < totalPages && !allDataLoaded) {
         currentPage++; // Increment current page
         offset += limit; // Increment offset to load the next set of data
         loadPageData(); // Fetch new data
+    } else if (allDataLoaded) {
+        Swal.fire({
+            title: 'End of Data',
+            text: 'You have reached the end of the data.',
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
+    } else {
+        Swal.fire({
+            title: 'No More Pages',
+            text: 'No more pages to load.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
     }
 }
 
 // Function to go to the first page
 function firstPage() {
-    checkFilters(); // Check if filters are active
-    if (currentPage > 1 && !filtersActive) {
+    if (currentPage > 1) {
         currentPage = 1; // Set current page to the first page
         offset = 0; // Reset offset for the first page
         loadPageData(); // Fetch new data
@@ -150,39 +149,53 @@ function firstPage() {
 
 // Function to go to the last page
 function lastPage() {
-    checkFilters(); // Check if filters are active
-    if (currentPage < totalPages && !filtersActive) {
+    if (currentPage < totalPages) {
         currentPage = totalPages; // Set current page to the last page
         offset = (totalPages - 1) * limit; // Calculate offset for the last page
         loadPageData(); // Fetch new data
-    } else if (currentPage >= totalPages) {
-        // Optional: Notify user they are already on the last page without using SweetAlert
-        console.log("Already on Last Page"); // Console log for user feedback
-    }
-}
-
-// Function to load data based on the current search or original data
-function loadPageData() {
-    const searchQuery = document.getElementById('searchInput').value.trim();
-
-    if (searchQuery.length > 0) {
-        searchTable(); // Fetch new data based on the current search query
     } else {
-        loadTableData(); // Fetch original data if no search query
+        Swal.fire({
+            title: 'Already on Last Page',
+            text: 'You are already on the last page.',
+            icon: 'info',
+            confirmButtonText: 'OK'
+        });
     }
 }
 
-// Reset Filters Functionality
-document.getElementById('resetFilters').addEventListener('click', function() {
-    document.getElementById('yearFilter').value = '';
-    document.getElementById('areaFilter').value = '';
-    document.getElementById('monthFilter').value = '';
-    filtersActive = false; // Reset filters active status
-    loadPageData(); // Reload data without filters
-});
 
+// Function to load data based on the current filters or original data
+function loadPageData() {
+    const year = document.getElementById('yearFilter').value; // Get the selected year
+    const area = document.getElementById('areaFilter').value; // Get the selected area
+    const month = document.getElementById('monthFilter').value; // Get the selected month
 
+    // Create search query from selected filters
+    const searchQuery = {
+        year: year,
+        area: area,
+        month: month
+    };
 
+    // Check if any filter is applied
+    if (year || area || month) {
+        searchTable(searchQuery); // Pass the search query to the searchTable function
+        hidePaginationControls(); // Hide pagination controls when filtering
+    } else {
+        loadTableData(); // Fetch original data if no filters are applied
+        showPaginationControls(); // Show pagination controls when not filtering
+    }
+}
+
+// Function to hide pagination controls
+function hidePaginationControls() {
+    document.getElementById('paginationControls').style.display = 'none'; // Hide pagination controls
+}
+
+// Function to show pagination controls
+function showPaginationControls() {
+    document.getElementById('paginationControls').style.display = 'block'; // Show pagination controls
+}
 
 
 // Function to enable/disable pagination buttons based on page and available data
