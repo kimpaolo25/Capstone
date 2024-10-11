@@ -63,6 +63,19 @@ class AdminBillDisplay {
         return $data; // Return the fetched and formatted data
     }
 
+    // Method to get total record count
+    public function getTotalCount() {
+        $countQuery = "SELECT COUNT(*) as total FROM customers"; // Count total records
+        $result = $this->conn->query($countQuery);
+
+        if ($result) {
+            $row = $result->fetch_assoc();
+            return $row['total']; // Return total count
+        } else {
+            return 0; // Return 0 if there's an error
+        }
+    }
+
     // Method to format specific fields in a row of data
     private function formatRow($row) {
         // Format the 'Amount' field with peso sign (₱) and commas for better readability
@@ -81,7 +94,8 @@ $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
 
 $billDisplay = new AdminBillDisplay($conn);
 $data = $billDisplay->displayBills($limit, $offset);
+$totalCount = $billDisplay->getTotalCount(); // Get total count of records
 
-// Output JSON encoded data
-echo json_encode($data);
+// Output JSON encoded data including total count
+echo json_encode(['data' => $data, 'total' => $totalCount]);
 ?>

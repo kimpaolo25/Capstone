@@ -82,11 +82,11 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
 
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search...">
+
             <button id="reloadButton" title="Reload Table"
-                onclick="reloadTable(); document.getElementById('tableBody').scrollIntoView({ behavior: 'smooth' });">
+                onclick="reloadTable(); scrollToTop(); firstPage(); clearFilter()">
                 <i class="fas fa-sync-alt"></i> <!-- Font Awesome reload icon -->
             </button>
-
         </div>
 
     </div>
@@ -177,80 +177,83 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
 
     <!-- Modal HTML -->
     <div id="addBillModal" class="modal">
-    <div class="modal-content">
-        <span class="close"></span>
-        <div class="modal-header">Add Bill Report</div>
-        <form id="addBillForm">
-            <!-- Add radio buttons for input mode selection -->
-            <div class="modal-section">
-                <label>
-                    <input type="radio" name="inputMode" value="full" checked onclick="toggleInputMode('full')" id="activeRadio"/> Active
-                </label>
-                <label>
-                    <input type="radio" name="inputMode" value="minimal" onclick="toggleInputMode('minimal')" id="inactiveRadio" /> Lock/Inactive
-                </label>
-            </div>
-
-            <div class="modal-section">
-
-                <div class="modal-field" style="position: relative;">
-                    <input type="text" id="name" name="name" class="input-field" oninput="autocompleteSuggestions()" />
-                    <label for="name" class="label">Name</label>
-                    <ul id="suggestions"
-                        style="display: none; position: absolute; top: 100%; left: 0; border: 1px solid #2337ed; background-color: white; list-style: none; padding: 0; margin: 0; width: 89%; z-index: 1;">
-                    </ul>
+        <div class="modal-content">
+            <span class="close"></span>
+            <div class="modal-header">Add Bill Report</div>
+            <form id="addBillForm">
+                <!-- Add radio buttons for input mode selection -->
+                <div class="modal-section">
+                    <label>
+                        <input type="radio" name="inputMode" value="full" checked onclick="toggleInputMode('full')"
+                            id="activeRadio" /> Active
+                    </label>
+                    <label>
+                        <input type="radio" name="inputMode" value="minimal" onclick="toggleInputMode('minimal')"
+                            id="inactiveRadio" /> Lock/Inactive
+                    </label>
                 </div>
 
-                <div class="modal-field">
-                    <select name="area" class="area" id="area">
-                        <option value="">Select Area</option>
-                        <option value="1">Kanluran</option>
-                        <option value="2">Gitna</option>
-                        <option value="3">Silangan</option>
-                        <option value="4">Maramaine</option>
-                        <option value="5">Patik</option>
-                        <option value="6">Purok 6</option>
-                    </select>
+                <div class="modal-section">
+
+                    <div class="modal-field" style="position: relative;">
+                        <input type="text" id="name" name="name" class="input-field"
+                            oninput="autocompleteSuggestions()" />
+                        <label for="name" class="label">Name</label>
+                        <ul id="suggestions"
+                            style="display: none; position: absolute; top: 100%; left: 0; border: 1px solid #2337ed; background-color: white; list-style: none; padding: 0; margin: 0; width: 89%; z-index: 1;">
+                        </ul>
+                    </div>
+
+                    <div class="modal-field">
+                        <select name="area" class="area" id="area">
+                            <option value="">Select Area</option>
+                            <option value="1">Kanluran</option>
+                            <option value="2">Gitna</option>
+                            <option value="3">Silangan</option>
+                            <option value="4">Maramaine</option>
+                            <option value="5">Patik</option>
+                            <option value="6">Purok 6</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-field">
+                        <input type="number" id="current" name="current" class="input-field" />
+                        <label for="current" class="label">Current</label>
+                    </div>
+
+                    <div class="modal-field">
+                        <input type="number" id="previous" name="previous" class="input-field" />
+                        <label for="previous" class="label">Previous</label>
+                    </div>
+
+                </div>
+                <div class="modal-section">
+                    <div class="modal-field">
+                        <input type="date" id="date" name="date" class="input-field" />
+                    </div>
+
+                    <div class="modal-field">
+                        <input type="number" id="initialAmount" name="initialAmount" class="input-field" />
+                        <label for="initialAmount" class="label">Initial Amount</label>
+                    </div>
+
+                    <div class="modal-field">
+                        <input type="number" id="cuM" name="cuM" class="input-field" />
+                        <label for="cuM" class="label">Cu.M</label>
+                    </div>
+
+                    <div class="modal-field">
+                        <input type="number" id="amount" name="amount" class="input-field" />
+                        <label for="amount" class="label">Amount</label>
+                    </div>
                 </div>
 
-                <div class="modal-field">
-                    <input type="number" id="current" name="current" class="input-field" />
-                    <label for="current" class="label">Current</label>
+                <div class="modal-buttons">
+                    <button type="submit" id="saveButton">Submit</button>
                 </div>
-
-                <div class="modal-field">
-                    <input type="number" id="previous" name="previous" class="input-field" />
-                    <label for="previous" class="label">Previous</label>
-                </div>
-
-            </div>
-            <div class="modal-section">
-                <div class="modal-field">
-                    <input type="date" id="date" name="date" class="input-field" />
-                </div>
-
-                <div class="modal-field">
-                    <input type="number" id="initialAmount" name="initialAmount" class="input-field" />
-                    <label for="initialAmount" class="label">Initial Amount</label>
-                </div>
-
-                <div class="modal-field">
-                    <input type="number" id="cuM" name="cuM" class="input-field" />
-                    <label for="cuM" class="label">Cu.M</label>
-                </div>
-
-                <div class="modal-field">
-                    <input type="number" id="amount" name="amount" class="input-field" />
-                    <label for="amount" class="label">Amount</label>
-                </div>
-            </div>
-
-            <div class="modal-buttons">
-                <button type="submit" id="saveButton">Submit</button>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
-</div>
 
 
     <!--Update Modal HTML -->
@@ -338,13 +341,20 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
-                <tr>
-
-                </tr>
-            </tbody>
+            <tbody id="tableBody"></tbody>
         </table>
     </div>
+
+    <!-- Pagination Controls -->
+<div class="pagination">
+    <button id="firstPageBtn" title="Fisrt Page" onclick="firstPage()"><<</button>
+    <button id="prevPageBtn" title="Previous Page" onclick="prevPage()"><</button>
+    <span id="pageInfo"></span> <!-- This will display the page information -->
+    <button id="nextPageBtn" title="Next Page" onclick="nextPage()">></button>
+    <button id="lastPageBtn" title="Last Page" onclick="lastPage()">>></button>
+</div>
+
+
 
 
     <script src="./Javascript/invoiceDetail.js"></script>

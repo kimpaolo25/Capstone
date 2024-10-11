@@ -102,7 +102,7 @@ function resetFilters() {
     document.getElementById('monthFilter').value = '';
     reloadTable(); // Reapply the filter to show all rows
     // Scroll to the top of the table
-    document.getElementById('tableBody').scrollIntoView({ behavior: 'smooth' });
+    scrollToTop()
 }
 
 // Add event listeners to filter dropdowns

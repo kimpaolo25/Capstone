@@ -1,79 +1,84 @@
-// Declare necessary variables
-let tableData = []; 
-let limit = 500; // Set the number of records to load per request
-let offset = 0; // Initialize offset for pagination
-let isLoading = false; // Flag to prevent multiple fetch calls
-let allDataLoaded = false; // Flag to indicate if all data has been loaded
-let hasFilteredData = false; // Flag to indicate if data has been filtered
+let tableData = [];
+let limit = 300; // Set the number of records to load per page
+let currentPage = 1; // Initialize page number
+let totalRecords = 0; // Total records will be calculated later
+let totalPages = 1; // Total pages will be calculated later
+let isLoading = false; // Tracks if data is currently being loaded
+let allDataLoaded = false; // Tracks if all available data has been loaded
+let offset = 0; // Tracks the current offset for pagination
 
 // Function to initialize table data
 function initializeTableData() {
     loadTableData(); // Load initial data
-    const container = document.querySelector('.table-container');
-    container.addEventListener('scroll', handleScroll); // Add scroll event listener to the table container
 }
 
+// Function to load table data based on page
 function loadTableData() {
-    if (isLoading || allDataLoaded) return; // Prevent loading if already in progress or if all data is loaded
+    if (isLoading || allDataLoaded) return; // Prevent loading if already in progress or all data loaded
     isLoading = true; // Set loading flag
 
-    // Show loading alert
     Swal.fire({
         title: 'Loading Data',
         text: 'Please wait while we fetch the data.',
         icon: 'info',
         allowOutsideClick: false,
         didOpen: () => {
-            Swal.showLoading(); // Show the loading spinner
+            Swal.showLoading();
         }
     });
 
-    // Fetch data from the server
+    // Fetch data from the server with limit and offset
     fetch(`./php/fetch_data.php?limit=${limit}&offset=${offset}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            return response.json();
+            return response.json(); // Parse response as JSON
         })
         .then(data => {
-            // Hide loading alert
+            console.log('Data received:', data); // Log the raw data to inspect it
+
+            // Check if the data is an object with the expected structure
+            if (!data || typeof data !== 'object' || !Array.isArray(data.data) || typeof data.total !== 'string') {
+                throw new Error('Invalid data format');
+            }
+            scrollToTop();
+
+            const records = data.data; // Extract records from the response
+            totalRecords = parseInt(data.total); // Get total records
+            totalPages = Math.ceil(totalRecords / limit); // Calculate total pages
+
             Swal.close();
+            console.log('Processed records:', records); // Log the processed records
 
-            console.log('Data received:', data); // Log the data received for debugging
+            // Check if any data is received
+            if (records.length === 0) {
+                allDataLoaded = true; // Set flag to prevent further fetches
+                console.log('All data has been loaded.');
 
-            // If no data is returned, set flag and alert user
-            if (data.length === 0) {
-                allDataLoaded = true; // Mark all data as loaded
-                console.log('All data has been loaded.'); // Log for debugging
-
-                // Alert user that all data has been loaded
                 Swal.fire({
                     title: 'End of Data',
                     text: 'You have reached the end of the data.',
                     icon: 'info',
                     confirmButtonText: 'OK'
                 }).then(() => {
-                    isLoading = false; // Reset loading flag after alert is closed
+                    isLoading = false;
+                    checkPaginationButtons(); // Update button states
                 });
-                return; // Exit function if no more data
+                return;
             }
 
-            // Concatenate new data to existing tableData
-            tableData = tableData.concat(data);
+            // Update table data with new records
+            tableData = records; // Replace existing data with the new records
+            reloadTable(); // Reload the table with new data
 
-            // Sort data by date in descending order
-            tableData.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            // Reload the table with the sorted data
-            reloadTable();
-
-            // Increment offset for the next request
-            offset += limit;
-            isLoading = false; // Reset loading flag
+            // Update offset and currentPage after fetching new data
+            offset = (currentPage - 1) * limit; // Calculate offset for the current page
+            currentPage = Math.ceil(offset / limit) + 1; // Update currentPage based on offset
+            isLoading = false; // Reset loading state
+            checkPaginationButtons(); // Update pagination buttons
         })
         .catch(error => {
-            // Hide loading alert and show error message
             Swal.close();
             console.error('Error fetching data:', error.message);
             Swal.fire({
@@ -82,25 +87,80 @@ function loadTableData() {
                 icon: 'error',
                 confirmButtonText: 'OK'
             }).then(() => {
-                isLoading = false; // Reset loading flag on error
+                isLoading = false;
             });
         });
 }
 
-// Function to handle scroll event for lazy loading
-function handleScroll() {
-    const container = document.querySelector('.table-container');
-    const scrollPosition = container.scrollTop + container.clientHeight;
-    const threshold = container.scrollHeight - 500; // Trigger loading when nearing bottom
-
-    console.log('Scroll position:', scrollPosition, 'Threshold:', threshold); // Log for debugging
-
-    // Check if we should load more data
-    const searchQuery = document.getElementById('searchInput').value;
-    if (scrollPosition >= threshold && !allDataLoaded && !hasFilteredData && searchQuery.length === 0) {
-        loadTableData(); // Load more data when threshold is reached
+// Function to scroll to the top of the table
+function scrollToTop() {
+    const table = document.getElementById('dataTable'); // Ensure this is the correct ID
+    const container = document.querySelector('.table-container'); // Your scrollable container ID
+    
+    if (container) {
+        // Scroll to the top of the container
+        container.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (table) {
+        // If container is not set, scroll to the table
+        const tableOffset = table.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: tableOffset, behavior: 'smooth' });
     }
 }
+
+// Pagination controls
+function prevPage() {
+    if (currentPage > 1) {
+        currentPage--; // Decrement current page
+        offset -= limit; // Decrement offset to load the previous set of data
+        loadTableData(); // Fetch new data
+        scrollToTop(); // Scroll to the top of the table
+    }
+}
+
+function nextPage() {
+    if (currentPage < totalPages && !allDataLoaded) {
+        currentPage++; // Increment current page
+        offset += limit; // Increment offset to load the next set of data
+        loadTableData(); // Fetch new data
+        scrollToTop(); // Scroll to the top of the table
+    } else if (allDataLoaded) {
+        alert('You have reached the end of the data.'); // Alert when all data is loaded
+    } else {
+        alert('No more pages to load.'); // Alert if already on the last page
+    }
+}
+
+// Function to go to the first page
+function firstPage() {
+    if (currentPage > 1) {
+        currentPage = 1; // Set current page to the first page
+        offset = 0; // Reset offset for the first page
+        loadTableData(); // Fetch new data
+        scrollToTop(); // Scroll to the top of the table
+    }
+}
+
+// Function to go to the last page
+function lastPage() {
+    if (currentPage < totalPages) {
+        currentPage = totalPages; // Set current page to the last page
+        offset = (totalPages - 1) * limit; // Calculate offset for the last page
+        loadTableData(); // Fetch new data
+        scrollToTop(); // Scroll to the top of the table
+    } else {
+        alert('You are already on the last page.'); // Alert if already on the last page
+    }
+}
+
+// Function to enable/disable pagination buttons based on page
+function checkPaginationButtons() {
+    document.getElementById('prevPageBtn').disabled = currentPage === 1; // Disable Prev on first page
+    document.getElementById('nextPageBtn').disabled = currentPage >= totalPages || allDataLoaded; // Disable Next if on last page or all data loaded
+    document.getElementById('firstPageBtn').disabled = currentPage === 1; // Disable First on first page
+    document.getElementById('lastPageBtn').disabled = currentPage >= totalPages; // Disable Last on last page
+}
+
+
 
 // Mapping of area numbers to names
 const areaNumberToName = {
@@ -115,26 +175,27 @@ const areaNumberToName = {
 
 // Function to search and filter table rows by name
 function searchTable() {
-    const searchQuery = document.getElementById('searchInput').value;
+    const searchQuery = document.getElementById('searchInput').value.trim(); // Trim to avoid unnecessary spaces
 
     if (searchQuery.length === 0) {
         // When search input is empty, reset the table and fetch original data
-        resetTable(); // This should fetch the original data
+        resetTable();
         return;
     }
 
     // Reset pagination when searching
-    offset = 0;
+    offset = 0; // Reset to the first page
+    currentPage = 1; // Set current page to 1
     allDataLoaded = false;
 
     // Make an AJAX request to search in the database
-    fetch(`./php/search.php?query=${encodeURIComponent(searchQuery)}`)
+    fetch(`./php/search.php?query=${encodeURIComponent(searchQuery)}&offset=${offset}&limit=${limit}`)
         .then(response => response.json())
         .then(data => {
             const tableBody = document.querySelector('#dataTable tbody');
             tableBody.innerHTML = ''; // Clear the existing rows
 
-            if (data.length === 0) {
+            if (data.records.length === 0) {
                 // Show SweetAlert2 if no records are found
                 Swal.fire({
                     title: 'No Records Found',
@@ -143,15 +204,15 @@ function searchTable() {
                     confirmButtonText: 'OK'
                 }).then(() => {
                     // Reset the table after alert is dismissed
-                    reloadTable();
+                    resetTable();
                     document.getElementById('tableBody').scrollIntoView({ behavior: 'smooth' });
                 });
             } else {
-                // Sort data by ID in descending order
-                data.sort((a, b) => b.bill_id - a.bill_id);
+                // Update total records count
+                totalRecords = data.totalCount; // Assuming your PHP returns totalCount
 
                 // Populate the table with the search results
-                data.forEach(record => {
+                data.records.forEach(record => {
                     const row = document.createElement('tr');
 
                     // Convert area number to area name using the mapping
@@ -159,7 +220,7 @@ function searchTable() {
 
                     row.innerHTML = `
                         <td>${record.Name}</td>
-                        <td>${areaName}</td>  <!-- Use mapped area name here -->
+                        <td>${areaName}</td>
                         <td>${record.Present}</td>
                         <td>${record.Previous}</td>
                         <td>${record.Date_column}</td>
@@ -179,13 +240,25 @@ function searchTable() {
                     // Append the new row to the table body
                     tableBody.appendChild(row);
                 });
+
+                // Optionally, update pagination controls here based on totalRecords
             }
         })
         .catch(error => {
             console.error('Error fetching data:', error);
+            Swal.fire({
+                title: 'Error',
+                text: 'An error occurred while fetching data.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
         });
 }
 
+// Add event listener to search input for real-time search (on every keystroke)
+document.getElementById('searchInput').addEventListener('input', function () {
+    searchTable(); // Call search function on every input change
+});
 
 // Function to reset the table (show all rows)
 function resetTable() {
@@ -195,9 +268,6 @@ function resetTable() {
     rows.forEach(row => {
         row.style.display = ''; // Show all rows
     });
-
-    // Clear the search input
-    document.getElementById('searchInput').value = ''; 
 
     // Sort rows by ID in descending order (assuming ID is in the first column)
     rows.sort((a, b) => {
@@ -212,29 +282,26 @@ function resetTable() {
     rows.forEach(row => {
         tbody.appendChild(row); // Append sorted rows
     });
+
+    // Reset pagination info
+    totalRecords = rows.length; // Assuming original data is all rows
 }
 
-// Add event listener to search input for Enter key press
-document.getElementById('searchInput').addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-        searchTable(); // Call search function when Enter is pressed
-        event.preventDefault(); // Prevent default action if necessary
-    }
-});
 
 
-// Function to reload table data (including search functionality)
+
+// Function to reload table data while preserving the search filter
 function reloadTable() {
     const tableBody = document.querySelector('#dataTable tbody');
     tableBody.innerHTML = ''; // Clear existing rows
 
-    // Clear the search input
-    document.getElementById('searchInput').value = '';
-
-    // Clear filter selections
+    // Clear filter selections (if needed)
     document.getElementById('yearFilter').value = '';
     document.getElementById('areaFilter').value = '';
     document.getElementById('monthFilter').value = '';
+
+    // Get the current search query
+    const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
 
     // Sort tableData in descending order by bill_id
     tableData.sort((a, b) => {
@@ -243,7 +310,15 @@ function reloadTable() {
         return idB - idA;
     });
 
-    tableData.forEach((row) => {
+    // Filter the data based on the search query, if any
+    const filteredData = tableData.filter(row => {
+        return Object.values(row).some(value =>
+            value.toString().toLowerCase().includes(searchQuery)
+        );
+    });
+
+    // Use filtered data to populate the table
+    filteredData.forEach((row) => {
         const newRow = tableBody.insertRow();
 
         // Create cells for each value in the row
@@ -265,10 +340,8 @@ function reloadTable() {
             <button class="print-btn" data-id="${row['bill_id']}">Print Invoice</button>
         `;
     });
-
-    // Reapply search filter after reloading table
-    searchTable();
 }
+
 
 // Mapping of area names to numbers
 const areaNameToNumber = {
@@ -294,7 +367,7 @@ function autoFillFields(name) {
 
         form.area.value = areaNumber;
         form.previous.value = latestRecord.present || ''; // Fill previous with latest record's current
-        
+
         // Update cuM and amount if the current value is already set
         updateCuM();
     } else {
@@ -336,7 +409,7 @@ function autocompleteSuggestions() {
     const input = document.getElementById('name');
     const suggestionsList = document.getElementById('suggestions');
     const query = input.value.toLowerCase();
-    
+
     // Clear previous suggestions
     suggestionsList.innerHTML = '';
 
@@ -386,10 +459,39 @@ document.getElementById('name').addEventListener('input', autocompleteSuggestion
 async function fetchDataAndReloadTable() {
     try {
         const response = await fetch('./php/fetch_data.php'); // Adjust the URL and parameters
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
-        tableData = data; // Update tableData with fetched data
+        
+        // Check if the fetched data is an array or contains an array
+        if (Array.isArray(data)) {
+            tableData = data; // If data is an array, assign it directly
+        } else if (data && Array.isArray(data.data)) {
+            tableData = data.data; // If data has a 'data' property, assign that array
+        } else {
+            console.error('Fetched data is not in the expected format:', data);
+            tableData = []; // Reset to an empty array if the structure is unexpected
+        }
+
         reloadTable(); // Call your function to update the table
     } catch (error) {
         console.error('Error fetching data:', error);
     }
+}
+
+
+
+// Function to reload table data (including search functionality)
+function clearFilter() {
+    const tableBody = document.querySelector('#dataTable tbody');
+
+    // Clear the search input
+    document.getElementById('searchInput').value = '';
+
+    // Clear filter selections
+    document.getElementById('yearFilter').value = '';
+    document.getElementById('areaFilter').value = '';
+    document.getElementById('monthFilter').value = '';
 }

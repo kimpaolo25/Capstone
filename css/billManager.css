@@ -150,7 +150,8 @@
         margin-right: auto;
         border: 2px solid #1d3ceb;
         overflow-y: auto; /* Enable vertical scrolling */
-        max-height: 470px; /* Adjust as needed */
+        max-height: 420px; /* Adjust as needed */
+
     }
 
     table {
@@ -202,6 +203,49 @@
     }
     .table-controls button {
         cursor: pointer;
+    }
+
+    #firstPageBtn{
+        background-color: white; 
+        color: black; 
+        font-weight: bold; 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border: 2px solid #4169e1; 
+        width: 40px;
+        border-radius: 5px;
+        margin-left: 1290px;
+        margin-top: 10px;
+    }
+
+    #prevPageBtn{
+        background-color: white; 
+        color: black; 
+        font-weight: bold; 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border: 2px solid #4169e1; 
+        width: 40px;
+        border-radius: 5px;
+    }
+
+    #nextPageBtn{
+        background-color: white; 
+        color: black; 
+        font-weight: bold; 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border: 2px solid #4169e1; 
+        width: 40px;
+        border-radius: 5px; 
+    }
+
+    
+    #lastPageBtn{
+        background-color: white; 
+        color: black; 
+        font-weight: bold; 
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        border: 2px solid #4169e1; 
+        width: 40px ;
+        border-radius: 5px;
     }
 
     /* Specific styling for the "Add" button */
