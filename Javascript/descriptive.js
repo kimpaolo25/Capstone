@@ -382,5 +382,3 @@ cubicMeterChartInstance = new Chart(ctxCubicMeter, {
         })
         .catch(error => console.error('Error fetching data:', error));
 });
-
-

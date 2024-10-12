@@ -95,13 +95,15 @@ $userName = $_SESSION['name'];
         </div>
 
     </div>
-        <!-- Year Filter Dropdown -->
-        <div class="filter-dropdown">
-            <label for="yearFilter">Select Year:</label>
-            <select id="yearFilter" onchange="updateCharts()">
-                <option value="">--Select Year--</option>
-            </select>
+        <!-- Year Filter Dropdown and Reset Button -->
+    <div class="filter-dropdown">
+        <label for="yearFilter">Select Year:</label>
+        <select id="yearFilter" onchange="updateCharts()">
+            <option value="">--Select Year--</option>
+        </select>
+    <button id="resetButton">Reset</button> <!-- Added Reset Button -->
     </div>
+
 
     <div class="descDashboard2">
         <div class="card_chart">
