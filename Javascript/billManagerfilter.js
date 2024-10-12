@@ -1,7 +1,7 @@
 function filterTable() {
     // Reset offset and data loaded flags   
     offset = 0;
-    allDataLoaded = false; 
+    allDataLoaded = false;
     hasFilteredData = true; // Set flag indicating data is filtered
 
     Swal.fire({
@@ -79,7 +79,7 @@ function updateTable(data) {
             <td>${record.Date_column}</td>
             <td>${record.Initial}</td>
             <td>${record.CU_M}</td>
-            <td>${record.Amount}</td>
+            <td>₱${parseFloat(record.Amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>  <!-- Add Peso sign -->
         `;
 
         // Add action buttons with correct data-id
@@ -102,7 +102,7 @@ function resetFilters() {
     document.getElementById('monthFilter').value = '';
     reloadTable(); // Reapply the filter to show all rows
     // Scroll to the top of the table
-    scrollToTop()   
+    scrollToTop()
 }
 
 // Add event listeners to filter dropdowns

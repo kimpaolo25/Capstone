@@ -230,7 +230,7 @@ function searchTable() {
 
     // When search input is empty, reset the table and fetch original data
     if (searchQuery.length === 0) {
-        reloadTable();
+        resetTable();
     }
 
     // Reset pagination when searching
@@ -276,7 +276,7 @@ function searchTable() {
                         <td>${record.Date_column}</td>
                         <td>${record.Initial}</td>
                         <td>${record.CU_M}</td>
-                        <td>${record.Amount}</td>
+                        <td>₱${parseFloat(record.Amount).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>  <!-- Add Peso sign -->
                     `;
 
                     // Add action buttons with correct data-id
@@ -344,7 +344,11 @@ function resetTable() {
     totalPages = Math.ceil(totalRecords / limit); // Calculate total pages based on original data
     currentPage = 1; // Reset current page
     checkPaginationButtons(totalRecords); // Update buttons' state
+
+    scrollToTop()
 }
+
+
 
 
 
