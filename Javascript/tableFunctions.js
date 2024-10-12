@@ -230,14 +230,13 @@ function searchTable() {
 
     // When search input is empty, reset the table and fetch original data
     if (searchQuery.length === 0) {
-        resetTable();
-        return;
+        reloadTable();
     }
 
     // Reset pagination when searching
     offset = 0; // Reset to the first page
     currentPage = 1; // Set current page to 1
-    limit = 300; // Define the limit for the search
+    limit = 1500; // Define the limit for the search
 
     // Make an AJAX request to search in the database
     fetch(`./php/search.php?query=${encodeURIComponent(searchQuery)}&offset=${offset}&limit=${limit}`)
@@ -349,8 +348,6 @@ function resetTable() {
 
 
 
-
-
 // Function to reload table data while preserving the search filter
 function reloadTable() {
     const tableBody = document.querySelector('#dataTable tbody');
@@ -360,6 +357,8 @@ function reloadTable() {
     document.getElementById('yearFilter').value = '';
     document.getElementById('areaFilter').value = '';
     document.getElementById('monthFilter').value = '';
+
+    scrollToTop()
 
     // Get the current search query
     const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
