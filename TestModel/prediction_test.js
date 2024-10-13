@@ -101,12 +101,14 @@ document.addEventListener('DOMContentLoaded', function() {
                             <li>MSE: ${accuracyAmount.mse.toFixed(2)}</li>
                             <li>RMSE: ${accuracyAmount.rmse.toFixed(2)}</li>
                             <li>MAE: ${accuracyAmount.mae.toFixed(2)}</li>
+                            <li>MAPE: ${accuracyAmount.mape.toFixed(2)}%</li>
                         </ul>
                         <p><strong>CU_M Model:</strong></p>
                         <ul>
                             <li>MSE: ${accuracyCUM.mse.toFixed(2)}</li>
                             <li>RMSE: ${accuracyCUM.rmse.toFixed(2)}</li>
                             <li>MAE: ${accuracyCUM.mae.toFixed(2)}</li>
+                            <li>MAPE: ${accuracyCUM.mape.toFixed(2)}%</li>
                         </ul>
                     `;
                 }
