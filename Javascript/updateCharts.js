@@ -29,16 +29,16 @@ function updateCharts() {
             console.log('Data received from server:', data); // Log the response data
 
             // Check if the totalIncomePerYear data exists
-            if (data.totalIncomePerYear) {
-                console.log('Total Income Data:', data.totalIncomePerYear); // Log total income data
+            if (data.totalIncomePerYear && data.totalIncomePerYear.labels && data.totalIncomePerYear.values) {
+                console.log('Total Income Data:', data.totalIncomePerYear);
                 updateTotalIncomeChart(data.totalIncomePerYear);
             } else {
                 console.warn('Total Income data is not available for the selected year.');
             }
 
             // Check if the cubicMeterConsumptionPerYear data exists
-            if (data.cubicMeterConsumptionPerYear) {
-                console.log('Cubic Meter Consumption Data:', data.cubicMeterConsumptionPerYear); // Log consumption data
+            if (data.cubicMeterConsumptionPerYear && data.cubicMeterConsumptionPerYear.labels && data.cubicMeterConsumptionPerYear.values) {
+                console.log('Cubic Meter Consumption Data:', data.cubicMeterConsumptionPerYear);
                 updateCubicMeterChart(data.cubicMeterConsumptionPerYear);
             } else {
                 console.warn('Cubic Meter Consumption data is not available for the selected year.');
@@ -58,32 +58,66 @@ function resetCharts() {
     resetCubicMeterChart();
 }
 
-// Function to reset Total Income Chart to initial state
-function resetTotalIncomeChart() {
-    const canvas = document.getElementById('incomeMonthChart');
-    const ctx = canvas.getContext('2d');
+// Event listener for the reset button
+document.getElementById('resetButton').addEventListener('click', function () {
+    fetch('./php/getChartData.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ reset: true })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Data received from server:', data);
 
-    // Destroy existing chart instance if it exists
+        // Ensure totalIncomeData is defined and has labels and values
+        if (data.totalIncomeData && Array.isArray(data.totalIncomeData.labels) && Array.isArray(data.totalIncomeData.values)) {
+            createIncomeChart(data.totalIncomeData);
+        } else {
+            console.error('totalIncomeData is not available or is not correctly structured:', data.totalIncomeData);
+        }
+
+        // Ensure totalCubicMeterData is defined and has labels and values
+        if (data.totalCubicMeterData && Array.isArray(data.totalCubicMeterData.labels) && Array.isArray(data.totalCubicMeterData.values)) {
+            createCubicMeterChart(data.totalCubicMeterData);
+        } else {
+            console.error('totalCubicMeterData is not available or is not correctly structured:', data.totalCubicMeterData);
+        }
+    })
+    .catch(error => console.error('Error fetching data:', error));
+});
+
+// Function to create or replace the income chart (as a line chart with consistent color)
+function createIncomeChart(data) {
+    const ctx = document.getElementById('incomeMonthChart').getContext('2d');
+
+    // Check if incomeChart already exists and destroy it if it does
     if (totalIncomeChartInstance) {
         totalIncomeChartInstance.destroy();
-        totalIncomeChartInstance = null;
+        totalIncomeChartInstance = null; // Ensure it's fully cleared
     }
 
-    // Create an empty chart or set it to initial state
+    // Create the new chart as a line chart with the orange color
     totalIncomeChartInstance = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
-            labels: [], // Empty labels
+            labels: data.labels,
             datasets: [{
-                label: 'Total Income (₱)',
-                data: [], // Empty data
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
+                label: '', // Set to empty to prevent showing undefined
+                data: data.values,
+                backgroundColor: 'rgba(255, 165, 0, 0.2)', // Light orange background
+                borderColor: 'rgba(255, 165, 0, 1)', // Orange border
+                borderWidth: 2
             }]
         },
         options: {
             responsive: true,
+            plugins: {
+                legend: {
+                    display: false // Hide legend entirely
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true,
@@ -98,32 +132,36 @@ function resetTotalIncomeChart() {
     });
 }
 
-// Function to reset Cubic Meter Consumption Chart to initial state
-function resetCubicMeterChart() {
-    const canvas = document.getElementById('cubicMeterChart');
-    const ctx = canvas.getContext('2d');
+// Function to create or replace the cubic meter chart (consistent light blue color)
+function createCubicMeterChart(data) {
+    const ctx = document.getElementById('cubicMeterChart').getContext('2d');
 
-    // Destroy existing chart instance if it exists
+    // Check if cubicMeterChart already exists and destroy it if it does
     if (cubicMeterChartInstance) {
         cubicMeterChartInstance.destroy();
-        cubicMeterChartInstance = null;
+        cubicMeterChartInstance = null; // Ensure it's fully cleared
     }
 
-    // Create an empty chart or set it to initial state
+    // Create the new chart with the light blue color
     cubicMeterChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: [], // Empty labels
+            labels: data.labels,
             datasets: [{
-                label: 'Cubic Meter Consumption',
-                data: [], // Empty data
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgba(153, 102, 255, 1)',
-                borderWidth: 1
+                label: '', // Set to empty to prevent showing undefined
+                data: data.values,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderWidth: 2
             }]
         },
         options: {
             responsive: true,
+            plugins: {
+                legend: {
+                    display: false // Hide legend entirely
+                }
+            },
             scales: {
                 y: {
                     beginAtZero: true,
@@ -150,32 +188,7 @@ function updateTotalIncomeChart(incomeData) {
         totalIncomeChartInstance.update();
     } else {
         console.log('Creating new Total Income chart instance.');
-        totalIncomeChartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: incomeData.labels,
-                datasets: [{
-                    label: 'Total Income (₱)',
-                    data: incomeData.values,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '₱' + value.toLocaleString();
-                            }
-                        }
-                    }
-                }
-            }
-        });
+        createIncomeChart(incomeData);
     }
 }
 
@@ -191,141 +204,15 @@ function updateCubicMeterChart(consumptionData) {
         cubicMeterChartInstance.update();
     } else {
         console.log('Creating new Cubic Meter Consumption chart instance.');
-        cubicMeterChartInstance = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: consumptionData.labels,
-                datasets: [{
-                    label: 'Cubic Meter Consumption',
-                    data: consumptionData.values,
-                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                    borderColor: 'rgba(153, 102, 255, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return value + ' m³';
-                            }
-                        }
-                    }
-                }
-            }
-        });
+        createCubicMeterChart(consumptionData);
     }
 }
 
-// Event listener for the dropdown change
+// Add event listener for the dropdown change
 document.addEventListener('DOMContentLoaded', () => {
     const yearDropdown = document.getElementById('yearFilter');
     yearDropdown.addEventListener('change', updateCharts);
     
     // Initial call to populate the charts
     updateCharts();
-
-    // Add event listener for the reset button
-    document.getElementById('resetButton').addEventListener('click', function () {
-        // Fetch data from resetFilter.php
-        fetch('./php/getChartData.php')
-            .then(response => response.json())
-            .then(data => {
-                // Ensure totalIncomeData is defined
-                if (data.totalIncomeData && Array.isArray(data.totalIncomeData)) {
-                    createIncomeChart(data.totalIncomeData);
-                } else {
-                    console.error('totalIncomeData is not available or is not an array:', data.totalIncomeData);
-                }
-
-                // Ensure totalCubicMeterData is defined
-                if (data.totalCubicMeterData && Array.isArray(data.totalCubicMeterData)) {
-                    createCubicMeterChart(data.totalCubicMeterData);
-                } else {
-                    console.error('totalCubicMeterData is not available or is not an array:', data.totalCubicMeterData);
-                }
-            })
-            .catch(error => console.error('Error fetching data:', error));
-    });
 });
-
-// Function to create or replace the income chart
-function createIncomeChart(data) {
-    const ctx = document.getElementById('incomeMonthChart').getContext('2d');
-
-    // Check if incomeChart already exists and destroy it if it does
-    if (totalIncomeChartInstance) {
-        totalIncomeChartInstance.destroy();
-        totalIncomeChartInstance = null; // Ensure it's fully cleared
-    }
-
-    // Create the new chart
-    totalIncomeChartInstance = new Chart(ctx, {
-        type: 'bar', // or 'line', depending on your preference
-        data: {
-            labels: data.labels,
-            datasets: [{
-                label: 'Total Income (₱)',
-                data: data.values,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return '₱' + value.toLocaleString();
-                        }
-                    }
-                }
-            }
-        }
-    });
-}
-
-// Function to create or replace the cubic meter chart
-function createCubicMeterChart(data) {
-    const ctx = document.getElementById('cubicMeterChart').getContext('2d');
-
-    // Check if cubicMeterChart already exists and destroy it if it does
-    if (cubicMeterChartInstance) {
-        cubicMeterChartInstance.destroy();
-        cubicMeterChartInstance = null; // Ensure it's fully cleared
-    }
-
-    // Create the new chart
-    cubicMeterChartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: data.labels,
-            datasets: [{
-                label: 'Cubic Meter Consumption',
-                data: data.values,
-                backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                borderColor: 'rgba(153, 102, 255, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: function(value) {
-                            return value + ' m³';
-                        }
-                    }
-                }
-            }
-        }
-    });
-}

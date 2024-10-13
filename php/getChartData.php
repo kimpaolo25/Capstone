@@ -22,9 +22,8 @@ $year = isset($input['year']) ? intval($input['year']) : null;
 // Define the response array
 $response = [];
 
-// Determine which query to run based on reset or year parameter
 if ($reset) {
-    // If reset, fetch all data (reset to default)
+    // Fetch all data for income
     $sqlIncomePerMonth = "
         SELECT 
             Date_column,
@@ -39,14 +38,14 @@ if ($reset) {
     ";
 
     $resultIncomePerMonth = $conn->query($sqlIncomePerMonth);
-    $totalIncomeData = [];
+    $totalIncomeData = ['labels' => [], 'values' => []];
+
     while ($row = $resultIncomePerMonth->fetch_assoc()) {
-        $totalIncomeData[] = [
-            'month_year' => $row["Date_column"],
-            'total_income' => (float)$row["total_income"]
-        ];
+        $totalIncomeData['labels'][] = $row["Date_column"];
+        $totalIncomeData['values'][] = (float)$row["total_income"];
     }
 
+    // Fetch all data for cubic meter consumption
     $sqlCubicMeterPerMonth = "
         SELECT 
             Date_column,
@@ -61,16 +60,18 @@ if ($reset) {
     ";
 
     $resultCubicMeterPerMonth = $conn->query($sqlCubicMeterPerMonth);
-    $totalCubicMeterData = [];
+    $totalCubicMeterData = ['labels' => [], 'values' => []];
+
     while ($row = $resultCubicMeterPerMonth->fetch_assoc()) {
-        $totalCubicMeterData[] = [
-            'month_year' => $row["Date_column"],
-            'total_cubic_meter' => (float)$row["total_cubic_meter"]
-        ];
+        $totalCubicMeterData['labels'][] = $row["Date_column"];
+        $totalCubicMeterData['values'][] = (float)$row["total_cubic_meter"];
     }
 
     $response['totalIncomeData'] = $totalIncomeData;
     $response['totalCubicMeterData'] = $totalCubicMeterData;
+
+    // Log response for debugging
+    error_log(print_r($response, true));
 
 } elseif ($year) {
     // If a year is selected, fetch data for that specific year
