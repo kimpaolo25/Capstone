@@ -6,6 +6,7 @@ from sqlalchemy import create_engine
 from pmdarima import auto_arima
 from statsmodels.tsa.arima.model import ARIMA
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from scipy import stats  # Importing the stats module
 
 app = Flask(__name__)
 CORS(app)
@@ -13,10 +14,6 @@ CORS(app)
 # Database URI with no password
 DATABASE_URI = 'mysql+mysqlconnector://root:@localhost/prwai_data'
 engine = create_engine(DATABASE_URI)
-
-@app.route('/')
-def index():
-    return '<h1>This is For Admin Only</h1>'
 
 @app.route('/predict', methods=['GET'])
 def predict():
@@ -32,14 +29,16 @@ def predict():
         # Handle missing values
         df.fillna(0, inplace=True)
 
-        # Remove rows where CU.M. is negative
+        # Remove rows where CU_M is negative
         df = df[df['CU_M'] >= 0]
 
         # Define the threshold for large values
         threshold = 1250
-
-        # Remove rows where CU.M. values exceed the threshold
         df = df[df['CU_M'] <= threshold]
+
+        # Outlier detection and removal using Z-score
+        df = df[(np.abs(stats.zscore(df['CU_M'])) < 3)]
+        df = df[(np.abs(stats.zscore(df['Amount'])) < 3)]
 
         # Set 'Date_column' as index for the entire DataFrame
         df.set_index('Date_column', inplace=True)
@@ -54,37 +53,33 @@ def predict():
         df_monthly['Amount_log'] = np.log(df_monthly['Amount'].replace(0, np.nan))
         df_monthly['CU_M_log'] = np.log(df_monthly['CU_M'].replace(0, np.nan))
 
+        # Calculate moving average
+        moving_average_window = 3  # Example: 3-month moving average
+        df_monthly['Amount_moving_avg'] = df_monthly['Amount'].rolling(window=moving_average_window).mean()
+        df_monthly['CU_M_moving_avg'] = df_monthly['CU_M'].rolling(window=moving_average_window).mean()
+
         # Apply seasonal differencing to the log-transformed 'Amount' and 'CU_M'
         seasonal_period = 12  # Monthly data, so seasonal period is 12
         df_monthly['Amount_log_seasonal_diff'] = df_monthly['Amount_log'] - df_monthly['Amount_log'].shift(seasonal_period)
         df_monthly['CU_M_log_seasonal_diff'] = df_monthly['CU_M_log'] - df_monthly['CU_M_log'].shift(seasonal_period)
 
-        # Use the existing data for forecasting, no need to drop NA here
-        df_monthly.fillna(0, inplace=True)  # Fill NA values for differencing, if necessary
+        # Fill NA values for differencing
+        df_monthly.fillna(0, inplace=True)
 
         # Split data into training and testing sets
         train_size = int(len(df_monthly) * 0.8)  # 80% for training
         train, test = df_monthly[:train_size], df_monthly[train_size:]
 
-        # Print train and test sizes for debugging
-        print(f"Training data size: {len(train)}, Testing data size: {len(test)}")
-
         # ---- ARIMA for Amount_log_seasonal_diff ----
-        # Fit auto_arima model to find the best order for 'Amount_log_seasonal_diff'
         model_auto_arima_amount = auto_arima(
             train['Amount_log_seasonal_diff'],
-            seasonal=False,  # No additional seasonal component needed
+            seasonal=False,
             stepwise=True,
             trace=True
         )
-
-        # Print the best order found by auto_arima for 'Amount_log_seasonal_diff'
         print(f"Best order found for Amount_log_seasonal_diff: {model_auto_arima_amount.order}")
 
-        # Use the best order found by auto_arima
         best_order_amount = model_auto_arima_amount.order
-
-        # Fit ARIMA model for 'Amount_log_seasonal_diff'
         model_amount = ARIMA(
             train['Amount_log_seasonal_diff'],
             order=best_order_amount
@@ -101,24 +96,16 @@ def predict():
         forecast_amount_log = forecast_amount_log_seasonal_diff_mean + df_monthly['Amount_log'].iloc[-len(forecast_amount_log_seasonal_diff_mean):].values
         forecast_amount = np.exp(forecast_amount_log)
 
-        future_dates_amount = pd.date_range(start=df_monthly.index[-1] + pd.DateOffset(months=1), periods=forecast_steps, freq='M')
-
         # ---- ARIMA for CU_M_log_seasonal_diff ----
-        # Fit auto_arima model to find the best order for 'CU_M_log_seasonal_diff'
         model_auto_arima_cum = auto_arima(
             train['CU_M_log_seasonal_diff'],
-            seasonal=False,  # No additional seasonal component needed
+            seasonal=False,
             stepwise=True,
             trace=True
         )
-
-        # Print the best order found by auto_arima for 'CU_M_log_seasonal_diff'
         print(f"Best order found for CU_M_log_seasonal_diff: {model_auto_arima_cum.order}")
 
-        # Use the best order found by auto_arima
         best_order_cum = model_auto_arima_cum.order
-
-        # Fit ARIMA model for 'CU_M_log_seasonal_diff'
         model_cum = ARIMA(
             train['CU_M_log_seasonal_diff'],
             order=best_order_cum
@@ -134,13 +121,13 @@ def predict():
         forecast_cum_log = forecast_cum_log_seasonal_diff_mean + df_monthly['CU_M_log'].iloc[-len(forecast_cum_log_seasonal_diff_mean):].values
         forecast_cum = np.exp(forecast_cum_log)
 
-        future_dates_cum = pd.date_range(start=df_monthly.index[-1] + pd.DateOffset(months=1), periods=forecast_steps, freq='M')
-
-        # Accuracy checking using testing data
-        test_amount = test['Amount']
-        test_cum = test['CU_M']
+        # Create future dates for Amount and CU_M forecasts
+        future_dates_amount = pd.date_range(start=df_monthly.index[-1] + pd.DateOffset(months=1), periods=forecast_steps, freq='ME')
+        future_dates_cum = pd.date_range(start=df_monthly.index[-1] + pd.DateOffset(months=1), periods=forecast_steps, freq='ME')
 
         # Align forecast with actuals
+        test_amount = test['Amount']
+        test_cum = test['CU_M']
         forecast_amount_aligned = forecast_amount[:len(test_amount)]
         forecast_cum_aligned = forecast_cum[:len(test_cum)]
 
@@ -167,18 +154,32 @@ def predict():
         # Prepare the response
         response = {
             'dates': [date.strftime('%Y-%m') for date in df_monthly.index] + [date.strftime('%Y-%m') for date in future_dates_amount],
-            'historical_amounts': [float(value) for value in np.exp(df_monthly['Amount_log'].replace(np.nan, 0)).tolist()],
+            'historical_amounts': [float(value) for value in df_monthly['Amount'].tolist()],
             'forecasted_amounts': [None] * len(df_monthly['Amount'].tolist()) + [float(value) for value in forecast_amount.tolist()],
-            'historical_cum': [float(value) for value in np.exp(df_monthly['CU_M_log'].replace(np.nan, 0)).tolist()],
+            'historical_cum': [float(value) for value in df_monthly['CU_M'].tolist()],
             'forecasted_cum': [None] * len(df_monthly['CU_M'].tolist()) + [float(value) for value in forecast_cum.tolist()],
+            'accuracy_metrics': {
+                'amount': {
+                    'MSE': mse_amount,
+                    'RMSE': rmse_amount,
+                    'MAE': mae_amount,
+                    'MAPE': mape_amount
+                },
+                'CU_M': {
+                    'MSE': mse_cum,
+                    'RMSE': rmse_cum,
+                    'MAE': mae_cum,
+                    'MAPE': mape_cum
+                }
+            }
         }
 
         return jsonify(response)
 
     except Exception as e:
         import traceback
-        app.logger.error("Error occurred:\n%s", traceback.format_exc())
-        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+        app.logger.error("Error occurred:\n" + traceback.format_exc())
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(debug=True)
