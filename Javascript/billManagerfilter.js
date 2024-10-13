@@ -63,8 +63,8 @@ function updateTable(data) {
     const tableBody = document.getElementById('tableBody'); // Ensure this matches your actual table body ID
     tableBody.innerHTML = ''; // Clear existing table rows
 
-    // Sort data by bill_id in descending order
-    data.sort((a, b) => b.bill_id - a.bill_id);
+    // Since the API returns data sorted, no need to sort again
+    // data.sort((a, b) => b.bill_id - a.bill_id); // Remove this line
 
     data.forEach(record => {
         const row = document.createElement('tr');
@@ -94,6 +94,7 @@ function updateTable(data) {
         tableBody.appendChild(row);
     });
 }
+
 
 // Function to reset all filters
 function resetFilters() {

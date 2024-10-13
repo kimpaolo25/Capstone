@@ -3,8 +3,7 @@ import pandas as pd
 import numpy as np
 from flask_cors import CORS
 from sqlalchemy import create_engine
-from pmdarima import auto_arima
-from statsmodels.tsa.arima.model import ARIMA
+from statsmodels.tsa.statespace.sarimax import SARIMAX
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 app = Flask(__name__)
@@ -24,7 +23,7 @@ def predict():
         # Fetch data from the database
         query = "SELECT * FROM customers"
         df = pd.read_sql(query, engine)
-        print("Data fetched from database:", df.head())
+        print("Data fetched from database:", df.tail())
 
         # Convert 'Date_column' to datetime with the specified format
         df['Date_column'] = pd.to_datetime(df['Date_column'], format='%Y-%b')
@@ -32,126 +31,86 @@ def predict():
         # Handle missing values
         df.fillna(0, inplace=True)
 
-        # Set 'Date_column' as index for the entire DataFrame
+        # Remove rows where CU_M is negative or exceeds the threshold
+        df = df[(df['CU_M'] >= 0) & (df['CU_M'] <= 1250)]
+
+        # Set 'Date_column' as index
         df.set_index('Date_column', inplace=True)
 
-        # Feature Engineering: Resample to monthly and sum Amount and CU_M
+        # Resample to monthly and sum Amount and CU_M
         df_monthly = df.resample('M').agg({
             'Amount': 'sum',
             'CU_M': 'sum'
         })
 
-        # Print df_monthly for debugging
-        print("Monthly aggregated data:")
-        print(df_monthly)
+        # Data summary
+        df_summary = df_monthly.describe()
+        print("Data summary after feature engineering:", df_summary)
 
-        # Apply first differencing to 'Amount' and 'CU_M' to make them stationary
-        df_monthly['Amount_diff'] = df_monthly['Amount'].diff().dropna()
-        df_monthly['CU_M_diff'] = df_monthly['CU_M'].diff().dropna()
+        # Use fixed orders for SARIMAX
+        order_amount = (1, 0, 0)
+        seasonal_order_amount = (1, 0, 0, 12)
 
-        # Split data into training and testing sets
-        train_size = int(len(df_monthly) * 0.8)  # 80% for training
-        train, test = df_monthly[:train_size], df_monthly[train_size:]
+        order_cum = (1, 0, 2)
+        seasonal_order_cum = (1, 0, 0, 12)
 
-        # Print train and test sizes for debugging
-        print(f"Training data size: {len(train)}, Testing data size: {len(test)}")
+        # ---- Log Transformation for Amount ----
+        df_monthly['Amount_log'] = np.log1p(df_monthly['Amount'])  # log1p for handling zeroes
+        model_amount = SARIMAX(df_monthly['Amount_log'], order=order_amount, seasonal_order=seasonal_order_amount)
+        model_amount_fit = model_amount.fit(disp=False)
 
-        # ---- ARIMA for Amount_diff ----
-        # Fit auto_arima model to find the best order for 'Amount_diff'
-        model_auto_arima_amount = auto_arima(
-            train['Amount_diff'].dropna(),
-            seasonal=False,  # No seasonal component in ARIMA
-            stepwise=True,
-            trace=True
-        )
+        # Forecast for the next 12 months
+        forecast_steps = 12
+        forecast_amount = model_amount_fit.get_forecast(steps=forecast_steps)
+        forecast_amount_mean = forecast_amount.predicted_mean
 
-        # Print the best order found by auto_arima for 'Amount_diff'
-        print(f"Best order found for Amount_diff: {model_auto_arima_amount.order}")
+        # ---- Apply Moving Average for CU_M ----
+        window_size = 3  # Change this window size as needed
+        df_monthly['CU_M_ma'] = df_monthly['CU_M'].rolling(window=window_size).mean().fillna(df_monthly['CU_M'])  # Apply moving average
 
-        # Use the best order found by auto_arima
-        best_order_amount = model_auto_arima_amount.order
+        # Log transformation for CU_M (after applying moving average)
+        df_monthly['CU_M_log'] = np.log1p(df_monthly['CU_M_ma'])  # log1p for handling zeroes
+        model_cum = SARIMAX(df_monthly['CU_M_log'], order=order_cum, seasonal_order=seasonal_order_cum)
+        model_cum_fit = model_cum.fit(disp=False)
 
-        # Fit ARIMA model for 'Amount_diff' (no seasonal order)
-        model_amount = ARIMA(
-            train['Amount_diff'].dropna(),
-            order=best_order_amount
-        )
-        model_amount_fit = model_amount.fit()
+        # Forecast for the next 12 months
+        forecast_cum = model_cum_fit.get_forecast(steps=forecast_steps)
+        forecast_cum_mean = forecast_cum.predicted_mean
 
-        # Create a forecast for 'Amount_diff'
-        forecast_steps = len(test)
-        forecast_amount_diff = model_amount_fit.get_forecast(steps=forecast_steps)
-        forecast_amount_diff_mean = forecast_amount_diff.predicted_mean
+        # Reverse the log transformations for Amount and CU_M
+        forecast_amount_reversed = np.expm1(forecast_amount_mean)  # expm1 for reversing log1p
+        forecast_cum_reversed = np.expm1(forecast_cum_mean)  # expm1 for reversing log1p
 
-        # Revert the differencing to get the original scale forecast
-        forecast_amount = forecast_amount_diff_mean.add(df_monthly['Amount'].iloc[-len(forecast_amount_diff_mean):].values)
+        # Historical amounts for accuracy metrics
+        historical_amounts = df_monthly['Amount'].values
+        historical_cum = df_monthly['CU_M'].values
 
-        future_dates_amount = [test.index[i] for i in range(forecast_steps)]
-
-        # ---- ARIMA for CU_M_diff ----
-        # Fit auto_arima model to find the best order for 'CU_M_diff'
-        model_auto_arima_cum = auto_arima(
-            train['CU_M_diff'].dropna(),
-            seasonal=False,  # No seasonal component in ARIMA
-            stepwise=True,
-            trace=True
-        )
-
-        # Print the best order found by auto_arima for 'CU_M_diff'
-        print(f"Best order found for CU_M_diff: {model_auto_arima_cum.order}")
-
-        # Use the best order found by auto_arima
-        best_order_cum = model_auto_arima_cum.order
-
-        # Fit ARIMA model for 'CU_M_diff' (no seasonal order)
-        model_cum = ARIMA(
-            train['CU_M_diff'].dropna(),
-            order=best_order_cum
-        )
-        model_cum_fit = model_cum.fit()
-
-        # Create a forecast for 'CU_M_diff'
-        forecast_cum_diff = model_cum_fit.get_forecast(steps=forecast_steps)
-        forecast_cum_diff_mean = forecast_cum_diff.predicted_mean
-
-        # Revert the differencing to get the original scale forecast for CU_M
-        forecast_cum = forecast_cum_diff_mean.add(df_monthly['CU_M'].iloc[-len(forecast_cum_diff_mean):].values)
-
-        future_dates_cum = [test.index[i] for i in range(forecast_steps)]
-
-        # Accuracy checking using testing data
-        test_amount = test['Amount']
-        test_cum = test['CU_M']
-
-        # Align forecast with actuals
-        forecast_amount_aligned = forecast_amount[:len(test_amount)]
-        forecast_cum_aligned = forecast_cum[:len(test_cum)]
-
-        mse_amount = mean_squared_error(test_amount, forecast_amount_aligned)
+        # Calculate accuracy metrics for Amount
+        mse_amount = mean_squared_error(historical_amounts[-forecast_steps:], forecast_amount_reversed)
         rmse_amount = np.sqrt(mse_amount)
-        mae_amount = mean_absolute_error(test_amount, forecast_amount_aligned)
+        mae_amount = mean_absolute_error(historical_amounts[-forecast_steps:], forecast_amount_reversed)
+        mape_amount = np.mean(np.abs((historical_amounts[-forecast_steps:] - forecast_amount_reversed) / historical_amounts[-forecast_steps:])) * 100
 
-        # Calculate MAPE for Amount
-        mape_amount = np.mean(np.abs((test_amount - forecast_amount_aligned) / test_amount)) * 100
-
-        mse_cum = mean_squared_error(test_cum, forecast_cum_aligned)
+        # Calculate accuracy metrics for CU_M
+        mse_cum = mean_squared_error(historical_cum[-forecast_steps:], forecast_cum_reversed)  # No skip
         rmse_cum = np.sqrt(mse_cum)
-        mae_cum = mean_absolute_error(test_cum, forecast_cum_aligned)
-
-        # Calculate MAPE for CU_M
-        mape_cum = np.mean(np.abs((test_cum - forecast_cum_aligned) / test_cum)) * 100
+        mae_cum = mean_absolute_error(historical_cum[-forecast_steps:], forecast_cum_reversed)
+        mape_cum = np.mean(np.abs((historical_cum[-forecast_steps:] - forecast_cum_reversed) / historical_cum[-forecast_steps:])) * 100
 
         # Print the accuracy metrics
         print(f"Amount Model - MSE: {mse_amount}, RMSE: {rmse_amount}, MAE: {mae_amount}, MAPE: {mape_amount}%")
         print(f"CU_M Model - MSE: {mse_cum}, RMSE: {rmse_cum}, MAE: {mae_cum}, MAPE: {mape_cum}%")
+        
+        print(df_summary)
 
         # Prepare the response
         response = {
-            'dates': [date.strftime('%Y-%m') for date in df_monthly.index] + [date.strftime('%Y-%m') for date in future_dates_amount],
+            'dates': [date.strftime('%Y-%m') for date in df_monthly.index] + 
+                     [(df_monthly.index[-1] + pd.DateOffset(months=i)).strftime('%Y-%m') for i in range(1, forecast_steps + 1)],
             'historical_amounts': [float(value) for value in df_monthly['Amount'].tolist()],
-            'forecasted_amounts': [None] * len(df_monthly['Amount'].tolist()) + [float(value) for value in forecast_amount.tolist()],
+            'forecasted_amounts': [None] * len(df_monthly['Amount'].tolist()) + [float(value) for value in forecast_amount_reversed],
             'historical_cum': [float(value) for value in df_monthly['CU_M'].tolist()],
-            'forecasted_cum': [None] * len(df_monthly['CU_M'].tolist()) + [float(value) for value in forecast_cum.tolist()],
+            'forecasted_cum': [None] * len(df_monthly['CU_M'].tolist()) + [float(value) for value in forecast_cum_reversed],
         }
 
         return jsonify(response)
@@ -160,6 +119,7 @@ def predict():
         import traceback
         app.logger.error("Error occurred:\n%s", traceback.format_exc())
         return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

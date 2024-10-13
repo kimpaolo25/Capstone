@@ -4,6 +4,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require "dbcon.php"; // Ensure this includes your DB connection setup
+
 class FilterFetch {
     private $conn;
 
@@ -12,30 +14,83 @@ class FilterFetch {
     }
 
     public function fetchFilteredData($year, $area, $months, $row_limit, $row_offset) {
-        $data = array();
+        $data = [];
 
         // Check for a valid connection
         if ($this->conn->connect_error) {
             die(json_encode(["error" => "Connection failed: " . $this->conn->connect_error]));
         }
 
-        // Prepare the stored procedure call with 5 parameters
-        $stmt = $this->conn->prepare("CALL FilterWithLimit(?, ?, ?, ?, ?)");
+        // Base SQL query
+        $sqlQuery = "SELECT c.bill_id, c.Name, p.places_name AS Area_Number, 
+                            c.Present, c.Previous, c.Date_column, c.Initial, 
+                            c.CU_M, c.Amount 
+                     FROM customers c
+                     JOIN places p ON c.Area_Number = p.Area_Number";
+        
+        $conditions = [];
+
+        // Prepare conditions based on input parameters
+        if ($year !== null && $year !== '') {
+            $conditions[] = "YEAR(STR_TO_DATE(c.Date_column, '%Y-%b')) = ?";
+        }
+        if (!empty($area)) {
+            $conditions[] = "p.places_name = ?";
+        }
+        if (!empty($months)) {
+            $monthsArray = explode(',', $months);
+            $placeholders = implode(',', array_fill(0, count($monthsArray), '?'));
+            $conditions[] = "MONTH(STR_TO_DATE(c.Date_column, '%Y-%b')) IN ($placeholders)";
+        }
+
+        // Append conditions to the query
+        if (count($conditions) > 0) {
+            $sqlQuery .= " WHERE " . implode(' AND ', $conditions);
+        }
+
+        // Add LIMIT and OFFSET
+        $sqlQuery .= " LIMIT ? OFFSET ?";
+        
+        // Prepare the statement
+        $stmt = $this->conn->prepare($sqlQuery);
         if (!$stmt) {
             die(json_encode(["error" => "Failed to prepare statement: " . $this->conn->error]));
         }
 
-        // Default the input values if not provided
-        $yearParam = !empty($year) ? (int)$year : null;
-        $areaParam = !empty($area) ? $area : null;
-        $monthsParam = !empty($months) ? $months : null;
-        $rowLimitParam = !empty($row_limit) ? (int)$row_limit : 1000; // Default limit to 1000
-        $rowOffsetParam = !empty($row_offset) ? (int)$row_offset : 0; // Default offset to 0
+        // Bind parameters
+        $params = [];
+        $types = '';
 
-        // Bind parameters to the stored procedure (assuming correct types)
-        $stmt->bind_param("issii", $yearParam, $areaParam, $monthsParam, $rowLimitParam, $rowOffsetParam);
+        if ($year !== null && $year !== '') {
+            $params[] = (int)$year;
+            $types .= 'i'; // Integer
+        }
+        if (!empty($area)) {
+            $params[] = $area;
+            $types .= 's'; // String
+        }
+        if (!empty($months)) {
+            foreach ($monthsArray as $month) {
+                $params[] = (int)$month; // Ensure month is treated as integer
+                $types .= 'i'; // Integer
+            }
+        }
+
+        // Add row limit and offset to params
+        $params[] = (int)$row_limit;
+        $params[] = (int)$row_offset;
+        $types .= 'ii'; // Two integers
+
+        // Debugging: Log the final SQL query and parameters
+        error_log("Executing SQL Query: $sqlQuery");
+        error_log("Parameters: " . json_encode($params));
+
+        // Bind parameters dynamically
+        $stmt->bind_param($types, ...$params);
+
+        // Execute the statement
         if (!$stmt->execute()) {
-            die(json_encode(["error" => "Error executing the stored procedure: " . $stmt->error]));
+            die(json_encode(["error" => "Error executing the statement: " . $stmt->error]));
         }
 
         // Fetch results
@@ -54,14 +109,8 @@ class FilterFetch {
     }
 }
 
-// Create database connection (assuming $conn is your existing connection)
-$conn = new mysqli("localhost", "root", "", "prwai_data");
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
 // Fetch data based on the filtering parameters from the request
-$year = $_GET['year'] ?? '';
+$year = $_GET['year'] ?? null; // Allow null
 $area = $_GET['area'] ?? '';
 $months = $_GET['months'] ?? '';
 $row_limit = $_GET['limit'] ?? 10; // Example default limit of 10 rows
