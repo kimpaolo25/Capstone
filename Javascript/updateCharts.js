@@ -10,7 +10,7 @@ function updateCharts() {
     console.log('Selected year:', selectedYear);
 
     // Check if the selected year is the default option
-    if (selectedYear === '--Select Year--') {
+    if (selectedYear === '') { // Adjusted to check for an empty value
         console.log('Default option selected. Resetting charts.');
         resetCharts(); // Call the function to reset the charts
         return; // Exit the function early
@@ -62,7 +62,7 @@ function resetCharts() {
 document.getElementById('resetButton').addEventListener('click', function () {
     // Reset the dropdown to the default option
     const yearDropdown = document.getElementById('yearFilter');
-    yearDropdown.value = '--Select Year--';
+    yearDropdown.value = ''; // Set the value to empty to return to --Select Year--
 
     fetch('./php/getChartData.php', {
         method: 'POST',
