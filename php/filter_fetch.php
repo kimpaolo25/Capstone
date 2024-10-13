@@ -1,6 +1,11 @@
 <?php
+// Enable all errors for debugging
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Database Connection
-require "dbCon.php";
+require "dbCon.php"; // Ensure this file contains your DB connection setup
 
 // Set Content-Type header based on requested format
 $format = $_GET['format'] ?? '';
@@ -10,7 +15,7 @@ if ($format === 'csv') {
     header('Content-Disposition: attachment; filename="data.csv"');
 } elseif ($format === 'excel') {
     header('Content-Type: application/vnd.ms-excel');
-    header('Content-Disposition: attachment; filename="data.xls"'); // Using .xls for compatibility
+    header('Content-Disposition: attachment; filename="data.xls"');
     header('Cache-Control: max-age=0');
     header('Pragma: public');
 } else {
@@ -26,22 +31,67 @@ class FilterFetch {
     }
 
     public function fetchFilteredData($year, $area, $months) {
-        $data = array();
-        $stmt = $this->conn->prepare("CALL GetCustomerBillingInfo(?, ?, ?)");
+        $data = [];
+        $sqlQuery = "SELECT c.bill_id, c.Name, p.places_name AS Area_Number, 
+                            c.Present, c.Previous, c.Date_column, c.Initial, 
+                            c.CU_M, c.Amount 
+                     FROM customers c
+                     JOIN places p ON c.Area_Number = p.Area_Number";
+        
+        $conditions = [];
+        
+        // Prepare conditions based on input parameters
+        if ($year !== null && $year !== '') {
+            $conditions[] = "YEAR(STR_TO_DATE(c.Date_column, '%Y-%b')) = ?";
+        }
+        if (!empty($area)) {
+            $conditions[] = "p.places_name = ?";
+        }
+        if (!empty($months)) {
+            $monthsArray = explode(',', $months);
+            $placeholders = implode(',', array_fill(0, count($monthsArray), '?'));
+            $conditions[] = "MONTH(STR_TO_DATE(c.Date_column, '%Y-%b')) IN ($placeholders)";
+        }
+
+        // Append conditions to the query
+        if (count($conditions) > 0) {
+            $sqlQuery .= " WHERE " . implode(' AND ', $conditions);
+        }
+
+        // Prepare the statement
+        $stmt = $this->conn->prepare($sqlQuery);
         if (!$stmt) {
             return json_encode(["error" => "Failed to prepare statement: " . $this->conn->error]);
         }
 
-        $yearParam = !empty($year) ? (int)$year : null;
-        $areaParam = !empty($area) ? $area : null;
-        $monthsParam = !empty($months) ? $months : null;
+        // Bind parameters
+        $params = [];
+        $types = '';
 
-        // Adjust bind_param based on the types of your procedure parameters
-        $stmt->bind_param("iss", $yearParam, $areaParam, $monthsParam);
-        if (!$stmt->execute()) {
-            return json_encode(["error" => "Error executing the stored procedure: " . $stmt->error]);
+        if ($year !== null && $year !== '') {
+            $params[] = (int)$year;
+            $types .= 'i'; // Integer
+        }
+        if (!empty($area)) {
+            $params[] = $area;
+            $types .= 's'; // String
+        }
+        if (!empty($months)) {
+            foreach ($monthsArray as $month) {
+                $params[] = (int)$month; // Ensure month is treated as integer
+                $types .= 'i'; // Integer
+            }
         }
 
+        // Bind parameters dynamically
+        $stmt->bind_param($types, ...$params);
+
+        // Execute the statement
+        if (!$stmt->execute()) {
+            return json_encode(["error" => "Error executing the statement: " . $stmt->error]);
+        }
+
+        // Fetch results
         $result = $stmt->get_result();
         if (!$result) {
             return json_encode(["error" => "Error fetching result set: " . $this->conn->error]);
@@ -59,7 +109,7 @@ class FilterFetch {
 // Fetch data with filtering parameters
 $year = $_GET['year'] ?? '';
 $area = $_GET['area'] ?? '';
-$months = $_GET['months'] ?? ''; // Change 'month' to 'months'
+$months = $_GET['months'] ?? '';
 
 $dataFetcher = new FilterFetch($conn);
 $data = $dataFetcher->fetchFilteredData($year, $area, $months);
