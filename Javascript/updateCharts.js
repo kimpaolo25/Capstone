@@ -60,6 +60,10 @@ function resetCharts() {
 
 // Event listener for the reset button
 document.getElementById('resetButton').addEventListener('click', function () {
+    // Reset the dropdown to the default option
+    const yearDropdown = document.getElementById('yearFilter');
+    yearDropdown.value = '--Select Year--';
+
     fetch('./php/getChartData.php', {
         method: 'POST',
         headers: {
