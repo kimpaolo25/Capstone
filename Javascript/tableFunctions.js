@@ -307,12 +307,15 @@ function searchTable() {
         });
 }
 
-// Add an event listener to check pagination buttons after searching
-document.getElementById('searchInput').addEventListener('input', function () {
-    // Reset pagination when searching
-    offset = 0; // Reset offset
-    currentPage = 1; // Reset current page
-    searchTable(); // Call search function on every input change
+// Add an event listener to trigger search on pressing Enter
+document.getElementById('searchInput').addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        // Reset pagination when searching
+        document.getElementById('searchSuggestions').style.display = 'none'; // Hide search suggestions after pressing Enter
+        offset = 0; // Reset offset
+        currentPage = 1; // Reset current page
+        searchTable(); // Call search function
+    }
 });
 
 // Function to reset the table (show all rows)
@@ -362,7 +365,6 @@ function reloadTable() {
     document.getElementById('areaFilter').value = '';
     document.getElementById('monthFilter').value = '';
 
-    scrollToTop()
 
     // Get the current search query
     const searchQuery = document.getElementById('searchInput').value.trim().toLowerCase();
@@ -471,32 +473,50 @@ document.querySelector('#initialAmount').addEventListener('input', updateCuM);
 // Initialize table data when the document is loaded
 document.addEventListener('DOMContentLoaded', initializeTableData);
 
-// Function to provide autocomplete suggestions based on the name input
+// Function to handle autocomplete suggestions for 'name' input
 function autocompleteSuggestions() {
     const input = document.getElementById('name');
     const suggestionsList = document.getElementById('suggestions');
-    const query = input.value.toLowerCase();
+    
+    generateSuggestions(input, suggestionsList, (name) => {
+        input.value = name; // Set input value to selected name
+        suggestionsList.style.display = 'none'; // Hide suggestions
+        // Optional: Perform an action when the name is selected
+    });
+}
 
-    // Clear previous suggestions
-    suggestionsList.innerHTML = '';
+// Function to handle autocomplete for 'searchInput'
+function autocompleteSearchSuggestions() {
+    const input = document.getElementById('searchInput');
+    const suggestionsList = document.getElementById('searchSuggestions');
+    
+    generateSuggestions(input, suggestionsList, (name) => {
+        input.value = name; // Set input value to selected suggestion
+        suggestionsList.style.display = 'none'; // Hide suggestions
+        searchTable(); // Trigger search immediately
+    });
+}
+
+// Reusable function to generate suggestions
+function generateSuggestions(input, suggestionsList, callback) {
+    const query = input.value.toLowerCase();
+    suggestionsList.innerHTML = ''; // Clear previous suggestions
 
     if (query.length > 0) {
-        // Filter table data to find matching names
         const matchingNames = tableData
             .filter(record => record.name.toLowerCase().includes(query))
             .map(record => record.name)
             .filter((value, index, self) => self.indexOf(value) === index); // Remove duplicates
 
         if (matchingNames.length > 0) {
-            // Display suggestions
             suggestionsList.style.display = 'block';
             matchingNames.forEach(name => {
                 const li = document.createElement('li');
                 li.textContent = name;
+                li.classList.add('suggestion-item'); // Add class for styling
                 li.addEventListener('click', () => {
-                    input.value = name;
-                    suggestionsList.style.display = 'none';
-                    autoFillFields(name); // Auto-fill fields based on the selected name
+                    callback(name); // Trigger the callback with selected name
+                    autoFillFields(name);
                 });
                 suggestionsList.appendChild(li);
             });
@@ -508,18 +528,49 @@ function autocompleteSuggestions() {
     }
 }
 
+// Add an event listener to trigger search on pressing Enter
+document.getElementById('searchInput').addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+        // Reset pagination when searching
+        offset = 0; // Reset offset
+        currentPage = 1; // Reset current page
+        searchTable(); // Call search function
+    }
+});
+
+// Attach autocomplete suggestions on input for 'name' input field
+document.getElementById('name').addEventListener('input', autocompleteSuggestions);
+
+// Attach autocomplete suggestions on input for 'searchInput' field
+document.getElementById('searchInput').addEventListener('input', autocompleteSearchSuggestions);
+
+
 
 // Function to hide suggestions list when clicking outside
 document.addEventListener('click', (event) => {
-    const suggestionsList = document.getElementById('suggestions');
-    const name = document.getElementById('name');
-    if (!name.contains(event.target) && !suggestionsList.contains(event.target)) {
-        suggestionsList.style.display = 'none';
+    const nameSuggestionsList = document.getElementById('suggestions');
+    const searchSuggestionsList = document.getElementById('searchSuggestions');
+    const nameInput = document.getElementById('name');
+    const searchInput = document.getElementById('searchInput');
+
+    // Check if the click was outside both the name input and its suggestions
+    if (!nameInput.contains(event.target) && !nameSuggestionsList.contains(event.target)) {
+        nameSuggestionsList.style.display = 'none'; // Hide name suggestions
+    }
+
+    // Check if the click was outside both the search input and its suggestions
+    if (!searchInput.contains(event.target) && !searchSuggestionsList.contains(event.target)) {
+        searchSuggestionsList.style.display = 'none'; // Hide search suggestions
     }
 });
 
 // Add event listener to the name input field for autocomplete
 document.getElementById('name').addEventListener('input', autocompleteSuggestions);
+
+// Add event listener to the search input field for autocomplete
+document.getElementById('searchInput').addEventListener('input', autocompleteSearchSuggestions);
+
+
 
 
 // Example function to fetch data and reload table
@@ -561,5 +612,7 @@ function clearFilter() {
     document.getElementById('yearFilter').value = '';
     document.getElementById('areaFilter').value = '';
     document.getElementById('monthFilter').value = '';
-    firstPage(); // Call to navigate to the first page
+    firstPage(); 
+    scrollToTop();
+    reloadTable()
 }
