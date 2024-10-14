@@ -20,7 +20,7 @@ function filterTable() {
 
     console.log(`Fetching data with filters - Year: ${year}, Area: ${area}, Month: ${month}`);
 
-    fetch(`../Capstone/php/filterData_limit.php?year=${year}&area=${area}&months=${month}&limit=${limit}&offset=${offset}`)
+    fetch(`./php/filterData_limit.php?year=${year}&area=${area}&months=${month}&limit=${limit}&offset=${offset}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -56,6 +56,7 @@ function filterTable() {
                 confirmButtonText: 'OK'
             });
         });
+        hidePaginationControls();
 }
 
 // Function to update the HTML table with filtered data
@@ -101,9 +102,9 @@ function resetFilters() {
     document.getElementById('yearFilter').value = '';
     document.getElementById('areaFilter').value = '';
     document.getElementById('monthFilter').value = '';
-    reloadTable(); // Reapply the filter to show all rows
     // Scroll to the top of the table
-    scrollToTop()
+    clearFilter();
+    showPaginationControls();
 }
 
 // Add event listeners to filter dropdowns

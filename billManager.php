@@ -347,7 +347,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
     </div>
 
     <!-- Pagination Controls -->
-    <div class="pagination">
+    <div class="pagination" id="paginationControls">
         <button id="firstPageBtn" title="Fisrt Page" onclick="firstPage()"><<</button>
                 <button id="prevPageBtn" title="Previous Page" onclick="prevPage()"><</button>
                         <span id="pageInfo"></span> <!-- This will display the page information -->

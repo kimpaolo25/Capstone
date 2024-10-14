@@ -517,6 +517,7 @@ function generateSuggestions(input, suggestionsList, callback) {
                 li.addEventListener('click', () => {
                     callback(name); // Trigger the callback with selected name
                     autoFillFields(name);
+                    resetFilters();
                 });
                 suggestionsList.appendChild(li);
             });
@@ -614,5 +615,6 @@ function clearFilter() {
     document.getElementById('monthFilter').value = '';
     firstPage(); 
     scrollToTop();
-    reloadTable()
+    reloadTable();
+    showPaginationControls();
 }
