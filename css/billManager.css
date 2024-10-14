@@ -196,7 +196,13 @@
     }
     .table-controls .search-container {
         margin-left: auto;
+        margin-bottom: -120px
     }
+
+    #reloadButton{
+        margin-bottom: -120px
+    }
+
     .table-controls .add-button-container,
     .table-controls .set-button-container {
     margin-right: 10px; /* Adjust margin for better spacing */
@@ -857,14 +863,48 @@
         display: none; /* Hidden by default */
         position: absolute; /* Position it absolutely below the input field */
         border-radius: 10px;
+        overflow-y: auto; /* Enable vertical scrolling */
+        border-bottom: 1px solid #2337ed; /* Add a line after each suggestion */
+        max-height: 500%;
+        overflow-y: auto; /* Enable vertical scrolling */
     }
     
     #suggestions li {
         padding: 5px; /* Padding for each suggestion */
         cursor: pointer; /* Pointer cursor on hover */
+        border-bottom: 1px solid #2337ed; /* Add a line after each suggestion */
+    }
+    
+    #suggestions li:last-child {
+        border-bottom: none; /* Remove the bottom border from the last item */
     }
     
     #suggestions li:hover {
+        background-color: #7fb1e6; /* Highlight effect on hover */
+    }
+
+    #searchSuggestions {
+        display: none; /* Hidden by default */
+        position: absolute; /* Position it absolutely below the input field */
+        border-radius: 10px;
+        list-style-type: none;
+        max-height: 50%;
+        overflow-y: auto; /* Enable vertical scrolling */
+        border: 1px solid #2337ed;
+    }
+
+    #searchSuggestions li {
+        padding: 5px; /* Padding for each suggestion */
+        cursor: pointer; /* Pointer cursor on hover */
+        margin-left: -40px;
+        border-bottom: 1px solid #2337ed; /* Add a line after each suggestion */
+    }
+
+    #searchSuggestions li:last-child {
+        border-bottom: none; /* Remove the bottom border from the last item */
+    }
+
+    #searchSuggestions li:hover {
         background-color: #7fb1e6; /* Highlight effect on hover */
     }
     

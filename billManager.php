@@ -82,7 +82,13 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
 
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search...">
+            <ul id="searchSuggestions" class="suggestions-list" style="display: none; background-color: white"></ul>
         </div>
+
+        <button id="reloadButton" title="Reload Table"
+                onclick="clearFilter();">
+                <i class="fas fa-sync-alt"></i> <!-- Font Awesome reload icon -->
+            </button>
 
     </div>
 
@@ -341,13 +347,13 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
     </div>
 
     <!-- Pagination Controls -->
-<div class="pagination">
-    <button id="firstPageBtn" title="Fisrt Page" onclick="firstPage()"><<</button>
-    <button id="prevPageBtn" title="Previous Page" onclick="prevPage()"><</button>
-    <span id="pageInfo"></span> <!-- This will display the page information -->
-    <button id="nextPageBtn" title="Next Page" onclick="nextPage()">></button>
-    <button id="lastPageBtn" title="Last Page" onclick="lastPage()">>></button>
-</div>
+    <div class="pagination">
+        <button id="firstPageBtn" title="Fisrt Page" onclick="firstPage()"><<</button>
+                <button id="prevPageBtn" title="Previous Page" onclick="prevPage()"><</button>
+                        <span id="pageInfo"></span> <!-- This will display the page information -->
+                        <button id="nextPageBtn" title="Next Page" onclick="nextPage()">></button>
+                        <button id="lastPageBtn" title="Last Page" onclick="lastPage()">>></button>
+    </div>
 
 
 
