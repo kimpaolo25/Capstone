@@ -103,7 +103,9 @@ function resetFilters() {
     document.getElementById('areaFilter').value = '';
     document.getElementById('monthFilter').value = '';
     // Scroll to the top of the table
-    clearFilter();
+    firstPage(); 
+    scrollToTop();
+    reloadTable();
     showPaginationControls();
 }
 
