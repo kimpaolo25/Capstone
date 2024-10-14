@@ -99,9 +99,9 @@ $userName = $_SESSION['name'];
     <div class="filter-dropdown">
         <label for="yearFilter">Select Year:</label>
         <select id="yearFilter" onchange="updateCharts()">
-            <option value="">--Select Year--</option>
+            <option value="">All Year</option>
         </select>
-    <button id="resetButton">Reset</button> <!-- Added Reset Button -->
+    <button id="resetButton">&times;</button> <!-- Added Reset Button -->
     </div>
 
 
