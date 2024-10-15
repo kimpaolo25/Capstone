@@ -174,42 +174,63 @@ function openUpdateModal(id) {
 
 // Function to delete a user
 function deleteUser(userId) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'Cancel'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch('./php/deleteUser.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: new URLSearchParams({
-                    id: userId // Send the user ID to delete
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    Swal.fire('Deleted!', 'User has been deleted.', 'success');
-                    fetchUserData(); // Refresh user data
-                } else {
-                    Swal.fire('Error!', data.message, 'error');
+    // Fetch user details to check user level
+    fetch(`./php/getUser.php?id=${userId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.user_level === 1) {
+                Swal.fire({
+                    title: 'Restricted!',
+                    text: 'Deleting admin account is prohibited!    ',
+                    icon: 'warning',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+                return; // Stop further execution
+            }
+
+            // Show confirmation prompt if user level is not 1
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Perform the delete request
+                    fetch('./php/deleteUser.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({ id: userId }) // Send user ID
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Deleted!', 'User has been deleted.', 'success');
+                            fetchUserData(); // Refresh user data
+                        } else {
+                            Swal.fire('Error!', data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire('Error!', 'An error occurred: ' + error.message, 'error');
+                    });
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire('Error!', 'An error occurred while deleting the user: ' + error.message, 'error');
             });
-        }
-    });
+        })
+        .catch(error => {
+            console.error('Error fetching user details:', error);
+            Swal.fire('Error!', 'Could not retrieve user details.', 'error');
+        });
 }
+
 
 
 // Listen for form submission for adding a user
