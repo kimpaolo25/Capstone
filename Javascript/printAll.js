@@ -20,7 +20,13 @@ function openAndPrintInvoicesForCurrentMonth() {
             const customers = dataFromDb.customers;
 
             if (!customers.length) {
-                console.log('No customer data found for this month.');
+                // Show SweetAlert if no customers found
+                Swal.fire({
+                    title: 'No Invoices',
+                    text: 'No invoices found for this month.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
                 return;
             }
 
@@ -39,10 +45,8 @@ function openAndPrintInvoicesForCurrentMonth() {
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>All Invoices</title>
                     <link rel="stylesheet" href="./css/invoice.css">
                     <link rel="stylesheet" href="./css/editInvoice.css">
-                    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
                 </head>
                 <body>
             `;
