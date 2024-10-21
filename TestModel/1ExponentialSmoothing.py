@@ -4,8 +4,7 @@ import numpy as np
 from flask_cors import CORS
 from sqlalchemy import create_engine
 from sklearn.metrics import mean_squared_error, mean_absolute_error
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
-from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.holtwinters import ExponentialSmoothing  # Importing ExponentialSmoothing
 
 app = Flask(__name__)
 CORS(app)
@@ -32,6 +31,9 @@ def predict():
         # Handle missing values
         df.fillna(0, inplace=True)
 
+        # Remove rows where CU_M is negative or exceeds the threshold
+        df = df[(df['CU_M'] >= 0) & (df['CU_M'] <= 1250)]
+
         # Set 'Date_column' as index
         df.set_index('Date_column', inplace=True)
 
@@ -44,15 +46,6 @@ def predict():
         # Data summary
         df_summary = df_monthly.describe()
         print("Data summary after feature engineering:", df_summary)
-
-        # Seasonal decomposition of CU_M
-        decomposition = seasonal_decompose(df_monthly['CU_M'], model='add', period=12)
-        trend = decomposition.trend.dropna()
-        seasonal = decomposition.seasonal
-        residual = decomposition.resid.dropna()
-
-        # Regular differencing on CU_M to remove trends
-        df_monthly['CU_M_diff'] = df_monthly['CU_M'].diff()
 
         # Forecasting Amount using Exponential Smoothing
         model_amount = ExponentialSmoothing(df_monthly['Amount'], seasonal='add', seasonal_periods=12)
@@ -87,6 +80,8 @@ def predict():
         # Print the accuracy metrics
         print(f"Amount Model - MSE: {mse_amount}, RMSE: {rmse_amount}, MAE: {mae_amount}, MAPE: {mape_amount}%")
         print(f"CU_M Model - MSE: {mse_cum}, RMSE: {rmse_cum}, MAE: {mae_cum}, MAPE: {mape_cum}%")
+        
+        print(df_summary)
 
         # Prepare the response
         response = {

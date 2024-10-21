@@ -5,7 +5,6 @@ from flask_cors import CORS
 from sqlalchemy import create_engine
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from statsmodels.tsa.holtwinters import ExponentialSmoothing  # Importing ExponentialSmoothing
-from statsmodels.tsa.seasonal import seasonal_decompose  # Importing seasonal_decompose
 
 app = Flask(__name__)
 CORS(app)
@@ -52,17 +51,6 @@ def predict():
         train_size = int(len(df_monthly) * 0.8)
         train, test = df_monthly[:train_size], df_monthly[train_size:]
 
-        # Seasonal decomposition of CU_M
-        decomposition = seasonal_decompose(train['CU_M'], model='add', period=12)
-
-        # Extract seasonal and trend components
-        seasonal = decomposition.seasonal
-        trend = decomposition.trend
-
-        # Apply regular differencing to CU_M
-        train['CU_M_diff'] = train['CU_M'].diff().dropna()
-        train = train.dropna()  # Drop the first row which contains NaN after differencing
-
         # Forecasting Amount using Exponential Smoothing (Additive)
         model_amount = ExponentialSmoothing(train['Amount'], seasonal='add', seasonal_periods=12)
         model_amount_fit = model_amount.fit()
@@ -71,17 +59,12 @@ def predict():
         forecast_steps = len(test)
         forecast_amount = model_amount_fit.forecast(steps=forecast_steps)
 
-        # Forecasting differenced CU_M using Exponential Smoothing (Additive)
-        model_cum_diff = ExponentialSmoothing(train['CU_M_diff'], seasonal='add', seasonal_periods=12)
-        model_cum_diff_fit = model_cum_diff.fit()
+        # Forecasting CU_M using Exponential Smoothing (Multiplicative)
+        model_cum = ExponentialSmoothing(train['CU_M'], seasonal='add', seasonal_periods=12)
+        model_cum_fit = model_cum.fit()
 
         # Forecast on the test data length
-        forecast_cum_diff = model_cum_diff_fit.forecast(steps=forecast_steps)
-
-        # Reverse the differencing for CU_M forecast
-        # Start with the last known value of CU_M to adjust the differenced forecast
-        last_cu_m_value = train['CU_M'].iloc[-1]
-        forecast_cum = last_cu_m_value + forecast_cum_diff.cumsum() + seasonal.iloc[-forecast_steps:].values
+        forecast_cum = model_cum_fit.forecast(steps=forecast_steps)
 
         # Get the testing data
         test_amount = test['Amount']
@@ -132,7 +115,7 @@ def predict():
                     'mape': mape_cum
                 }
             },
-            'data_summary': df_summary.to_dict(),
+            'data_summary': df_summary.to_dict()
         }
 
         return jsonify(response)

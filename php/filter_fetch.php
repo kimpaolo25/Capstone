@@ -5,7 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // Database Connection
-require "dbCon.php"; // Ensure this file contains your DB connection setup
+require "dbcon.php"; // Ensure this file contains your DB connection setup
 
 // Set Content-Type header based on requested format
 $format = $_GET['format'] ?? '';
@@ -84,7 +84,9 @@ class FilterFetch {
         }
 
         // Bind parameters dynamically
-        $stmt->bind_param($types, ...$params);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
 
         // Execute the statement
         if (!$stmt->execute()) {
@@ -110,6 +112,13 @@ class FilterFetch {
 $year = $_GET['year'] ?? '';
 $area = $_GET['area'] ?? '';
 $months = $_GET['months'] ?? '';
+
+// If no filters are applied, return all data
+if (empty($year) && empty($area) && empty($months)) {
+    $year = null; // Set to null to bypass year filtering
+    $area = null; // Set to null to bypass area filtering
+    $months = null; // Set to null to bypass months filtering
+}
 
 $dataFetcher = new FilterFetch($conn);
 $data = $dataFetcher->fetchFilteredData($year, $area, $months);

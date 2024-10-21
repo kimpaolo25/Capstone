@@ -3,9 +3,8 @@ import pandas as pd
 import numpy as np
 from flask_cors import CORS
 from sqlalchemy import create_engine
+from prophet import Prophet
 from sklearn.metrics import mean_squared_error, mean_absolute_error
-from statsmodels.tsa.holtwinters import ExponentialSmoothing  # Importing ExponentialSmoothing
-from statsmodels.tsa.seasonal import seasonal_decompose  # Importing seasonal_decompose
 
 app = Flask(__name__)
 CORS(app)
@@ -31,7 +30,7 @@ def predict():
 
         # Handle missing values
         df.fillna(0, inplace=True)
-
+        
         # Remove rows where CU_M is negative or exceeds the threshold
         df = df[(df['CU_M'] >= 0) & (df['CU_M'] <= 1250)]
 
@@ -52,51 +51,55 @@ def predict():
         train_size = int(len(df_monthly) * 0.8)
         train, test = df_monthly[:train_size], df_monthly[train_size:]
 
-        # Seasonal decomposition of CU_M
-        decomposition = seasonal_decompose(train['CU_M'], model='add', period=12)
+        # ---- Prophet Model for Amount ----
+        # Prepare data for Prophet
+        amount_train = pd.DataFrame({
+            'ds': train.index,
+            'y': train['Amount']
+        })
 
-        # Extract seasonal and trend components
-        seasonal = decomposition.seasonal
-        trend = decomposition.trend
-
-        # Apply regular differencing to CU_M
-        train['CU_M_diff'] = train['CU_M'].diff().dropna()
-        train = train.dropna()  # Drop the first row which contains NaN after differencing
-
-        # Forecasting Amount using Exponential Smoothing (Additive)
-        model_amount = ExponentialSmoothing(train['Amount'], seasonal='add', seasonal_periods=12)
-        model_amount_fit = model_amount.fit()
+        # Initialize and train the model
+        model_amount = Prophet()
+        model_amount.fit(amount_train)
 
         # Forecast on the test data length
-        forecast_steps = len(test)
-        forecast_amount = model_amount_fit.forecast(steps=forecast_steps)
+        future_amount = pd.DataFrame({'ds': test.index})
+        forecast_amount = model_amount.predict(future_amount)
 
-        # Forecasting differenced CU_M using Exponential Smoothing (Additive)
-        model_cum_diff = ExponentialSmoothing(train['CU_M_diff'], seasonal='add', seasonal_periods=12)
-        model_cum_diff_fit = model_cum_diff.fit()
+        # Extract forecasted values
+        forecast_amount_final = forecast_amount['yhat'].values
+
+        # ---- Prophet Model for CU_M ----
+        # Prepare data for Prophet
+        cum_train = pd.DataFrame({
+            'ds': train.index,
+            'y': np.log1p(train['CU_M'])  # Log transformation for CU_M to handle skewness
+        })
+
+        # Initialize and train the model
+        model_cum = Prophet()
+        model_cum.fit(cum_train)
 
         # Forecast on the test data length
-        forecast_cum_diff = model_cum_diff_fit.forecast(steps=forecast_steps)
+        future_cum = pd.DataFrame({'ds': test.index})
+        forecast_cum = model_cum.predict(future_cum)
 
-        # Reverse the differencing for CU_M forecast
-        # Start with the last known value of CU_M to adjust the differenced forecast
-        last_cu_m_value = train['CU_M'].iloc[-1]
-        forecast_cum = last_cu_m_value + forecast_cum_diff.cumsum() + seasonal.iloc[-forecast_steps:].values
+        # Extract forecasted values and reverse log transformation
+        forecast_cum_final = np.expm1(forecast_cum['yhat'].values)
 
         # Get the testing data
         test_amount = test['Amount']
         test_cum = test['CU_M']
 
         # Align forecast with actuals
-        forecast_amount_aligned = forecast_amount[:len(test_amount)]
-        forecast_cum_aligned = forecast_cum[:len(test_cum)]
+        forecast_amount_aligned = forecast_amount_final[:len(test_amount)]
+        forecast_cum_aligned = forecast_cum_final[:len(test_cum)]
 
-        # Calculate Accuracy Metrics for Amount
+        # Calculate Accuracy Metrics
         mse_amount = mean_squared_error(test_amount, forecast_amount_aligned)
         rmse_amount = np.sqrt(mse_amount)
         mae_amount = mean_absolute_error(test_amount, forecast_amount_aligned)
 
-        # Calculate Accuracy Metrics for CU_M
         mse_cum = mean_squared_error(test_cum, forecast_cum_aligned)
         rmse_cum = np.sqrt(mse_cum)
         mae_cum = mean_absolute_error(test_cum, forecast_cum_aligned)
@@ -117,7 +120,7 @@ def predict():
             'test_original_amounts': [float(value) for value in test_amount.tolist()],
             'forecasted_amounts': [float(value) for value in forecast_amount_aligned.tolist()],
             'test_original_cum': [float(value) for value in test_cum.tolist()],
-            'forecasted_cum': [float(value) for value in forecast_cum_aligned.tolist()],
+            'forecasted_cum': [float(value) for value in forecast_cum_aligned.tolist()],  # Use the reversed forecast here
             'accuracy': {
                 'amount': {
                     'mse': mse_amount,
@@ -132,7 +135,7 @@ def predict():
                     'mape': mape_cum
                 }
             },
-            'data_summary': df_summary.to_dict(),
+            'data_summary': df_summary.to_dict()
         }
 
         return jsonify(response)

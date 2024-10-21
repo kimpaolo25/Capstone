@@ -1,13 +1,8 @@
 <?php
 header('Content-Type: application/json');
 
-// Database connection setup
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "prwai_data";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
+// Database connection
+require 'dbcon.php';
 
 // Check connection
 if ($conn->connect_error) {
