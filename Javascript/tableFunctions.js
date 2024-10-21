@@ -425,27 +425,40 @@ const areaNameToNumber = {
 
 // Function to auto-fill the form fields based on the most recent record for the same name
 function autoFillFields(name) {
-    const sortedRecords = tableData
-        .filter(record => record.name === name)
-        .sort((a, b) => new Date(b.date) - new Date(a.date)); // Ensure sorting by date if applicable
-
-    const latestRecord = sortedRecords[0];
-
-    if (latestRecord) {
-        const areaNumber = areaNameToNumber[latestRecord.Area_Number] || '';
-
-        form.area.value = areaNumber;
-        form.previous.value = latestRecord.present || ''; // Fill previous with latest record's current
-
-        // Update cuM and amount if the current value is already set
-        updateCuM();
-    } else {
-        form.area.value = '';
-        form.previous.value = '';
-        form.cuM.value = ''; // Clear cuM field
-        form.amount.value = ''; // Clear amount field
+    // Check if the name field is empty
+    if (!name.trim()) {
+        clearFields(); // Clear all fields if the name is empty
+        return;
     }
+
+    fetch(`./php/fetch_latest_record.php?name=${encodeURIComponent(name)}`)
+        .then(response => response.json())
+        .then(latestRecord => {
+            if (latestRecord) {
+                const areaNumber = latestRecord.Area_Number || 0;
+
+                form.area.value = areaNumber;
+                form.previous.value = latestRecord.Present || 0; // Fill previous with latest record's Present
+
+                // Update cuM and amount if the current value is already set
+                updateCuM();
+            } else {
+                clearFields(); // Clear fields if no record is found
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching the latest record:', error);
+        });
 }
+
+// Function to clear form fields
+function clearFields() {
+    form.area.value = '';
+    form.previous.value = '';
+    form.cuM.value = ''; // Clear cuM field
+    form.amount.value = ''; // Clear amount field
+}
+
 
 
 // Function to update the cuM field based on the current and previous values
@@ -455,7 +468,7 @@ function updateCuM() {
     const cuM = (current - previous).toFixed(2); // Calculate cuM and format it
     document.querySelector('#cuM').value = cuM;
 
-    // Calculate amount based on cuM
+    // Calculate amount based on cuM    
     const cuMValue = parseFloat(cuM);
     const initial = parseFloat(document.querySelector('#initialAmount').value) || 0;
     const amount = (cuMValue - 8) * 20 + initial;
@@ -473,103 +486,119 @@ document.querySelector('#initialAmount').addEventListener('input', updateCuM);
 // Initialize table data when the document is loaded
 document.addEventListener('DOMContentLoaded', initializeTableData);
 
-// Function to handle autocomplete suggestions for 'name' input
-function autocompleteSuggestions() {
-    const input = document.getElementById('name');
-    const suggestionsList = document.getElementById('suggestions');
+
+
+    // Function to handle autocomplete suggestions for 'name' input
+    function autocompleteSuggestions() {
+        const input = document.getElementById('name');
+        const suggestionsList = document.getElementById('suggestions');
+        
+        generateSuggestions(input, suggestionsList, (name) => {
+            input.value = name; // Set input value to selected name
+            suggestionsList.style.display = 'none'; // Hide suggestions
+            // Optional: Perform an action when the name is selected
+        });
+    }
+
+    // Function to handle autocomplete for 'searchInput'
+    function autocompleteSearchSuggestions() {
+        const input = document.getElementById('searchInput');
+        const suggestionsList = document.getElementById('searchSuggestions');
+        
+        // Call the function to generate suggestions
+        generateSuggestions(input, suggestionsList, (name) => {
+            input.value = name; // Set input value to selected suggestion
+            suggestionsList.style.display = 'none'; // Hide suggestions
+            searchTable(); // Trigger search immediately
+        });
+    }
+
+    // Reusable function to generate suggestions
+    function generateSuggestions(input, suggestionsList, callback) {
+        const query = input.value.toLowerCase();
+        suggestionsList.innerHTML = ''; // Clear previous suggestions
     
-    generateSuggestions(input, suggestionsList, (name) => {
-        input.value = name; // Set input value to selected name
-        suggestionsList.style.display = 'none'; // Hide suggestions
-        // Optional: Perform an action when the name is selected
-    });
-}
-
-// Function to handle autocomplete for 'searchInput'
-function autocompleteSearchSuggestions() {
-    const input = document.getElementById('searchInput');
-    const suggestionsList = document.getElementById('searchSuggestions');
+        if (query.length > 0) {
+            // Fetch suggestions from the server based on the query
+            fetch(`./php/getNames.php?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const uniqueNames = new Set(); // Create a Set to hold unique names
+                        suggestionsList.style.display = 'block';
     
-    generateSuggestions(input, suggestionsList, (name) => {
-        input.value = name; // Set input value to selected suggestion
-        suggestionsList.style.display = 'none'; // Hide suggestions
-        searchTable(); // Trigger search immediately
-    });
-}
-
-// Reusable function to generate suggestions
-function generateSuggestions(input, suggestionsList, callback) {
-    const query = input.value.toLowerCase();
-    suggestionsList.innerHTML = ''; // Clear previous suggestions
-
-    if (query.length > 0) {
-        const matchingNames = tableData
-            .filter(record => record.name.toLowerCase().includes(query))
-            .map(record => record.name)
-            .filter((value, index, self) => self.indexOf(value) === index); // Remove duplicates
-
-        if (matchingNames.length > 0) {
-            suggestionsList.style.display = 'block';
-            matchingNames.forEach(name => {
-                const li = document.createElement('li');
-                li.textContent = name;
-                li.classList.add('suggestion-item'); // Add class for styling
-                li.addEventListener('click', () => {
-                    callback(name); // Trigger the callback with selected name
-                    autoFillFields(name);
-                    resetFilters();
+                        // Iterate over names and add to Set to ensure uniqueness
+                        data.names.forEach(name => {
+                            const trimmedName = name.trim(); // Trim spaces
+                            if (trimmedName) { // Ensure it's not empty
+                                uniqueNames.add(trimmedName); // Add name to Set
+                            }
+                        });
+    
+                        // Create list items from the unique names
+                        uniqueNames.forEach(name => {
+                            const li = document.createElement('li');
+                            li.textContent = name;
+                            li.classList.add('suggestion-item');
+                            li.addEventListener('click', () => {
+                                callback(name); // Trigger the callback with selected name
+                                autoFillFields(name);
+                                resetFilters();
+                            });
+                            suggestionsList.appendChild(li);
+                        });
+    
+                        if (uniqueNames.size === 0) {
+                            suggestionsList.style.display = 'none'; // Hide suggestions if no unique names found
+                        }
+                    } else {
+                        suggestionsList.style.display = 'none'; // Hide suggestions if no names found
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching names:', error);
+                    suggestionsList.style.display = 'none'; // Hide suggestions on error
                 });
-                suggestionsList.appendChild(li);
-            });
         } else {
-            suggestionsList.style.display = 'none';
+            suggestionsList.style.display = 'none'; // Hide suggestions if input is empty
         }
-    } else {
-        suggestionsList.style.display = 'none';
     }
-}
-
-// Add an event listener to trigger search on pressing Enter
-document.getElementById('searchInput').addEventListener('keydown', function (event) {
-    if (event.key === 'Enter') {
-        // Reset pagination when searching
-        offset = 0; // Reset offset
-        currentPage = 1; // Reset current page
-        searchTable(); // Call search function
-    }
-});
-
-// Attach autocomplete suggestions on input for 'name' input field
-document.getElementById('name').addEventListener('input', autocompleteSuggestions);
-
-// Attach autocomplete suggestions on input for 'searchInput' field
-document.getElementById('searchInput').addEventListener('input', autocompleteSearchSuggestions);
+    
 
 
+    // Add an event listener to trigger search on pressing Enter
+    document.getElementById('searchInput').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            offset = 0; // Reset offset
+            currentPage = 1; // Reset current page
+            searchTable(); // Call search function
+        }
+    });
 
-// Function to hide suggestions list when clicking outside
-document.addEventListener('click', (event) => {
-    const nameSuggestionsList = document.getElementById('suggestions');
-    const searchSuggestionsList = document.getElementById('searchSuggestions');
-    const nameInput = document.getElementById('name');
-    const searchInput = document.getElementById('searchInput');
+    // Attach autocomplete suggestions on input for 'name' input field
+    document.getElementById('name').addEventListener('input', autocompleteSuggestions);
 
-    // Check if the click was outside both the name input and its suggestions
-    if (!nameInput.contains(event.target) && !nameSuggestionsList.contains(event.target)) {
-        nameSuggestionsList.style.display = 'none'; // Hide name suggestions
-    }
+    // Attach autocomplete suggestions on input for 'searchInput' field
+    document.getElementById('searchInput').addEventListener('input', autocompleteSearchSuggestions);
 
-    // Check if the click was outside both the search input and its suggestions
-    if (!searchInput.contains(event.target) && !searchSuggestionsList.contains(event.target)) {
-        searchSuggestionsList.style.display = 'none'; // Hide search suggestions
-    }
-});
+    // Function to hide suggestions list when clicking outside
+    document.addEventListener('click', (event) => {
+        const nameSuggestionsList = document.getElementById('suggestions');
+        const searchSuggestionsList = document.getElementById('searchSuggestions');
+        const nameInput = document.getElementById('name');
+        const searchInput = document.getElementById('searchInput');
 
-// Add event listener to the name input field for autocomplete
-document.getElementById('name').addEventListener('input', autocompleteSuggestions);
+        // Check if the click was outside both the name input and its suggestions
+        if (!nameInput.contains(event.target) && !nameSuggestionsList.contains(event.target)) {
+            nameSuggestionsList.style.display = 'none'; // Hide name suggestions
+        }
 
-// Add event listener to the search input field for autocomplete
-document.getElementById('searchInput').addEventListener('input', autocompleteSearchSuggestions);
+        // Check if the click was outside both the search input and its suggestions
+        if (!searchInput.contains(event.target) && !searchSuggestionsList.contains(event.target)) {
+            searchSuggestionsList.style.display = 'none'; // Hide search suggestions
+        }
+    });
+
 
 
 
