@@ -80,6 +80,10 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
             <button id="setButton">Modify Invoice</button>
         </div>
 
+        <div class="set-button-container">
+            <button id="PrintAll">Print All</button>
+        </div>
+
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search...">
             <ul id="searchSuggestions" class="suggestions-list" style="display: none; background-color: white"></ul>
@@ -369,6 +373,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
     <script src="./Javascript/billManagerfilter.js"></script>
     <script src="./Javascript/dlPrint.js"></script>
     <script src="./Javascript/admin.js"></script>
+    <script src="./Javascript/printAll.js"></script>
 
 
 </body>
