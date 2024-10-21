@@ -24,7 +24,8 @@ class FilterFetch {
         // Base SQL query
         $sqlQuery = "SELECT c.bill_id, c.Name, p.places_name AS Area_Number, 
                             c.Present, c.Previous, c.Date_column, c.Initial, 
-                            c.CU_M, c.Amount 
+                            c.CU_M, c.Amount, 
+                            STR_TO_DATE(CONCAT(c.Date_column, '-01'), '%Y-%b-%d') AS pseudo_date 
                      FROM customers c
                      JOIN places p ON c.Area_Number = p.Area_Number";
         
@@ -32,7 +33,7 @@ class FilterFetch {
 
         // Prepare conditions based on input parameters
         if ($year !== null && $year !== '') {
-            $conditions[] = "YEAR(STR_TO_DATE(c.Date_column, '%Y-%b')) = ?";
+            $conditions[] = "YEAR(STR_TO_DATE(CONCAT(c.Date_column, '-01'), '%Y-%b-%d')) = ?";
         }
         if (!empty($area)) {
             $conditions[] = "p.places_name = ?";
@@ -40,13 +41,16 @@ class FilterFetch {
         if (!empty($months)) {
             $monthsArray = explode(',', $months);
             $placeholders = implode(',', array_fill(0, count($monthsArray), '?'));
-            $conditions[] = "MONTH(STR_TO_DATE(c.Date_column, '%Y-%b')) IN ($placeholders)";
+            $conditions[] = "MONTH(STR_TO_DATE(CONCAT(c.Date_column, '-01'), '%Y-%b-%d')) IN ($placeholders)";
         }
 
         // Append conditions to the query
         if (count($conditions) > 0) {
             $sqlQuery .= " WHERE " . implode(' AND ', $conditions);
         }
+
+        // Add ORDER BY to sort by pseudo_date in descending order, regardless of filters
+        $sqlQuery .= " ORDER BY pseudo_date DESC";
 
         // Add LIMIT and OFFSET
         $sqlQuery .= " LIMIT ? OFFSET ?";
