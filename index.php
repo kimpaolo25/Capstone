@@ -45,16 +45,41 @@
         </div>
     </div>
 
+    <!-- Terms and Conditions Modal -->
+<div id="termsModal" class="termsWrapper">
+    <div class="terms-wrapper">
+        <div class="terms-header">Terms and Conditions</div>
+        <span class="close-button" onclick="hideTermsModal()"></span>
+        <p>Terms and conditions content goes here...</p>
+    </div>
+</div>
+
+<!-- Privacy Policy Modal -->
+<div id="privacyModal" class="policyWrapper">
+    <div class="policy-wrapper">
+        <div class="policy-header">Privacy Policy</div>
+        <span class="close-button" onclick="hidePrivacyModal()"></span>
+        <p>Privacy policy content goes here...</p>
+    </div>
+</div>
+
+
 
     <div class="container">
-        <div class="content">
-            <img src="./image/icon.png" alt="Logo" class="logo">
-            <h1>Dashboard Analysis of <br> Water Income</h1>
-            <p>PRWAI Descriptive and Predictive Analysis of Water <br> Income through the use of Dashboard</p>
-            <a  class="button" id="loginButton" onclick="showLoginModal()">Get Started</a>
-        </div>
+    <div class="content">
+        <img src="./image/icon.png" alt="Logo" class="logo">
+        <h1>Dashboard Analysis of <br> Water Income</h1>
+        <p>PRWAI Descriptive and Predictive Analysis of Water <br> Income through the use of Dashboard</p>
+        <a class="button" id="loginButton" onclick="showLoginModal()">Get Started</a>
     </div>
+    <footer>
+    <p1>By clicking the Get Started button, you agree to PRWAI <a href="#" onclick="showTermsModal()" class="custom-link">Terms and Conditions of Use</a>.</p1>
+    <br>
+    <p1>To learn more about how PRWAI collects, uses, and protects information, please see <a href="#" onclick="showPrivacyModal()" class="custom-link">PRWAI Privacy Policy</a>.</p1>
+</footer>
+</div>
     
+<script src="./Javascript/terms_policy.js"></script>
     <script src="./Javascript/modal_login.js"></script>
     <script src="./Javascript/password.js"></script>
 </body>
