@@ -1,9 +1,53 @@
-document.getElementById('PrintAll').addEventListener('click', function() { 
-    openAndPrintInvoicesForCurrentMonth();
+document.getElementById('submitPrint').addEventListener('click', function() { 
+    openAndPrintInvoicesForSelectedDateAndArea();
 });
 
-function openAndPrintInvoicesForCurrentMonth() {
-    fetch('./php/printAll.php')
+// Function to fetch the available date options and display the print modal
+function fetchAvailableDates() {
+    fetch('./php/printAll.php')  // The PHP script will return available dates
+        .then(response => response.json())
+        .then(dataFromDb => {
+            if (dataFromDb.dates && dataFromDb.dates.length > 0) {
+                const dateDropdown = document.getElementById('printDate');
+                dataFromDb.dates.forEach(date => {
+                    const option = document.createElement('option');
+                    option.value = date.Date_column;
+                    option.textContent = date.Date_column;  // Assuming dates are in 'YYYY-MMM' format like '2020-Jan'
+                    dateDropdown.appendChild(option);
+                });
+            } else {
+                console.error('No dates found in the database.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching dates:', error);
+        });
+}
+
+// Call to load available dates when the modal is shown
+fetchAvailableDates();
+
+// Function to print invoices based on selected date and area
+function openAndPrintInvoicesForSelectedDateAndArea() {
+    // Get selected date and area values
+    const selectedDate = document.getElementById('printDate').value; // Get the selected date from the dropdown
+    const selectedArea = document.getElementById('printArea').value; // Get the selected area from the dropdown
+    
+    // Ensure that both fields have values
+    if (!selectedDate || !selectedArea) {
+        Swal.fire({
+            title: 'Missing Information',
+            text: 'Please select both a date and an area.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+        });
+        return;
+    }
+
+    // Construct the URL with query parameters for date and area
+    const url = `./php/printAll.php?date=${encodeURIComponent(selectedDate)}&area=${encodeURIComponent(selectedArea)}`;
+
+    fetch(url)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -15,7 +59,7 @@ function openAndPrintInvoicesForCurrentMonth() {
                 console.error(dataFromDb.error);
                 return;
             }
-            
+
             const invoiceDetails = dataFromDb.invoice;
             const customers = dataFromDb.customers;
 
@@ -53,7 +97,7 @@ function openAndPrintInvoicesForCurrentMonth() {
 
             customers.forEach(customer => {
                 const combinedData = { ...customer, ...invoiceDetails };
-                allInvoicesContent += createInvoiceHTML(combinedData);
+                allInvoicesContent += createInvoiceHTML(combinedData); // Assuming createInvoiceHTML is a function to generate the invoice HTML
             });
 
             allInvoicesContent += `
@@ -68,7 +112,7 @@ function openAndPrintInvoicesForCurrentMonth() {
             
             iframe.onload = function() {
                 setTimeout(() => {
-                    iframe.contentWindow.print();
+                    iframe.contentWindow.print(); // Trigger the print dialog
                 }, 500);
             };
         })
@@ -76,6 +120,7 @@ function openAndPrintInvoicesForCurrentMonth() {
             console.error('Error fetching data:', error);
         });
 }
+
 
 function createInvoiceHTML(data) {
     const gcashInf = data.gcashNum || '';
@@ -272,3 +317,36 @@ function formatDate(dateString) {
     const options = { year: 'numeric', month: 'long' };
     return new Date(dateString).toLocaleDateString('en-US', options);
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    fetch('./php/printAll.php')
+        .then(response => response.json())
+        .then(data => {
+            const dateDropdown = document.getElementById('printDate');
+
+            // Clear existing options except for the default one
+            dateDropdown.innerHTML = '<option value="">Select Date</option>';
+
+            if (data.dates && data.dates.length > 0) {
+                data.dates.forEach(date => {
+                    if (date && /^[0-9]{4}-[A-Za-z]{3}$/.test(date.trim())) {  // Check date format
+                        const option = document.createElement('option');
+                        option.value = date.trim();
+                        option.textContent = date.trim();
+                        dateDropdown.appendChild(option);
+                    }
+                });
+            } else {
+                console.log('No dates found');
+            }
+        })
+        .catch(error => console.error('Error fetching dates:', error));
+});
+
+
+
+
+
+
+
+
