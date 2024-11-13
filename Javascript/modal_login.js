@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var modal = document.getElementById("loginModal");
     var btn = document.getElementById("loginButton");
     var span = document.getElementsByClassName("close-button")[0];
+    var checkbox = document.getElementById("chk");
 
     // Show the modal when the button is clicked
     btn.onclick = function() {
@@ -10,16 +11,30 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Hide the modal when the close button is clicked
     span.onclick = function() {
-        modal.style.display = "none";
+        hideLoginModal();
     }
 
     // Hide the modal when clicking outside of it
     window.onclick = function(event) {
         if (event.target == modal) {
-            modal.style.display = "none";
+            hideLoginModal();
         }
     }
 
+    // Function to hide the modal and reset the form
+    function hideLoginModal() {
+        modal.style.display = "none";
+        resetLoginForm();
+    }
+
+    // Function to reset the form and uncheck the checkbox
+    function resetLoginForm() {
+        document.getElementById('loginForm').reset(); // Reset all form fields
+        checkbox.checked = false; // Uncheck the "Show Password" checkbox
+        document.getElementById('password').type = "password"; // Reset password field to hidden
+    }
+
+    // Handle form submission
     document.getElementById('loginForm').addEventListener('submit', function (e) {
         e.preventDefault(); // Prevent default form submission
     
@@ -63,4 +78,11 @@ document.addEventListener("DOMContentLoaded", function() {
             });
         });
     });
+
+    // Toggle password visibility
+    document.getElementById('chk').onclick = function() {
+        var passwordField = document.getElementById('password');
+        passwordField.type = passwordField.type === "password" ? "text" : "password";
+    };
 });
+
