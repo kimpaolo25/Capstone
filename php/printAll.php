@@ -19,13 +19,14 @@ if ($resultInvoice->num_rows > 0) {
     $invoiceData = ['error' => 'No invoice data found'];
 }
 
-// Second query: Fetch all customer details for the current date
+// Second query: Fetch all customer details for the current date with non-zero, non-null Amount
 $sqlCustomers = "SELECT c.bill_id, c.Name, p.places_name AS Area_Number, 
                         c.Present, c.Previous, c.Date_column, c.Initial, 
                         c.CU_M, c.Amount 
                  FROM customers c
                  JOIN places p ON c.Area_Number = p.Area_Number
-                 WHERE c.Date_column = DATE_FORMAT(CURDATE(), '%Y-%b')";
+                 WHERE c.Date_column = DATE_FORMAT(CURDATE(), '%Y-%b')
+                 AND c.Amount IS NOT NULL AND c.Amount != 0";
 $resultCustomers = $conn->query($sqlCustomers);
 
 $customerData = [];
