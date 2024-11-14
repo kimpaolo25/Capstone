@@ -106,6 +106,8 @@ document.addEventListener("DOMContentLoaded", function() {
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
+            document.getElementById("printDate").value = "";
+            document.getElementById("printArea").value = "";
         }
     }
 

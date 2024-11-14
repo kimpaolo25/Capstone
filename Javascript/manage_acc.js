@@ -49,10 +49,17 @@ document.addEventListener("DOMContentLoaded", function() {
     var addModal = document.getElementById("addModal");
     var updateModal = document.getElementById("updateModal");
     var addButton = document.getElementById("addButton");
+    var checkbox = document.getElementById("addChk");
 
     // Function to open the Add Account modal
     addButton.addEventListener("click", function() {
         addModal.style.display = "flex"; // Show the add modal
+        checkbox.checked = false;
+        document.getElementById("modalAddName").value = "";
+        document.getElementById("modalAddUname").value = "";
+        document.getElementById("modalPass").value = "";
+        document.getElementById("modalAddConfirmpass").value = "";
+        document.getElementById("userLevel").value = "";
     });
 
     // Close modal when clicking outside the modal content for both modals
@@ -79,6 +86,7 @@ function fetchUserData() {
         .then(response => response.json())
         .then(data => {
             let tableBody = document.querySelector("#dataTable tbody");
+            
             tableBody.innerHTML = ''; // Clear any existing rows
 
             data.forEach(user => {
