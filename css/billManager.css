@@ -587,12 +587,11 @@
         border-radius: 10px;
     }
 
-    .printDateInput{
-        width: 39%;
-        padding: 10px 10px 10px 40px; /* Padding left to make space for the icon */
+    .printInput-field{
+        width: 90%;
+        padding: 15px;
         border: 2px solid #4169e1;
-        border-radius: 5px;
-        font-size: 16px;
+        border-radius: 10px;
     }
     .printModal-button{
         text-align: center;

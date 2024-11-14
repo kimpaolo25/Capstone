@@ -106,7 +106,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
             
             <!-- Date Field -->
             <div class="printModal-field">
-                <select name="printDate" clss="printInput-field" id="printDate" required>
+                <select name="printDate" class="printInput-field" id="printDate" required>
                     <option value="">Select Date</option>
                     <!-- Options will be added dynamically -->
                 </select>

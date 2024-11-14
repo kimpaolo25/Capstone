@@ -126,8 +126,13 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['user_level'] != 1) {
             </div>
 
             <div class="manage_acc-field">
-                <input type="text" id="modalUname" name="username" class="manageAccInput-field" required />
-                <label for="modalUname" class="manageAccLabel">Username:</label>
+                <input type="text" id="modalCurrentuname" name="current_username" class="manageAccInput-field" required/>
+                <label for="modalCurrentuname" class="manageAccLabel">Current Username:</label>
+            </div>
+
+            <div class="manage_acc-field">
+                <input type="text" id="modalUname" name="username" class="manageAccInput-field" required/>
+                <label for="modalUname" class="manageAccLabel">New Username:</label>
             </div>
 
             <div class="manage_acc-field">

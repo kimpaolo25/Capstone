@@ -154,9 +154,10 @@ function openUpdateModal(id) {
     
                 // Populate other modal fields with data
                 document.getElementById("modalName").value = response.name;
-                document.getElementById("modalUname").value = response.username;
+                document.getElementById("modalCurrentuname").value = response.username;
     
                 // Clear password fields
+                document.getElementById("modalUname").value = "";
                 document.getElementById("modalCurrentpass").value = "";
                 document.getElementById("modalNewpass").value = "";
                 document.getElementById("modalConfirmpass").value = "";
