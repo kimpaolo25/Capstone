@@ -4,7 +4,7 @@ require 'dbcon.php';
 
 header('Content-Type: application/json');
 
-// Start session to get the logged-in user's username
+// Start session if needed
 session_start();
 
 try {
@@ -15,14 +15,15 @@ try {
         if (isset($_POST['action']) && $_POST['action'] === 'update') {
             // Retrieve POST data
             $name = $_POST['name'] ?? null;
-            $username = $_POST['username'] ?? null;
+            $currentUsername = $_POST['current_username'] ?? null; // Current username
+            $newUsername = $_POST['username'] ?? null; // New username
             $currentPassword = $_POST['current_password'] ?? null;
             $newPassword = $_POST['new_password'] ?? null;
             $confirmPassword = $_POST['confirm_password'] ?? null;
             $userLevel = $_POST['user_level'] ?? null; // New user level field
 
             // Validate inputs
-            if (is_null($name) || is_null($username) || is_null($currentPassword) || is_null($newPassword) || is_null($confirmPassword) || is_null($userLevel)) {
+            if (is_null($name) || is_null($currentUsername) || is_null($newUsername) || is_null($currentPassword) || is_null($newPassword) || is_null($confirmPassword) || is_null($userLevel)) {
                 echo json_encode(['success' => false, 'message' => 'All fields are required.']);
                 exit;
             }
@@ -45,7 +46,7 @@ try {
 
             // Prepare to check the current password for the user being updated
             $stmt = $conn->prepare("SELECT password_hash FROM users WHERE username = ?");
-            $stmt->bind_param("s", $username); // Verify current password for $username
+            $stmt->bind_param("s", $currentUsername); // Verify current password for $currentUsername
             $stmt->execute();
             $stmt->bind_result($hashedPassword);
             $stmt->fetch();
@@ -66,9 +67,9 @@ try {
             // Hash the new password
             $newHashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
 
-            // Prepare the SQL UPDATE query to include user_level
+            // Prepare the SQL UPDATE query to include user_level and allow username change
             $stmt = $conn->prepare("UPDATE users SET name=?, username=?, password_hash=?, user_level=? WHERE username=?");
-            $stmt->bind_param("sssis", $name, $username, $newHashedPassword, $userLevel, $username); // Update based on $username
+            $stmt->bind_param("sssis", $name, $newUsername, $newHashedPassword, $userLevel, $currentUsername); // Update based on $currentUsername
 
 
             if ($stmt->execute()) {

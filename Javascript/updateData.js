@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // Function to update cuM and amount dynamically
+// Function to update cuM and amount dynamically
     function updateCuMAndAmount() {
         const current = parseFloat(currentField.value) || 0;
         const previous = parseFloat(previousField.value) || 0;
@@ -96,8 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
         cuMField.value = cuM;
 
         const initial = parseFloat(initialAmountField.value) || 0;
-        const amount = (parseFloat(cuM) - 8) * 16 + 130;
-        amountField.value = amount > 119 ? amount.toFixed(2) : initial.toFixed(2);
+        const amount = (parseFloat(cuM) - 8) * 20 + initial;
+        amountField.value = amount > 179 ? amount.toFixed(2) : initial.toFixed(2);
     }
 
     // Add event listeners to the fields that affect cuM and amount calculation

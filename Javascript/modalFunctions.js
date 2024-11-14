@@ -81,3 +81,47 @@ document.querySelector('#dataTable').addEventListener('click', function (event) 
         }
     }
 });
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    var modal = document.getElementById("printModal");
+    var printAllButton = document.getElementById("PrintAll");
+    var closeButton = document.querySelector(".close-button");
+    var submitButton = document.getElementById("submitPrint");
+
+    // Show modal when "Print All" button is clicked
+    printAllButton.onclick = function() {
+        modal.style.display = "flex";
+    }
+
+    // Hide modal when close button is clicked
+    closeButton.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Hide modal when clicking outside of the modal content
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+            document.getElementById("printDate").value = "";
+            document.getElementById("printArea").value = "";
+        }
+    }
+
+    // Handle submit button click
+    submitButton.onclick = function() {
+        var date = document.getElementById("printDate").value;
+        var area = document.getElementById("areaSelect").value;
+
+        if (date && area) {
+            alert("Date: " + date + "\nArea: " + area);
+            modal.style.display = "none"; // Close modal after submission
+        } else {
+            alert("Please select both date and area.");
+        }
+    }
+});
+

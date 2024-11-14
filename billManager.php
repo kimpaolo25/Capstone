@@ -96,6 +96,43 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
 
     </div>
 
+
+    <!-- Modal Structure -->
+    <div id="printModal" class="printModal">
+        <div class="printModal-content">
+            <span class="close-button"></span>
+            <div class="printModal-header">Print All</div>
+
+            
+            <!-- Date Field -->
+            <div class="printModal-field">
+                <select name="printDate" class="printInput-field" id="printDate" required>
+                    <option value="">Select Date</option>
+                    <!-- Options will be added dynamically -->
+                </select>
+            </div>
+            
+            <!-- Area Dropdown -->
+            <div class="printModal-field">
+                            <select name="printArea" class="printArea" id="printArea">
+                                <option value="">Select Area</option>
+                                <option value="1">Kanluran</option>
+                                <option value="2">Gitna</option>
+                                <option value="3">Silangan</option>
+                                <option value="4">Maramaine</option>
+                                <option value="5">Patik</option>
+                                <option value="6">Purok 6</option>
+                            </select>
+                        </div>
+            
+            <!-- Submit Button -->
+            <div class="printModal-button">
+                <button id="submitPrint">Print</button>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Invoice Modal Structure -->
     <div id="invDateModal" class="invModal">
         <div class="invModal-content">
