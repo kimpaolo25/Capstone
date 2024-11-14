@@ -140,6 +140,7 @@ function openUpdateModal(id) {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "./php/fetchAllUser.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    var checkbox = document.getElementById("chk");
 
     xhr.onload = function() {
         if (xhr.status === 200) {
@@ -157,10 +158,12 @@ function openUpdateModal(id) {
                 document.getElementById("modalCurrentuname").value = response.username;
     
                 // Clear password fields
+                checkbox.checked = false;
                 document.getElementById("modalUname").value = "";
                 document.getElementById("modalCurrentpass").value = "";
                 document.getElementById("modalNewpass").value = "";
                 document.getElementById("modalConfirmpass").value = "";
+                
     
                 // Show the modal
                 updateModal.style.display = "flex"; // Show update modal
