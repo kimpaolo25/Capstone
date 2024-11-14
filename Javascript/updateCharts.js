@@ -28,6 +28,24 @@ function updateCharts() {
         .then(data => {
             console.log('Data received from server:', data); // Log the response data
 
+            // Update the Total Number of Bills This Year card
+            if (data.totalBills !== undefined) {
+                document.getElementById('billsThisYear').innerText = data.totalBills.toLocaleString();
+            } else {
+                console.warn('Total Bills data is not available for the selected year.');
+            }
+
+            // Update the Expected Income This Year card
+            if (data.expectedIncome !== undefined) {
+                const currencyFormatter = new Intl.NumberFormat('en-PH', {
+                    style: 'currency',
+                    currency: 'PHP'
+                });
+                document.getElementById('overallIncome').innerText = currencyFormatter.format(data.expectedIncome);
+            } else {
+                console.warn('Expected Income data is not available for the selected year.');
+            }
+
             // Check if the totalIncomePerYear data exists
             if (data.totalIncomePerYear && data.totalIncomePerYear.labels && data.totalIncomePerYear.values) {
                 console.log('Total Income Data:', data.totalIncomePerYear);
@@ -43,6 +61,9 @@ function updateCharts() {
             } else {
                 console.warn('Cubic Meter Consumption data is not available for the selected year.');
             }
+
+            // Update the cards with number of bills and overall income for the selected year
+            updateCards(data);
         })
         .catch(error => {
             console.error('Error fetching data:', error);
@@ -54,6 +75,7 @@ function updateCharts() {
 
 // Function to reset the charts to initial state
 function resetCharts() {
+    resetCards();  // Reset the cards to show data for the current year
     resetTotalIncomeChart();
     resetCubicMeterChart();
 }
@@ -64,6 +86,7 @@ document.getElementById('resetButton').addEventListener('click', function () {
     const yearDropdown = document.getElementById('yearFilter');
     yearDropdown.value = ''; // Set the value to empty to return to --Select Year--
 
+    // Reset cards to display data for the current year
     fetch('./php/getChartData.php', {
         method: 'POST',
         headers: {
@@ -74,6 +97,9 @@ document.getElementById('resetButton').addEventListener('click', function () {
     .then(response => response.json())
     .then(data => {
         console.log('Data received from server:', data);
+
+        // Update the cards with total bills and expected income for the current year
+        updateCards(data);
 
         // Ensure totalIncomeData is defined and has labels and values
         if (data.totalIncomeData && Array.isArray(data.totalIncomeData.labels) && Array.isArray(data.totalIncomeData.values)) {
@@ -212,11 +238,27 @@ function updateCubicMeterChart(consumptionData) {
     }
 }
 
-// Add event listener for the dropdown change
-document.addEventListener('DOMContentLoaded', () => {
-    const yearDropdown = document.getElementById('yearFilter');
-    yearDropdown.addEventListener('change', updateCharts);
+// Function to update the cards with number of bills and overall income
+function updateCards(data) {
+    const billsThisYearElement = document.getElementById('billsThisYear');
+    const overallIncomeElement = document.getElementById('overallIncome');
     
-    // Initial call to populate the charts
-    updateCharts();
-});
+    // Update the number of bills this year if data is available
+    if (data.totalBills !== undefined) {
+        billsThisYearElement.innerText = `${data.totalBills.toLocaleString()} bill(s)`;
+    } else {
+        billsThisYearElement.innerText = 'No data';
+    }
+
+    // Update the overall income for the selected year
+    if (data.expectedIncome !== undefined) {
+        const currencyFormatter = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' });
+        overallIncomeElement.innerText = currencyFormatter.format(data.expectedIncome);
+    } else {
+        overallIncomeElement.innerText = 'No data';
+    }
+}
+
+// Call the updateCharts function initially when the page loads
+document.addEventListener('DOMContentLoaded', updateCharts);
+

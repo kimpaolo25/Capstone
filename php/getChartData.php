@@ -153,6 +153,34 @@ if ($reset) {
     ];
 }
 
+// Check if a year is provided or if the reset is requested
+if (!$year) {
+    // If no year is selected (reset scenario), get data for the current year
+    $year = date("Y");
+}
+
+// Query for total bills and expected income for the selected or current year
+$sqlTotalBills = "
+    SELECT COUNT(bill_id) AS totalBills, SUM(Amount) AS expectedIncome
+    FROM customers
+    WHERE YEAR(STR_TO_DATE(CONCAT(Date_column, '-01'), '%Y-%b-%d')) = ?
+";
+
+$stmtTotalBills = $conn->prepare($sqlTotalBills);
+$stmtTotalBills->bind_param("i", $year);
+$stmtTotalBills->execute();
+$resultTotalBills = $stmtTotalBills->get_result();
+
+if ($row = $resultTotalBills->fetch_assoc()) {
+    $response['totalBills'] = (int) $row['totalBills'];
+    $response['expectedIncome'] = (float) $row['expectedIncome'];
+} else {
+    // Handle case where no data is found for the given year
+    $response['totalBills'] = 0;
+    $response['expectedIncome'] = 0.0;
+}
+
+
 // Send JSON response
 echo json_encode($response);
 

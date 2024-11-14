@@ -27,6 +27,7 @@ $userName = $_SESSION['name'];
     <script src="./javascript/prediction.js" defer></script>
     <script src="./javascript/descriptive.js" defer></script>
     <script src="./Javascript/updateCharts.js" defer></script>
+    <script src="./javascript/upperFilter.js" defer></script>
 </head>
 
 <body>
@@ -50,6 +51,21 @@ $userName = $_SESSION['name'];
 
     <h2 class="desc">Descriptive Analytics</h2>
 
+    <!-- Dropdown to select a date -->
+    <div class="filter-dropdown">
+    <label for="dateFilter">Select Date:</label>
+    <select id="dateFilter">
+        <option value="">Select Date</option>
+        <!-- Add other date options here -->
+    </select>
+    
+    <!-- Reset button -->
+    <button id="resetFilter" type="button" style="margin-left: 10px; cursor: pointer;">
+            Reset
+        </button>
+        </div>
+
+    
     <div class="descDashboard">
         <!-- Card for Number of Bills This Month -->
         <div class="card_chart">

@@ -262,6 +262,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
+            // Event listener for the date dropdown
+            const dateFilter = document.getElementById('dateFilter');
+            dateFilter.addEventListener('change', function () {
+                if (window.incomeAreaChart) {
+                    incomeAreaChart.destroy(); // Destroy the current chart
+                }
+            });
+
+
 
 
 
