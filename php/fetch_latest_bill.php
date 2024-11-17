@@ -2,7 +2,7 @@
 require 'dbcon.php';
 
 // Run the query to get the latest bill's amount
-$query = "SELECT Initial FROM customers ORDER BY Date_column DESC LIMIT 1";
+$query = "SELECT Initial FROM customers ORDER BY bill_id DESC LIMIT 1";
 $result = mysqli_query($conn, $query);
 
 // Check for query errors
