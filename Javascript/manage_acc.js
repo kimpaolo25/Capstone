@@ -51,10 +51,20 @@ document.addEventListener("DOMContentLoaded", function() {
     var addButton = document.getElementById("addButton");
     var checkbox = document.getElementById("addChk");
 
+
+    function resetPassword() {
+        checkbox.checked = false; // Uncheck the "Show Password" checkbox
+        document.getElementById('modalAddConfirmpass').type = "password"; // Reset password field to hidden
+        document.getElementById('modalPass').type = "password"; // Reset password field to hidden
+        document.getElementById('modalCurrentpass').type = "password"; // Reset password field to hidden
+        document.getElementById('modalNewpass').type = "password"; // Reset password field to hidden
+        document.getElementById('modalConfirmpass').type = "password"; // Reset password field to hidden
+    }
+
     // Function to open the Add Account modal
     addButton.addEventListener("click", function() {
         addModal.style.display = "flex"; // Show the add modal
-        checkbox.checked = false;
+        resetPassword() 
         document.getElementById("modalAddName").value = "";
         document.getElementById("modalAddUname").value = "";
         document.getElementById("modalPass").value = "";
@@ -143,12 +153,23 @@ function fetchUserData() {
         .catch(error => console.error('Error fetching data:', error));
 }
 
+
 // Function to open update modal
 function openUpdateModal(id) {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "./php/fetchAllUser.php", true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     var checkbox = document.getElementById("chk");
+
+        // Function to reset the form and uncheck the checkbox
+        function resetPassword() {
+            checkbox.checked = false; // Uncheck the "Show Password" checkbox
+            document.getElementById('modalAddConfirmpass').type = "password"; // Reset password field to hidden
+            document.getElementById('modalPass').type = "password"; // Reset password field to hidden
+            document.getElementById('modalCurrentpass').type = "password"; // Reset password field to hidden
+            document.getElementById('modalNewpass').type = "password"; // Reset password field to hidden
+            document.getElementById('modalConfirmpass').type = "password"; // Reset password field to hidden
+        }
 
     xhr.onload = function() {
         if (xhr.status === 200) {
@@ -166,7 +187,7 @@ function openUpdateModal(id) {
                 document.getElementById("modalCurrentuname").value = response.username;
     
                 // Clear password fields
-                checkbox.checked = false;
+                resetPassword()
                 document.getElementById("modalUname").value = "";
                 document.getElementById("modalCurrentpass").value = "";
                 document.getElementById("modalNewpass").value = "";
