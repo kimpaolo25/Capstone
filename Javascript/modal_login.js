@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     title: 'Login Failed',
                     text: data.message,
                 });
+                resetLoginForm();
             }
         })
         .catch(error => {
