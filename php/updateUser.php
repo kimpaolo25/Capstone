@@ -54,7 +54,7 @@ try {
 
             // Verify the current password
             if (!password_verify($currentPassword, $hashedPassword)) {
-                echo json_encode(['success' => false, 'message' => 'Current password is incorrect.']);
+                echo json_encode(['success' => false, 'message' => 'Current password/username is incorrect.']);
                 exit;
             }
 
