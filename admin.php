@@ -60,9 +60,7 @@ $userName = $_SESSION['name'];
     </select>
     
     <!-- Reset button -->
-    <button id="resetFilter" type="button" style="margin-left: 10px; cursor: pointer;">
-            Reset
-        </button>
+    <button id="resetFilter">&times;</button> <!-- Added Reset Button -->
         </div>
 
     
