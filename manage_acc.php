@@ -20,6 +20,8 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['user_level'] != 1) {
 </head>
 <body>
 
+
+<!-- Headers Controls -->
     <header>
         <img src="./image/icon.png" alt="Logo" class="logo">
         <a href="admin.php" class="dashboard-button" id="dashButton">Dashboard</a>

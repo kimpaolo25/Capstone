@@ -1,4 +1,5 @@
 /* Modal styles */
+/* Style for the modal container. It is hidden by default and covers the entire screen with a semi-transparent background and blur effect for a smooth overlay appearance. The modal uses a fade-in animation when displayed. */
 .updateModal {
     display: none; /* Hidden by default */
     align-items: center;
@@ -19,6 +20,7 @@
 }
 
 /* Centering the modal content */
+/* The modal content is centered on the screen with a white background, blue borders, and shadow for depth. It has a zoom-in animation on display. */
 .update_modal-content {
     background-color: white;
     position: fixed center;
@@ -35,6 +37,8 @@
     animation: zoomIn 0.3s; /* Zoom-in animation */
 }
 
+/* Input fields within the modal */
+/* Custom styling for input fields including padding, borders, and a consistent font size. The padding includes extra space on the left for icons. */
 .input-field {
     width: 100%;
     padding: 10px 10px 10px 40px; /* Padding left to make space for the icon */
@@ -43,7 +47,8 @@
     font-size: 16px;
 }
 
-
+/* Modal field containers */
+/* The fields are organized into flexible, column-based containers with spacing for a clean layout. */
 .modal-field{
     display: flex;
     position: relative;
@@ -51,6 +56,8 @@
     margin-top: 1.5rem;
 }
 
+/* Label styling for input fields */
+/* The labels are initially positioned inside the input field and float to the top when the field is focused or has a valid value. */
 .label {
     position: absolute;
     top: 50%;
@@ -61,6 +68,8 @@
     pointer-events: none; /* To prevent clicks on the label */
 }   
 
+/* Floating label effect */
+/* The label moves to the top of the input field and changes its background color and text color when the field is focused or valid. */
 .input-field:focus ~ .label,
 .input-field:valid ~ .label {
     top: 0%;
@@ -73,6 +82,7 @@
 }
 
 /* Modal sections */
+/* This section arranges modal fields in a flexible, wrapping layout with gaps between fields to create a neat and organized structure. */
 .modal-section {
     display: flex;
     flex-wrap: wrap; 
@@ -80,7 +90,8 @@
     margin-bottom: 20px;
 }
 
-/* Centering the h2 element */
+/* Modal header */
+/* The modal header is centered, with a blue background and white text, rounded corners, and additional decorative elements for a polished look. */
 .updatemodal-header{
     display: flex;
     position: absolute;
@@ -96,6 +107,8 @@
     font-size: clamp(1rem, 3vw, 2rem);
 }
 
+/* Decorative effects for header corners */
+/* The header includes custom pseudo-elements before and after it to create a visual effect with circular corners and shadows on both sides. */
 .updatemodal-header::before{
     content: "";
     position: absolute;
@@ -120,17 +133,22 @@
     box-shadow: -15px 0 0 0 #4169e1;
 }
 
-/* Modal fields */
+/* Modal fields layout */
+/* Each modal field takes up 50% of the available width, with appropriate margins to create spacing between elements. */
 .modal-field {
     width: calc(50% - 10px);
     box-sizing: border-box; 
 }
 
+/* Label styling for modal fields */
+/* Labels for modal fields have a consistent display, and space is provided beneath them for the input elements. */
 .modal-field label {
     display: block;
     margin-bottom: 15px;
 }
 
+/* Input field styling in modal */
+/* Modal input fields have padding, borders, and rounded corners, ensuring they fit well with the overall theme. */
 .modal-field input {
     width: 80%;
     padding: 15px;
@@ -138,12 +156,15 @@
     border-radius: 10px;
 }
 
-/* Modal buttons */
+/* Modal buttons layout */
+/* The modal buttons are centered and spaced apart to improve layout and interactivity. */
 .modal-buttons {
     text-align: center;
     margin-top: 50px;
 }
 
+/* Styling for modal buttons */
+/* The buttons in the modal are styled with white backgrounds, blue borders, and bold text. They also have hover effects for interactivity. */
 .modal-buttons button {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
@@ -157,6 +178,8 @@
     border: 2px solid #4169e1;
 }
 
+/* Button hover effect */
+/* Hover effect for the modal buttons that changes the opacity and border color when the user interacts with them. */
 .modal-buttons button:hover {
     border: 2px solid #4169e1;
     opacity: 0.9;

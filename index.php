@@ -65,6 +65,7 @@
 
 
 
+<!-- Body Content -->
     <div class="container">
     <div class="content">
         <img src="./image/icon.png" alt="Logo" class="logo">

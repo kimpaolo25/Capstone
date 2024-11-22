@@ -172,6 +172,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
         </div>
     </div>
 
+    <!-- Filter Controls -->
     <div class="filter-controls">
         <div class="filter-container">
             <label for="yearFilter">Year:</label>
@@ -364,9 +365,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
     </div>
 
 
-
-
-
+    <!-- Table Container -->
     <div class="table-container">
         <table id="dataTable">
             <thead>

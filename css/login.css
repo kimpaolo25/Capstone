@@ -1,8 +1,5 @@
-
-
-
 /* Modal styles */
-/* Modal background */
+/* Modal background styling */
 .wrapper {
     display: none; /* Hidden by default */
     align-items: center;
@@ -22,7 +19,7 @@
     animation: fadeIn 0.5s; /* Fade-in animation */
 }
 
-/* Modal content */
+/* Modal content styling */
 .login-wrapper {
     position: relative;
     padding: 6rem 2.5rem 2rem 2.5rem;
@@ -36,6 +33,7 @@
     animation: zoomIn 0.3s; /* Zoom-in animation */
 }
 
+/* Login header styling */
 .login-header{
     display: flex;
     position: absolute;
@@ -51,6 +49,7 @@
     font-size: clamp(1rem, 3vw, 2rem);
 }
 
+/* Header pseudo-elements for visual styling */
 .login-header::before{
     content: "";
     position: absolute;
@@ -75,12 +74,14 @@
     box-shadow: -15px 0 0 0 #4169e1;
 }
 
+/* Login form styling */
 .login-form{
     display: flex;
     flex-direction: column;
     font-size: clamp(0.8rem, 3vw, 1rem);
 }
 
+/* Input field wrapper styling */
 .input-wrapper{
     display: flex;
     position: relative;
@@ -88,6 +89,7 @@
     margin-top: 1.5rem;
 }
 
+/* Input field styling */
 .input-field{
     width: 100%;
     padding: 0.5rem;
@@ -98,6 +100,7 @@
     color: black;
 }
 
+/* Label styling */
 .label{
     position: absolute;
     top: 50%;
@@ -107,6 +110,7 @@
     color: black;
 }
 
+/* Label positioning when input is focused or valid */
 .input-field:focus~.label,
 .input-field:valid~.label{
     position: absolute;
@@ -118,35 +122,40 @@
     color: white;
 }
 
+/* Icon positioning inside the input */
 .icon{
     position: absolute;
     top: 5px;
     right: -15px;
 }
 
+/* Checkbox container styling */
 .checkbox-container{
     color: black;
     margin-top: 1.5rem;
 }
 
+/* Login button styling */
 .input-login{
     width: 100%;
     padding: 0.6rem;
-    border: 2px solid #4169e1;;
+    border: 2px solid #4169e1;
     border-radius: 30px;
     background: #ececec;
-    font-size: clamp(1rem, 3vw, 1,3rem);
+    font-size: clamp(1rem, 3vw, 1.3rem);
     font-weight: 600;
     cursor: pointer;
     transition: 0.3s;
 }
 
+/* Login button hover effect */
 .input-login:hover{
     background: rgb(222, 245, 251);
 }
 
 
 /* Keyframes for animations */
+/* Fade-in animation for modal background */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -156,6 +165,7 @@
     }
 }
 
+/* Zoom-in animation for modal content */
 @keyframes zoomIn {
     from {
         transform: scale(1);

@@ -1,13 +1,18 @@
+/* Global Styles for the Body */
 body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
     background-color: white; /* Set background color */
 }
+
+/* Button container positioning and styling */
 .button-container {
     text-align: right;
     margin: 10px;
 }
+
+/* Button styling inside the container */
 .button-container button {
     padding: 10px 20px;
     font-size: 16px;
@@ -18,31 +23,49 @@ body {
     cursor: pointer;
     margin-left: 10px;
 }
+
+/* Hover effect for buttons inside the container */
 .button-container button:hover {
     background-color: #0056b3;
 }
+
+/* Specific styles for the Cancel button */
 #cancelButton {
     background-color: #dc3545;
 }
+
+/* Hover effect for the Cancel button */
 #cancelButton:hover {
     background-color: #c82333;
 }
+
+/* Specific styles for the Edit button */
 #editButton {
     background-color: #28a745;
 }
+
+/* Hover effect for the Edit button */
 #editButton:hover {
     background-color: #218838;
 }
+
+/* Main table styling */
 .main-table {
     width: 100%;
     border-collapse: collapse;
 }
+
+/* Header and invoice table styling */
 .header, .invoice-table {
     width: 100%;
 }
+
+/* Content and invoice padding */
 .content, .invoice {
     padding: 10px;
 }
+
+/* Warning text color */
 .warning {
     color: red;
 }

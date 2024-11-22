@@ -1,9 +1,11 @@
+/* General body styling */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
     background-color: #b0c4de;
 }
 
+/* Header styling with fixed positioning and shadow */
 header {
     position: fixed; /* Fix the header at the top */
     top: 0; /* Ensure it's at the very top */
@@ -15,37 +17,19 @@ header {
     background-color: #4169e1;
     color: #ffffff;
     z-index: 1000; /* Ensure it's above other content */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Logo size inside the header */
 .logo {
     width: 40px;
     height: 40px;
     margin-left: 10px;
 }
 
-.dashboard-button {
-    position: relative;
-    background-color: transparent;
-    box-shadow: inset 0 0 0 1px var(white);
-    transform: translateZ(0);
-    padding: 10px 5px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 16px;
-    margin-left: 10px;
-}
-
-.bills-button {
-    position: relative;
-    color: #ffffff;
-    padding: 10px 5px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-size: 16px;
-    margin-left: 10px;
-}
-
+/* General button styling for dashboard, bills, and account management */
+.dashboard-button,
+.bills-button,
 .accs-button {
     position: relative;
     color: #ffffff;
@@ -53,27 +37,14 @@ header {
     border-radius: 10px;
     text-decoration: none;
     font-size: 16px;
-    margin-left: 5px;
+    margin-left: 10px;
 }
 
+/* Decorative lines around buttons */
 .dashboard-button::before,
-.dashboard-button::after {
-    content: "|";
-    flex-grow: 1;
-    height: 5px;
-    background-color: #ffffff;
-    margin: 10px;
-}
-
+.dashboard-button::after,
 .bills-button::before,
-.bills-button::after {
-    content: "|";
-    flex-grow: 1;
-    height: 5px;
-    background-color: #ffffff;
-    margin: 10px;
-}
-
+.bills-button::after,
 .accs-button::before,
 .accs-button::after {
     content: "|";
@@ -83,34 +54,38 @@ header {
     margin: 10px;
 }
 
-.desc{
+/* Main descriptive section styling */
+.desc {
     text-align: center;
     margin-top: 50px;
     margin-bottom: 10px;
     font-weight: bolder;
-    font-size:xx-large;
+    font-size: xx-large;
 }
 
-.userName{
+/* User name display */
+.userName {
     text-align: left;
     margin-top: 10px;
     margin-left: 10px;
     margin-bottom: 10px;
     font-weight: bolder;
-    font-size:large;
+    font-size: large;
 }
 
+/* Pie chart container with grid layout */
 .descDashboardPie {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
     gap: 10px;
     max-width: 20%;
-    margin-left: 50px;
+    margin-left: 80px;
     margin-top: -200px;
     margin-bottom: 30px;
     padding: 10px;
 }
 
+/* Main dashboard container with grid layout */
 .descDashboard {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -118,50 +93,32 @@ header {
     width: 1000px;
     height: 170px;
     max-width: 100%;
-    margin-left: 450px; /* Increase this value to move it slightly to the right */
+    margin-left: 420px; /* move it slightly to the right */
     margin-top: 70px;
     padding: 20px;
 }
 
-h2{
+/* General heading styling */
+h2 {
     text-align: center;
     margin-bottom: 10px;
     font-weight: lighter;
     font-size: large;
 }
 
-#billsThisMonth{
+/* Styling for individual income and bill display sections */
+#billsThisMonth,
+#billsThisYear,
+#overallIncomeThisMonth,
+#overallIncome {
     text-align: center;
     margin-bottom: 10px;
     font-weight: bolder;
-    font-size:x-large;
+    font-size: x-large;
     padding: 20px;
 }
 
-#billsThisYear{
-    text-align: center;
-    margin-bottom: 10px;
-    font-weight: bolder;
-    font-size:x-large;
-    padding: 20px;
-}
-
-#overallIncomeThisMonth{
-    text-align: center;
-    margin-bottom: 10px;
-    font-weight: bolder;
-    font-size:x-large;
-    padding: 20px;
-}
-
-#overallIncome{
-    text-align: center;
-    margin-bottom: 10px;
-    font-weight: bolder;
-    font-size:x-large;
-    padding: 20px;
-}
-
+/* Secondary dashboard grid */
 .descDashboard2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -169,28 +126,23 @@ h2{
     padding: 20px;
 }
 
-.dashboard-button:hover {
-    background-color: #1d3ceb;
-    padding: 10px 5px;
-}
-
-/* Active button style */
-.dashboard-button.active {
-    background-color: #1d3ceb; /* Active color */
-    color: white;
-    font-weight: bold;
-}
-
-.bills-button:hover {
-    background-color: #1d3ceb;
-    padding: 10px 5px;
-}
-
+/* Hover and active states for buttons */
+.dashboard-button:hover,
+.bills-button:hover,
 .accs-button:hover {
     background-color: #1d3ceb;
     padding: 10px 5px;
 }
 
+/* Active button style */
+.dashboard-button.active,
+.user-manage.active {
+    background-color: #1d3ceb;
+    color: white;
+    font-weight: bold;
+}
+
+/* User management button styling */
 .user-manage {
     position: relative;
     color: #ffffff;
@@ -200,6 +152,8 @@ h2{
     font-size: 16px;
     margin-left: 10px;
 }
+
+/* Decorative lines around user management button */
 .user-manage::before,
 .user-manage::after {
     content: "|";
@@ -208,27 +162,26 @@ h2{
     background-color: #ffffff;
     margin: 10px;
 }
+
+/* Hover effect for user management button */
 .user-manage:hover {
     background-color: #1d3ceb;
     padding: 10px 5px;
 }
-.user-manage.active {
-    background-color: #1d3ceb; /* Active color */
-    color: white;
-    font-weight: bold;
-}
 
-
+/* Exit button styling within the header */
 .exit-button {
     margin-left: auto; /* Pushes the exit button to the right */
 }
 
+/* Adjust size and cursor for the exit button icon */
 .exit-button img {
-    width: 40px; /* Adjust icon size as needed */
+    width: 40px;
     height: auto;
     cursor: pointer;
 }
 
+/* Dashboard grid container */
 .dashboard {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -236,6 +189,7 @@ h2{
     padding: 20px;
 }
 
+/* Styling for cards in the chart container */
 .card_chart {
     background-color: #d3d3d3;
     border-radius: 10px;
@@ -243,7 +197,7 @@ h2{
     font-size: 18px;
 }
 
-/* Define keyframes for fade-in and fade-out */
+/* Fade-in and fade-out animations */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -266,23 +220,20 @@ h2{
     }
 }
 
-/* Apply the fade-in animation */
+/* Section visibility control */
 .section.fade-in {
     animation: fadeIn 0.5s forwards;
 }
 
-/* Apply the fade-out animation */
 .section.fade-out {
     animation: fadeOut 0.5s forwards;
 }
 
-/* Ensure the section that is not visible is hidden */
 .section.hidden {
     display: none;
 }
 
-
-/* Modal container */
+/* Modal container styling */
 .custom-modal {
     display: none; /* Initially hidden */
     position: fixed;
@@ -294,91 +245,91 @@ h2{
     background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
     justify-content: center;
     align-items: center;
-  }
-  
-  /* Modal content */
-  .custom-modal-content {
+}
+
+/* Modal content box styling */
+.custom-modal-content {
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     width: 400px;
     position: relative;
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Close button */
-  .close-button {
+}
+
+/* Close button styling inside the modal */
+.close-button {
     position: absolute;
     top: 10px;
     right: 15px;
     font-size: 20px;
     cursor: pointer;
-  }
+}
 
-/* Adjust for tablet screens */
+/* Responsive adjustments for tablets */
 @media (max-width: 1024px) {
     .descDashboard {
         grid-template-columns: repeat(2, 1fr); /* Reduce to 2 columns */
     }
-    .descDashboard2 {
+    .descDashboard2,
+    .dashboard {
         grid-template-columns: repeat(1, 1fr); /* Reduce to 1 column */
-    }
-    .dashboard{
-        grid-template-columns: repeat(1, 1fr); /* Reduce to 2 columns */
     }
 }
 
-/* Adjust for mobile screens */
+/* Responsive adjustments for mobile screens */
 @media (max-width: 768px) {
-    .descDashboard {
-        grid-template-columns: repeat(1, 1fr); /* Reduce to 1 column */
-    }
-    .descDashboard2 {
-        grid-template-columns: repeat(1, 1fr); /* 1 column for smaller screens */
-    }
-    .dashboard{
-        grid-template-columns: repeat(1, 1fr); /* Reduce to 2 columns */
+    .descDashboard,
+    .descDashboard2,
+    .dashboard {
+        grid-template-columns: repeat(1, 1fr); /* Single column layout */
     }
 }
-  
+
+/* Filter dropdown container styling */
 .filter-dropdown {
     display: flex;
     align-items: center;
     justify-content: flex-start; /* Aligns items to the left */
-    margin: 10px 0; /* Reduce margin above and below the dropdown */
+    margin: 10px 0;
     padding: 10px;
     border-radius: 25px; /* Rounded capsule effect */
-    background-color: #f2f2f2; /* Light background color */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    background-color: #f2f2f2;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     width: fit-content; /* Shrink to fit content */
     margin-left: 20px; /* Move slightly to the right */
 }
 
+/* Label styling within the dropdown */
 .filter-dropdown label {
     margin-right: 10px; /* Space between label and dropdown */
 }
 
+/* Bold styling for dropdown labels */
 .bold-label {
-    font-weight: bold; /* Make label bold */
+    font-weight: bold;
 }
 
+/* Dropdown select styling */
 .filter-dropdown select {
-    padding: 5px 10px; /* Padding for the dropdown */
-    border: 1px solid #ccc; /* Border for the dropdown */
-    border-radius: 5px; /* Slightly rounded corners */
-    font-size: 14px; /* Font size for the dropdown */
-    background-color: #fff; /* White background for dropdown */
-    cursor: pointer; /* Change cursor on hover */
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    background-color: #fff;
+    cursor: pointer;
 }
 
-/* Optional: Change dropdown border on focus */
+/* Change dropdown border color on focus */
 .filter-dropdown select:focus {
-    border-color: #007BFF; /* Highlight border color */
-    outline: none; /* Remove default outline */
+    border-color: #007BFF;
+    outline: none;
 }
-#resetButton{
+
+/* Reset button styling */
+#resetButton {
     background: transparent;
-    border:1px solid #000000;
+    border: 1px solid #000000;
     font-size: 15px;
     color: #ff0000; /* Red color */
     margin-top: -2px;

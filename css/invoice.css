@@ -1,41 +1,49 @@
+/* General body styling */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 20px;
 }
 
+/* Styling for the main table */
 .main-table {
     width: 100%;
     border: 1px solid black;
     border-collapse: collapse;
 }
 
+/* Header section styling */
 .header {
     text-align: center;
     padding: 10px;
 }
 
+/* Header title styling for h2 and h3 */
 .header h2, .header h3 {
     margin: 5px 0;
 }
 
+/* Content section styling */
 .content {
     width: 60%;
     vertical-align: top;
     padding: 10px;
 }
 
+/* Styling for the warning section */
 .warning {
     text-align: center;
     font-weight: bold;
 }
 
+/* Invoice section styling */
 .invoice {
     width: 40%;
     vertical-align: top;
     padding: 10px;
 }
 
+/* Invoice table styling */
 .invoice-table {
     margin-top: 5%;
     width: 100%;
@@ -43,25 +51,30 @@ body {
     border-collapse: collapse;
 }
 
-.invoice-table th{
+/* Invoice table header cell styling */
+.invoice-table th {
     border: 1px solid black;
     padding: 5px;
     text-align: left;
 }
 
+/* Background color for header cells */
 .invoice-table th {
     background-color: #f2f2f2;
 }
 
+/* Invoice table header row styling */
 .invoice-table tr th {
     text-align: center;
     font-weight: bold;
 }
 
+/* Invoice table data cell height */
 .invoice-table tr td {
     height: 25px;
 }
-/* Set page size for printing */
+
+/* Print media query settings */
 @media print {
     body {
         width: 8.5in;      /* Set the width to 8.5 inches */

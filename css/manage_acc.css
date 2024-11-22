@@ -1,22 +1,21 @@
 body {
     margin: 0;
     font-family: Arial, sans-serif;
-    background-color: #b0c4de;
+    background-color: #b0c4de; /* Light blue background for the page */
 }
-
 
 header {
     display: flex;
     align-items: center;
     padding: 10px 20px;
-    background-color: #4169e1;
-    color: #ffffff;
+    background-color: #4169e1; /* Header background color */
+    color: #ffffff; /* White text color */
 }
 
 .logo {
     width: 40px;
     height: 40px;
-    margin-left: 10px;
+    margin-left: 10px; /* Margin to the left of the logo */
 }
 
 
@@ -30,17 +29,20 @@ header {
 
 .table-controls input, .table-controls button {
     padding: 10px;
-    font-size: 16px;
+    font-size: 16px; /* Uniform font size for inputs and buttons */
 }
+
 .table-controls .search-container {
-    margin-left: auto;
+    margin-left: auto; /* Push search container to the right */
 }
+
 .table-controls .add-button-container,
 .table-controls .set-button-container {
-margin-right: 10px; /* Adjust margin for better spacing */
+    margin-right: 10px; /* Adjust margin for better spacing between buttons */
 }
+
 .table-controls button {
-    cursor: pointer;
+    cursor: pointer; /* Change cursor to indicate clickable buttons */
 }
 
 /* Specific styling for the "Add" button */
@@ -48,13 +50,13 @@ margin-right: 10px; /* Adjust margin for better spacing */
     background-color: white; 
     color: black; 
     font-weight: bold; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Box shadow for depth */
     border: 2px solid #4169e1; 
-    width: 100px;
+    width: 100px; /* Fixed width for the button */
     border-radius: 5px;  
 }
 #addButton:hover{
-    background-color: #86dbf3;
+    background-color: #86dbf3; /* Light hover background color */
 }
 
 #setButton {
@@ -63,11 +65,11 @@ margin-right: 10px; /* Adjust margin for better spacing */
     font-weight: bold; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border: 2px solid #4169e1; 
-    width: 150px;
+    width: 150px; /* Fixed width for the button */
     border-radius: 5px;  
 }
 
-
+/* Styling for dashboard, bills, and account buttons */
 .dashboard-button {
     position: relative;
     color: #ffffff;
@@ -75,7 +77,7 @@ margin-right: 10px; /* Adjust margin for better spacing */
     border-radius: 10px;
     text-decoration: none;
     font-size: 16px;
-    margin-left: 10px;
+    margin-left: 10px; /* Spacing between buttons */
 }
 
 .bills-button {
@@ -85,7 +87,7 @@ margin-right: 10px; /* Adjust margin for better spacing */
     border-radius: 10px;
     text-decoration: none;
     font-size: 16px;
-    margin-left: 10px;
+    margin-left: 10px; /* Spacing between buttons */
 }
 
 .accs-button {
@@ -95,9 +97,10 @@ margin-right: 10px; /* Adjust margin for better spacing */
     border-radius: 10px;
     text-decoration: none;
     font-size: 16px;
-    margin-left: 5px;
+    margin-left: 5px; /* Slightly adjusted margin for alignment */
 }
 
+/* Decorative bars around the buttons */
 .dashboard-button::before,
 .dashboard-button::after {
     content: "|";
@@ -125,6 +128,7 @@ margin-right: 10px; /* Adjust margin for better spacing */
     margin: 10px;
 }
 
+/* Styling for the user manage button */
 .user-manage {
     position: relative;
     color: #ffffff;
@@ -134,6 +138,7 @@ margin-right: 10px; /* Adjust margin for better spacing */
     font-size: 16px;
     margin-left: 10px;
 }
+
 .user-manage::before,
 .user-manage::after {
     content: "|";
@@ -142,10 +147,14 @@ margin-right: 10px; /* Adjust margin for better spacing */
     background-color: #ffffff;
     margin: 10px;
 }
+
+/* Hover effect for the user manage button */
 .user-manage:hover {
     background-color: #1d3ceb;
     padding: 10px 5px;
 }
+
+/* Active button styling for user manage */
 .user-manage.active {
     background-color: #1d3ceb; /* Active color */
     color: white;
@@ -153,8 +162,7 @@ margin-right: 10px; /* Adjust margin for better spacing */
 }
 
 
-
-/* Active button style */
+/* Active button style for account buttons */
 .accs-button.active {
     background-color: #1d3ceb; /* Active color */
     color: white;
@@ -176,32 +184,30 @@ margin-right: 10px; /* Adjust margin for better spacing */
     padding: 10px 5px;
 }
 
+/* Styling for exit button */
 .exit-button {
     margin-left: auto; /* Pushes the exit button to the right */
 }
 
 .exit-button img {
-    width: 40px; /* Adjust icon size as needed */
+    width: 40px; /* Adjust icon size */
     height: auto;
-    cursor: pointer;
+    cursor: pointer; /* Cursor changes to pointer when hovering over image */
 }
-
 
 h1, h2 {
     text-align: center;
-    color: #333;
+    color: #333; /* Dark text color for headings */
 }
 
-
 /* Basic styling for the table */
-
 .table-container {
     width: 90%;
     margin-top: 20px;
     margin-left: auto;
     margin-right: auto;
     border: 2px solid #1d3ceb;
-    max-height: 470px; /* Adjust as needed */
+    max-height: 470px; /* Limit the height */
     overflow-y: auto; /* Enable vertical scrolling */
 }
 
@@ -212,13 +218,15 @@ table {
     margin-left: auto;
     margin-right: auto;
 }
+
 th, td {
     padding: 10px;
     text-align: center;
     border: 1px solid #ddd;
 }
+
 th {
-    background-color: #4169e1;
+    background-color: #4169e1; /* Header background color */
 }
 
 /* Add transition for smooth zoom effect */
@@ -228,12 +236,12 @@ table tr {
 
 /* Hover effect for table rows */
 table tr:hover {
-    background-color: #6f8de682; /* Slightly modified color */
+    background-color: #6f8de682; /* Slightly modified color for hover */
     cursor: pointer; /* Change cursor to a pointer to indicate it's clickable */
-    transform: scale(1.01); /* Slightly zoom in the row */
+    transform: scale(1.01); /* Slight zoom effect for rows on hover */
 }
 
-
+/* Styling for modify buttons */
 .modify-btn {
     padding: 8px 12px;
     border: none;
@@ -245,13 +253,14 @@ table tr:hover {
 }
 
 .table-container .modify-btn {
-    background-color: #2196F3; /* Blue */
+    background-color: #2196F3; /* Blue background for modify button */
 }
 
 .table-container .modify-btn:hover {
-    background-color: #1976D2;
+    background-color: #1976D2; /* Darker blue on hover */
 }
 
+/* Styling for delete buttons */
 .delete-btn {
     padding: 8px 12px;
     border: none;
@@ -264,17 +273,19 @@ table tr:hover {
 }
 
 .table-container .delete-btn {
-    background-color: #f32c21;
+    background-color: #f32c21; /* Red background for delete button */
 }
 
 .table-container .delete-btn:hover {
-    background-color: #e53935;
+    background-color: #e53935; /* Darker red on hover */
 }
 
-.account-id{
+/* Account ID hidden from view */
+.account-id {
     display: none;
 }
 
+/* Manage account modal styling */
 .manage_acc {
     display: none; /* Hidden by default */
     align-items: center;
@@ -293,6 +304,7 @@ table tr:hover {
     animation: fadeIn 0.5s; /* Fade-in animation */
 }
 
+/* Add account modal styling */
 .add_acc {
     display: none; /* Hidden by default */
     align-items: center;
@@ -311,23 +323,26 @@ table tr:hover {
     animation: fadeIn 0.5s; /* Fade-in animation */
 }
 
+
+/* Container for the manage account form. It has a fixed position, white background, and is centered on the screen with a border and shadow for a clean, modern look. The scale and zoom-in animation are used to create a dynamic effect when the form appears. */
 .manage_acc-content {
     background-color: white;
     align-items: center;
     position: fixed center;
-    margin: 5% auto; 
+    margin: 5% auto;
     padding: 50px;
     border: 3px solid #4169e1;
-    width: 40%; 
-    max-width: 900px; 
-    border-radius: 8px; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+    width: 40%;
+    max-width: 900px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
-    transform: scale(1); /* Initial scale for zoom-in effect */
-    animation: zoomIn 0.3s; /* Zoom-in animation */
+    transform: scale(1);
+    animation: zoomIn 0.3s;
 }
 
+/* Styling for input fields, providing a custom design with rounded edges, padding, and blue borders. The input fields will grow and shrink responsively with the page size, and a smooth transition is added for interaction effects like focus. */
 .manageAccInput-field {
     margin-left: 10%;
     width: 100%;
@@ -343,6 +358,7 @@ table tr:hover {
     font-weight: lighter;
 }
 
+/* Container for input fields. This section uses flexbox to position elements, ensuring that the labels and inputs are aligned properly and spaced appropriately between each form field. */
 .manage_acc-field {
     display: flex;
     position: relative;
@@ -350,6 +366,7 @@ table tr:hover {
     margin-top: 1.5rem;
 }
 
+/* Label styling that applies to the floating label effect. The label starts in the middle of the input field and moves to the top when the input is focused or valid. This gives a dynamic, user-friendly interface. */
 .manageAccLabel {
     position: absolute;
     margin-left: 10%;
@@ -358,8 +375,9 @@ table tr:hover {
     transform: translateY(-50%);
     transition: 0.2s;
     color: black;
-}   
+}
 
+/* The floating label effect that moves the label to the top and changes its background color and text color when the corresponding input is focused or has a valid value. */
 .manageAccInput-field:focus ~ .manageAccLabel,
 .manageAccInput-field:valid ~ .manageAccLabel {
     position: absolute;
@@ -371,7 +389,7 @@ table tr:hover {
     color: white;
 }
 
-/* Centering the h2 element */
+/* Header for the manage account section. It is centered at the top with a blue background, white text, and rounded corners. This header also has a dynamic effect created by the use of pseudo-elements (::before and ::after) to add a decorative touch. */
 .manage_acc-header {
     display: flex;
     position: absolute;
@@ -387,6 +405,7 @@ table tr:hover {
     font-size: clamp(1rem, 3vw, 2rem);
 }
 
+/* Decorative elements for the header, adding rounded corners with a shadow effect to the left and right sides of the header for an enhanced visual appearance. */
 .manage_acc-header::before{
     content: "";
     position: absolute;
@@ -411,17 +430,20 @@ table tr:hover {
     box-shadow: -15px 0 0 0 #4169e1;
 }
 
+/* Styling for checkbox container, ensuring it has appropriate margins and text color for clear visibility in the form. */
 .checkbox-container{
     color: black;
     margin-top: 1.5rem;
     margin-left: 30px;
 }
 
+/* Container for the form buttons. This section provides a margin and center alignment for the button to enhance its placement. */
 .manage_acc-button {
     text-align: center;
     margin-top: 50px;
 }
 
+/* Button styles. The buttons have a white background, bold text, and blue borders with rounded corners. They are interactive, with hover effects that change the opacity and border color to enhance the user experience. */
 .manage_acc-button button {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 0, 0);
@@ -435,6 +457,7 @@ table tr:hover {
     border: 2px solid #4169e1;
 }
 
+/* Hover effect for the buttons that changes their opacity and border color to make them feel more interactive. */
 .manage_acc-button button:hover {
     border: 2px solid #4169e1;
     opacity: 0.9;
