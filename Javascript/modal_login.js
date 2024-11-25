@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Show the modal when the button is clicked
     btn.onclick = function() {
         modal.style.display = "flex";
+        document.getElementById('footer').style.display = 'none';
     }
 
     // Hide the modal when the close button is clicked
@@ -25,6 +26,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function hideLoginModal() {
         modal.style.display = "none";
         resetLoginForm();
+        document.getElementById('footer').style.display = 'inline-block';
     }
 
     // Function to reset the form and uncheck the checkbox

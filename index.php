@@ -73,7 +73,7 @@
         <p>PRWAI Descriptive and Predictive Analysis of Water <br> Income through the use of Dashboard</p>
         <a class="button" id="loginButton" onclick="showLoginModal()">Get Started</a>
     </div>
-    <footer>
+    <footer id="footer">
     <p1>By clicking the Get Started button, you agree to PRWAI <a href="#" onclick="showTermsModal()" class="custom-link">Terms and Conditions of Use</a>.</p1>
     <br>
     <p1>To learn more about how PRWAI collects, uses, and protects information, please see <a href="#" onclick="showPrivacyModal()" class="custom-link">PRWAI Privacy Policy</a>.</p1>
