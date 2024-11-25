@@ -1,4 +1,4 @@
-/* Global styles for body and html, including full screen size, flex layout, and background image */
+/* Global styles */
 body, html {
     margin: 0;
     padding: 0;
@@ -13,238 +13,250 @@ body, html {
     background-position: center;
 }
 
-/* Container for the main content with flex layout and semi-transparent background */
+/* Container */
 .container {
-    position: flex;
+    position: relative;
     height: 100%;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: rgba(255, 255, 255, 0.6);
+    padding: 1rem;
+    box-sizing: border-box;
 }
 
-/* Content styling with padding, background color, rounded corners, and responsive width */
+/* Content */
 .content {
     position: relative;
-    padding: 120px;
+    padding: clamp(1.5rem, 5vw, 120px);
     background-color: rgba(255, 255, 255, 0.8);
-    border-radius: 50px;
+    border-radius: clamp(20px, 5vw, 50px);
     text-align: left;
-    width: 800px; /* Adjust the width as needed */
-    max-width: 80%; /* Added to ensure responsiveness */
-    margin: auto; /* Center the content horizontally */
+    width: min(800px, 90%);
+    margin: auto;
+    overflow: hidden;
 }
 
-/* Logo positioning and size */
+/* Logo */
 .logo {
     position: absolute;
-    top: 70px;
-    right: 70px;
-    width: 100px;
+    top: max(20px, 4vh);
+    right: max(20px, 4vw);
+    width: min(70px, 15vw);
+    height: auto;
+    object-fit: contain;
 }
 
-/* Styling for the header (h1) element */
+/* Typography */
 h1 {
-    font-size: 3em;
+    font-size: clamp(1.5rem, 4vw, 3em);
     color: #333;
-    margin-top: -40px; /* Adjust as needed */
-    margin-left: -80px;
+    margin-top: clamp(-20px, -3vw, -40px);
+    margin-left: clamp(-20px, -3vw, -80px);
+    line-height: 1.2;
 }
 
-/* Styling for paragraph elements (p) */
+/* Paragraph - Updated for better text wrapping */
 p {
-    font-size: 1.5em;
+    font-size: clamp(1rem, 2vw, 1.5em);
     color: #000000;
-    margin: 0;
-    margin-left: -80px;
-    margin-top: 50px;
+    margin: clamp(15px, 3vh, 50px) 0;
+    padding-right: clamp(10px, 3vw, 30px);
+    line-height: 1.4;
+    max-width: 100%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
-/* Button styling with padding, background color, rounded corners, and hover effect */
+/* Button - Updated for better sizing */
 .button {
     display: inline-block;
-    padding: 20px 35px;
-    font-size: 1em;
+    padding: clamp(8px, 2vw, 20px) clamp(16px, 3vw, 35px);
+    font-size: clamp(0.875rem, 1.5vw, 1em);
     color: white;
     background-color: #3d7fe4;
     text-decoration: none;
-    border-radius: 50px;
+    border-radius: 25px;
     transition: background-color 0.3s ease;
-    margin-left: -80px;
-    margin-top: 50px;
-    margin-bottom: -60px;
     cursor: pointer;
+    white-space: normal;
+    text-align: center;
+    margin: clamp(10px, 2vh, 30px) 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
-/* Hover effect for the button */
 .button:hover {
     background-color: #555;
 }
 
-/* Custom link styling */
-.custom-link {
-    color: blue;
-    text-decoration: underline;
-}
-
-/* Footer styling with small text and centered alignment */
+/* Footer */
 footer {
-    font-size: small;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: clamp(8px, 2vh, 15px);
+    background-color: rgba(255, 255, 255, 0.8);
     text-align: center;
-    position: absolute;
-    bottom: 115px;
-    width: 100%;
+    font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+    z-index: 10;
+    word-wrap: break-word; /* Ensures text doesn't overflow */
+    overflow-wrap: break-word;
+    box-sizing: border-box;
 }
 
-/* Modal background styling with full screen coverage and opacity */
-.termsWrapper {
-    display: none; /* Hidden by default */
+/* Modal Styles */
+.termsWrapper, .policyWrapper {
+    display: none;
     align-items: center;
     justify-content: center;
     width: 100%;
     min-height: 100vh;
     padding: 1rem;
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    position: fixed;
+    z-index: 20;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
-    backdrop-filter: blur(5px); /* Blurring effect on the background */
-    animation: fadeIn 0.5s; /* Fade-in animation */
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.5s;
 }
 
-/* Modal content with padding, borders, rounded corners, and animation */
-.terms-wrapper {
+.terms-wrapper, .policy-wrapper {
     position: relative;
-    padding: 6rem 20rem 20rem 20rem;
+    padding: clamp(3rem, 4vw, 6rem) clamp(1rem, 8vw, 20rem);
     border: 3px solid #4169e1;
-    border-radius: 15px; /* Rounded corners */
+    border-radius: 15px;
     backdrop-filter: blur(25px);
     box-shadow: 0px 0px 10px 2px rgb(0, 0, 0, 0.2);
     background-color: white;
-    backdrop-filter: blur(10px);
-    transform: scale(1); /* Initial scale for zoom-in effect */
-    animation: zoomIn 0.3s; /* Zoom-in animation */
+    width: min(90%, 1200px);
+    margin: auto;
+    box-sizing: border-box;
 }
 
-/* Header styling for the terms modal with flex layout and centered text */
-.terms-header{
-    display: flex;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem 5rem;
-    transform: translateX(-50%);
-    border-radius: 0 0 20px 20px;
-    background-color: #4169e1;
-    color: white;
-    font-size: clamp(1rem, 3vw, 2rem);
+/* Responsive breakpoints - Updated for better handling */
+@media screen and (max-width: 768px) {
+    .content {
+        padding: clamp(1rem, 4vw, 2rem);
+        margin: 1rem;
+        width: min(100%, 600px);
+    }
+
+    h1, p {
+        margin-left: 0;
+        padding-right: min(60px, 15vw);
+    }
+
+    .button {
+        margin-left: 0;
+        display: inline-block;
+        width: auto;
+        max-width: calc(100% - 20px);
+    }
+
+    .logo {
+        top: 1rem;
+        right: 1rem;
+        width: min(50px, 12vw);
+    }
+
+    footer {
+        font-size: clamp(0.7rem, 2vw, 0.8rem); /* Adjust footer font size */
+        padding: clamp(10px, 2vw, 12px);
+    }
 }
 
-/* Styling for the left corner of the modal header */
-.terms-header::before{
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -30px;
-    width: 30px;
-    height: 30px;
-    border-top-right-radius: 50%;
-    background: transparent;
-    box-shadow: 15px 0 0 0 #4169e1;
+@media screen and (max-width: 480px) {
+    .content {
+        padding: 1rem;
+        border-radius: 15px;
+        margin: 0.5rem;
+    }
+
+    h1 {
+        font-size: clamp(1.2rem, 5vw, 1.5rem);
+        margin-top: 40px;
+    }
+
+    p {
+        font-size: clamp(0.875rem, 4vw, 1rem);
+        padding-right: 0;
+        margin: 0.75rem 0;
+    }
+
+    .button {
+        width: auto;
+        max-width: 100%;
+        margin: 0.75rem 0;
+        padding: 12px 24px;
+        white-space: normal;
+    }
+
+    .logo {
+        top: 0.5rem;
+        right: 0.5rem;
+        width: 40px;
+    }
+
+    footer {
+        font-size: 0.7rem; /* Further adjust footer size */
+        line-height: 1.4; /* Ensure readability */
+    }
 }
 
-/* Styling for the right corner of the modal header */
-.terms-header::after{
-    content: "";
-    position: absolute;
-    top: 0;
-    right: -30px;
-    width: 30px;
-    height: 30px;
-    border-top-left-radius: 50%;
-    background: transparent;
-    box-shadow: -15px 0 0 0 #4169e1;
+@media screen and (max-width: 320px) {
+    .content {
+        padding: 0.75rem;
+    }
+
+    h1 {
+        font-size: 1.1rem;
+    }
+
+    p {
+        font-size: 0.8rem;
+    }
+
+    .button {
+        padding: 10px 20px;
+        font-size: 0.8rem;
+        width: auto;
+    }
+
+    footer {
+        font-size: 0.6rem; /* Smallest font size for footer */
+        padding: 8px;
+    }
 }
 
-/* Modal background styling for the policy modal */
-.policyWrapper {
-    display: none; /* Hidden by default */
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    min-height: 100vh;
-    padding: 1rem;
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
-    backdrop-filter: blur(5px); /* Blurring effect on the background */
-    animation: fadeIn 0.5s; /* Fade-in animation */
-}
+/* Landscape orientation */
+@media screen and (max-height: 480px) and (orientation: landscape) {
+    .content {
+        margin: 0.5rem;
+        padding: 1rem;
+    }
 
-/* Modal content for the policy modal with padding, borders, and animations */
-.policy-wrapper {
-    position: relative;
-    padding: 6rem 20rem 20rem 20rem;
-    border: 3px solid #4169e1;
-    border-radius: 15px; /* Rounded corners */
-    backdrop-filter: blur(25px);
-    box-shadow: 0px 0px 10px 2px rgb(0, 0, 0, 0.2);
-    background-color: white;
-    backdrop-filter: blur(10px);
-    transform: scale(1); /* Initial scale for zoom-in effect */
-    animation: zoomIn 0.3s; /* Zoom-in animation */
-}
+    h1 {
+        font-size: clamp(1.2rem, 4vh, 1.8rem);
+    }
 
-/* Header styling for the policy modal with flex layout and centered text */
-.policy-header{
-    display: flex;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    align-items: center;
-    justify-content: center;
-    padding: 0.5rem 5rem;
-    transform: translateX(-50%);
-    border-radius: 0 0 20px 20px;
-    background-color: #4169e1;
-    color: white;
-    font-size: clamp(1rem, 3vw, 2rem);
-}
+    p {
+        margin: 10px 0;
+        font-size: clamp(0.875rem, 3vh, 1rem);
+    }
 
-/* Styling for the left corner of the policy modal header */
-.policy-header::before{
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -30px;
-    width: 30px;
-    height: 30px;
-    border-top-right-radius: 50%;
-    background: transparent;
-    box-shadow: 15px 0 0 0 #4169e1;
-}
+    .button {
+        padding: 8px 16px;
+        margin: 10px 0;
+        width: auto;
+    }
 
-/* Styling for the right corner of the policy modal header */
-.policy-header::after{
-    content: "";
-    position: absolute;
-    top: 0;
-    right: -30px;
-    width: 30px;
-    height: 30px;
-    border-top-left-radius: 50%;
-    background: transparent;
-    box-shadow: -15px 0 0 0 #4169e1;
+    footer {
+        font-size: clamp(0.65rem, 2vh, 0.75rem);
+        padding: 8px;
+    }
 }
