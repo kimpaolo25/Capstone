@@ -247,7 +247,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                     </div>
 
                     <div class="modal-field">
-                        <select name="area" class="area" id="area">
+                        <select name="area" class="area" id="area" required>
                             <option value="">Select Area</option>
                             <option value="1">Kanluran</option>
                             <option value="2">Gitna</option>
@@ -256,7 +256,9 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                             <option value="5">Patik</option>
                             <option value="6">Purok 6</option>
                         </select>
+                        <label for="area" class="label">Area</label>
                     </div>
+
 
                     <div class="modal-field">
                         <input type="number" id="current" name="current" class="input-field" />
@@ -321,6 +323,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                             <option value="5">Patik</option>
                             <option value="6">Purok 6</option>
                         </select> 
+                        <label for="area" class="label">Area</label>
                     </div>
 
                     <div class="modal-field">
