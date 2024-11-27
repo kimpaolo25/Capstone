@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     cuMField = document.getElementById('updateCuM');
     amountField = document.getElementById('updateAmount');
 
+    // Regular Expression for date validation (YYYY-MMM format)
+    const dateRegex = /^\d{4}-(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)$/;
+
     table.addEventListener('click', function(event) {
         const target = event.target;
         const id = target.getAttribute('data-id');
@@ -24,7 +27,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateForm.addEventListener('submit', function(event) {
         event.preventDefault();
-    
+
+        const date = dateField.value;
+
+        // Validate the date format using regex
+        if (!dateRegex.test(date)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Date Format',
+                text: 'Please enter the date in the format YYYY-MMM (e.g., 2024-Nov).',
+            });
+            return;  // Prevent form submission if the date is invalid
+        }
+
         // Display SweetAlert confirmation dialog
         Swal.fire({
             title: 'Are you sure?',
@@ -42,11 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const area = areaField.value;
                 const current = currentField.value;
                 const previous = previousField.value;
-                const date = dateField.value;
                 const initialAmount = initialAmountField.value;
                 const cuM = cuMField.value;
                 const amount = amountField.value;
-    
+
                 fetch('./php/updateBill.php', {
                     method: 'POST',
                     headers: {
@@ -59,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         area: area,
                         current: current,
                         previous: previous,
-                        date: date,
+                        date: date,  // Send the date as is in "YYYY-MMM" format
                         initialAmount: initialAmount,
                         cuM: cuM,
                         amount: amount
@@ -105,8 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-
-// Function to update cuM and amount dynamically
+    // Function to update cuM and amount dynamically
     function updateCuMAndAmount() {
         const current = parseFloat(currentField.value) || 0;
         const previous = parseFloat(previousField.value) || 0;
@@ -124,9 +137,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initialAmountField.addEventListener('input', updateCuMAndAmount);
 
     // Close the modal and reset the form
-    modal.style.display = 'none';
-    form.reset();
-
     updateModal.querySelector('.close').addEventListener('click', function() {
         updateModal.style.display = 'none';
     });
@@ -138,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Function to populate the modal with data from the database
 function populateModalFromDatabase(id) {
     fetch('./php/updateBill.php', {
         method: 'POST',
@@ -162,7 +173,7 @@ function populateModalFromDatabase(id) {
         cuMField.value = data.CU_M || '';
         amountField.value = data.Amount || '';
         areaField.value = data.Area_Number || '';
-        dateField.value = data.Date_column || '';
+        dateField.value = formatDateString(data.Date_column) || ''; // Format date before populating
         initialAmountField.value = data.Initial || '';
 
         // Show the modal
@@ -172,4 +183,15 @@ function populateModalFromDatabase(id) {
         console.error('Fetch error:', error);
         Swal.fire('Error!', 'An error occurred while fetching the record.', 'error');
     });
+}
+
+// Function to format the date in "YYYY-MMM" format
+function formatDateString(dateString) {
+    if (!dateString) return '';
+
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.toLocaleString('en-us', { month: 'short' });
+
+    return `${year}-${month}`;
 }

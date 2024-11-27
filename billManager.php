@@ -140,28 +140,27 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
             <div class="invModal-header">Modify Invoice</div>
 
             <div class="invModal-field">
-                </>
                 <input type="date" id="invDateInput" name="invDateInput" class="invInput-field">
                 <label for="invDateInput" class="invLabel">Cutoff Date</label>
             </div>
 
             <div class="invModal-field">
-                <input type="firstPen" id="firstPen" name="firstPen" class="invInput-field" />
+                <input type="number" id="firstPen" name="firstPen" class="invInput-field"/>
                 <label for="firstPen" class="invLabel">First Penalty</label>
             </div>
 
             <div class="invModal-field">
-                <input type="secondPen" id="secondPen" name="secondPen" class="invInput-field" />
+                <input type="number" id="secondPen" name="secondPen" class="invInput-field"/>
                 <label for="secondPen" class="invLabel">Second Penalty</label>
             </div>
 
             <div class="invModal-field">
-                <input type="gcashInf" id="gcashInf" name="gcashInf" class="invInput-field" />
+                <input type="text" id="gcashInf" name="gcashInf" class="invInput-field" />
                 <label for="gcashInf" class="invLabel">Gcash Information</label>
             </div>
 
             <div class="invModal-field">
-                <input type="gcashFee" id="gcashFee" name="gcashFee" class="invInput-field" />
+                <input type="number" id="gcashFee" name="gcashFee" class="invInput-field"/>
                 <label for="gcashFee" class="invLabel">Gcash Fee</label>
             </div>
 
@@ -232,7 +231,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                     </label>
                     <label>
                         <input type="radio" name="inputMode" value="minimal" onclick="toggleInputMode('minimal')"
-                            id="inactiveRadio" /> Lock/Inactive
+                            id="inactiveRadio" /> Locked/Inactive
                     </label>
                 </div>
 
@@ -248,7 +247,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                     </div>
 
                     <div class="modal-field">
-                        <select name="area" class="area" id="area">
+                        <select name="area" class="area" id="area" required>
                             <option value="">Select Area</option>
                             <option value="1">Kanluran</option>
                             <option value="2">Gitna</option>
@@ -257,7 +256,9 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                             <option value="5">Patik</option>
                             <option value="6">Purok 6</option>
                         </select>
+                        <label for="area" class="label">Area</label>
                     </div>
+
 
                     <div class="modal-field">
                         <input type="number" id="current" name="current" class="input-field" />
@@ -273,6 +274,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                 <div class="modal-section">
                     <div class="modal-field">
                         <input type="date" id="date" name="date" class="input-field" />
+                        <label for="date" class="label">Billing Date</label>
                     </div>
 
                     <div class="modal-field">
@@ -320,7 +322,8 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                             <option value="4">Maramaine</option>
                             <option value="5">Patik</option>
                             <option value="6">Purok 6</option>
-                        </select>
+                        </select> 
+                        <label for="area" class="label">Area</label>
                     </div>
 
                     <div class="modal-field">
@@ -337,7 +340,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                 <div class="modal-section">
                     <div class="modal-field">
                         <input type="text" id="updateDate" name="date" class="input-field" required />
-                        <label for="date" class="label">Date</label>
+                        <label for="date" class="label">Billing Date</label>
                     </div>
 
                     <div class="modal-field">
