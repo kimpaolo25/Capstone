@@ -68,6 +68,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        // Log the update action
+                        return fetch('./php/logs.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: new URLSearchParams({
+                                action: 'updated',
+                                recordAffected: name
+                            })
+                        });
+                    } else {
+                        throw new Error(data.message || 'There was a problem updating the record.');
+                    }
+                })
+                .then(logResponse => logResponse.json())
+                .then(logData => {
+                    if (logData.success) {
                         Swal.fire({
                             icon: 'success',
                             title: 'Your record has been updated!',
@@ -79,10 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
                             fetchDataAndReloadTable();
                         });
                     } else {
-                        Swal.fire('Error!', data.message || 'There was a problem updating the record.', 'error');
+                        throw new Error('Failed to log the update action.');
                     }
                 })
-                .catch(error => Swal.fire('Error!', 'An error occurred while updating the record.', 'error'));
+                .catch(error => Swal.fire('Error!', error.message, 'error'));
             }
         });
     });

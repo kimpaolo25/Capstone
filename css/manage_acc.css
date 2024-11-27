@@ -69,6 +69,20 @@ header {
     border-radius: 5px;  
 }
 
+#activityLogsButton{
+    background-color: white; 
+    color: black; 
+    font-weight: bold; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Box shadow for depth */
+    border: 2px solid #4169e1; 
+    width: 150px; /* Fixed width for the button */
+    border-radius: 5px;  
+}
+
+#activityLogsButton:hover{
+    background-color: #86dbf3; /* Light hover background color */
+}
+
 /* Styling for dashboard, bills, and account buttons */
 .dashboard-button {
     position: relative;
@@ -462,3 +476,99 @@ table tr:hover {
     border: 2px solid #4169e1;
     opacity: 0.9;
 }
+
+
+/* Fade-in animation for modal background */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Zoom-in animation for modal content */
+@keyframes zoomIn {
+    from {
+        transform: scale(1);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.logsModal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+    backdrop-filter: blur(5px); /* Add blur effect to background */
+    animation: fadeIn 0.5s; /* Fade-in animation */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    overflow: hidden; /* Prevent scrolling */
+}
+
+.logsModal-content {
+    background-color: #fefefe;
+    padding: 20px;
+    border: 3px solid #4169e1;
+    width: 50%; /* Adjust based on screen size */
+    max-height: 80%; /* Prevent overflow */
+    box-sizing: border-box; /* Include padding in width calculation */
+    animation: fadeIn 0.5s; /* Fade-in animation for content */
+    margin-left: 350px; /* Remove any margin that might cause issues */
+    margin-top: 100px   ;
+}
+
+
+
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+
+.logs-container {
+    max-height: 400px; /* Limit the height of the logs container */
+    overflow-y: auto;  /* Enable vertical scrolling */
+    padding: 10px;      /* Add some padding */
+    border: 1px solid #4169e1; /* Optional: Add a border around the container */
+    border-radius: 5px; /* Optional: Rounded corners for the container */
+}
+
+#activityLogsList {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0;            /* Remove padding */
+    margin: 0;             /* Remove margin */
+}
+
+#activityLogsList li {
+    border: 1px solid #4169e1;    /* Border for list items */
+    border-radius: 5px;        /* Rounded corners */
+    padding: 10px;             /* Padding for list items */
+    margin-bottom: 10px;       /* Space between list items */
+    transition: background-color 0.3s; /* Smooth hover effect */
+}
+
+#activityLogsList li:hover {
+    background-color: #6f8de6; /* Darker blue on hover */
+}
+

@@ -36,10 +36,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['user_level'] != 1) {
         <h1>Manage Account</h1>
 
         <div class="table-controls">
-        <div class="add-button-container">
-            <button id="addButton">Add</button>
-        </div>
-        </div>
+    <div class="add-button-container">
+        <button id="addButton">Add</button>
+        <button id="activityLogsButton">Activity Logs</button> <!-- New Activity Logs Button -->
+    </div>
+</div>
 
 
         <!-- Accounts Table -->
@@ -62,6 +63,22 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['user_level'] != 1) {
                 </tbody>
             </table>
         </div>
+
+<!-- Activity Logs Modal -->
+<div id="activityLogsModal" class="logsModal">
+    <div class="logsModal-content">
+        <span class="close-button" onclick="closeActivityLogsModal()"></span>
+        <h2>Activity Logs</h2>
+        <div class="logs-container">
+            <ul id="activityLogsList">
+                <li>
+
+                </li>
+                <!-- More log entries can be added here -->
+            </ul>
+        </div>
+    </div>
+</div>        
 
 
 <!-- Add Account Modal -->
@@ -175,10 +192,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['user_level'] != 1) {
     </div>
 </div>
 
-
-
     <script src="./javascript/manage_acc.js" defer></script>
     <script src="./Javascript/utils.js"></script>
     <script src="./Javascript/admin.js" defer></script>
+    <script src="./javascript/fetchActivitylogs.js" defer></script>
 </body>
 </html>

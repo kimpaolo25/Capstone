@@ -76,70 +76,86 @@ form.addEventListener('submit', function (event) {
         return; // Stop form submission
     }
 
-    // URL and method for adding a new entry
-    const url = './php/addBill.php';
-    const method = 'POST';
+ // URL and method for adding a new entry
+ const url = './php/addBill.php';
+ const method = 'POST';
 
-    // Show confirmation dialog
-    Swal.fire({
-        title: 'Are you sure you want to add this entry?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, add it!',
-        cancelButtonText: 'No, cancel',
-        reverseButtons: true
-    }).then((result) => {
-        if (result.isConfirmed) {
-            // Proceed with the fetch request
-            fetch(url, {
-                method: method,
-                body: new URLSearchParams(formData) // Convert FormData to URLSearchParams
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update tableData with newRowData
-                    tableData.push(newRowData);
+ // Show confirmation dialog
+ Swal.fire({
+     title: 'Are you sure you want to add this entry?',
+     icon: 'question',
+     showCancelButton: true,
+     confirmButtonText: 'Yes, add it!',
+     cancelButtonText: 'No, cancel',
+     reverseButtons: true
+ }).then((result) => {
+     if (result.isConfirmed) {
+         // Proceed with the fetch request
+         fetch(url, {
+             method: method,
+             body: new URLSearchParams(formData) // Convert FormData to URLSearchParams
+         })
+         .then(response => response.json())
+         .then(data => {
+             if (data.success) {
+                 // Log the add action
+                 return fetch('./php/logs.php', {
+                     method: 'POST',
+                     headers: {
+                         'Content-Type': 'application/x-www-form-urlencoded',
+                     },
+                     body: new URLSearchParams({
+                         action: 'added',
+                         recordAffected: newRowData.name
+                     })
+                 })
+                 .then(logResponse => logResponse.json())
+                 .then(logData => {
+                     if (!logData.success) {
+                         console.warn('Logging failed, but bill was added successfully');
+                     }
+                     return data;
+                 });
+             } else {
+                 throw new Error(data.message || 'Failed to add bill');
+             }
+         })
+         .then(data => {
+             // Update tableData with newRowData
+             tableData.push(newRowData);
 
-                    // Show success message and reload table
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Entry added successfully!',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-                        // Close the modal and reset the form
-                        modal.style.display = 'none';
-                        resetAddBillModal(); // Call reset function
-                        fetchDataAndReloadTable(); // Function to refresh data
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Failed to process the request',
-                        text: data.message || 'Something went wrong.',
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Failed to process the request. Please try again later.',
-                });
-            });
-        } else {
-            // If the user cancels, do nothing or handle the cancellation
-            Swal.fire({
-                title: 'Action canceled',
-                icon: 'info',
-                timer: 1500,
-                showConfirmButton: false
-            });
-        }
-    });
-});
+             // Show success message and reload table
+             Swal.fire({
+                 icon: 'success',
+                 title: 'Entry added successfully!',
+                 showConfirmButton: false,
+                 timer: 1500
+             }).then(() => {
+                 // Close the modal and reset the form
+                 modal.style.display = 'none';
+                 resetAddBillModal(); // Call reset function
+                 fetchDataAndReloadTable(); // Function to refresh data
+             });
+         })
+         .catch(error => {
+             console.error('Error:', error);
+             Swal.fire({
+                 icon: 'error',
+                 title: 'Failed to process the request',
+                 text: error.message || 'Something went wrong.',
+             });
+         });
+     } else {
+         // If the user cancels, do nothing or handle the cancellation
+         Swal.fire({
+             title: 'Action canceled',
+             icon: 'info',
+             timer: 1500,
+             showConfirmButton: false
+         });
+     }
+ });
+}); 
 
 // Auto-fill fields when the name input changes
 form.name.addEventListener('input', function () {
