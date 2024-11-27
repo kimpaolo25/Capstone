@@ -374,7 +374,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
             <thead>
                 <tr>
                     <th class="bill-id">Bill ID</th> <!-- Hidden column -->
-                    <th>Name</th>
+                    <th class="name">Name</th>
                     <th>Area</th>
                     <th>Current</th>
                     <th>Previous</th>
