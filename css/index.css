@@ -113,13 +113,13 @@ footer {
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh; /* Use full viewport height */
     padding: 1rem;
     position: fixed;
     z-index: 20;
     left: 0;
     top: 0;
-    overflow: auto;
+    overflow: auto;  /* Enable scrolling for the entire modal */
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
     animation: fadeIn 0.5s;
@@ -131,12 +131,59 @@ footer {
     border: 3px solid #4169e1;
     border-radius: 15px;
     backdrop-filter: blur(25px);
-    box-shadow: 0px 0px 10px 2px rgb(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
     background-color: white;
-    width: min(90%, 1200px);
+    width: min(70%, 1200px);
+    max-height: 80vh;  /* Limit the modal's height */
+    overflow-y: auto;  /* Add vertical scrolling inside the modal content */
     margin: auto;
     box-sizing: border-box;
 }
+
+/* Terms and Conditions header styling */
+.terms-header,
+.policy-header {
+    display: flex;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1.5rem;
+    transform: translateX(-50%);
+    border-radius: 0 0 20px 20px;
+    background-color: #4169e1; /* Change color if needed */
+    color: white;
+    font-size: clamp(1rem, 3vw, 2rem);
+}
+
+/* Header pseudo-elements for visual styling */
+.terms-header::before,
+.policy-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -30px;
+    width: 30px;
+    height: 30px;
+    border-top-right-radius: 50%;
+    background: transparent;
+    box-shadow: 15px 0 0 0 #4169e1;
+}
+
+.terms-header::after,
+.policy-header::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -30px;
+    width: 30px;
+    height: 30px;
+    border-top-left-radius: 50%;
+    background: transparent;
+    box-shadow: -15px 0 0 0 #4169e1;
+}
+
 
 /* Responsive breakpoints - Updated for better handling */
 @media screen and (max-width: 768px) {
