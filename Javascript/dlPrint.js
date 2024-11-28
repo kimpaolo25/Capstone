@@ -101,36 +101,124 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Error fetching data for print:', error));
     }
 
-    // Function to download the data as CSV from the server
-    function downloadDataAsCSV() {
+    // Function to download the data as PDF
+    const { jsPDF } = window.jspdf;
+
+    function downloadDataAsPDF() {
         const year = document.getElementById('yearFilter').value || ''; 
         const selectedArea = document.getElementById('areaFilter').value || ''; 
         const month = document.getElementById('monthFilter').value || ''; 
 
-        console.log(`Downloading CSV - Year: ${year}, Area: ${selectedArea}, Month: ${month}`); // Debugging log
-
         fetchData(year, selectedArea, month)
             .then(data => {
-                // Convert data to CSV format
-                const csvRows = [];
-                const headers = Object.keys(data[0]);
-                csvRows.push(headers.join(',')); // Add header row
+                if (!data || data.length === 0) {
+                    console.error('No valid data received or bill_id is missing');
+                    alert('No data found for the selected filters. The PDF will still be generated with no data.');
+                    return;
+                }
 
-                data.forEach(row => {
-                    csvRows.push(headers.map(field => JSON.stringify(row[field], (key, value) => value === null ? '' : value)).join(','));
+                const doc = new jsPDF();
+                let headers = Object.keys(data[0]).filter(header => header !== 'bill_id');
+
+                // Rename headers for 'Area_Number' and 'Date_column'
+                headers.forEach((header, index) => {
+                    if (header === 'Area_Number') {
+                        headers[index] = 'Area'; // Rename to 'Area'
+                    }
+                    if (header === 'Date_column') {
+                        headers[index] = 'Date'; // Rename to 'Date'
+                    }
                 });
 
-                const csvString = csvRows.join('\n');
-                const blob = new Blob([csvString], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.setAttribute('href', url);
-                link.setAttribute('download', `prwai_data_${selectedArea || 'all_areas'}.csv`);
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                // Update the data row keys as well to match the new headers
+                data = data.map(row => {
+                    const updatedRow = {};
+                    Object.keys(row).forEach(key => {
+                        if (key === 'Area_Number') {
+                            updatedRow['Area'] = row[key];
+                        } else if (key === 'Date_column') {
+                            updatedRow['Date'] = row[key];
+                        } else {
+                            updatedRow[key] = row[key];
+                        }
+                    });
+                    return updatedRow;
+                });
+
+                const monthNames = [
+                    '',    // Placeholder for index 0 (not used)
+                    'January', // January
+                    'February', // February
+                    'March', // March
+                    'April', // April
+                    'May', // May
+                    'May', // June
+                    'July', // July
+                    'August', // August
+                    'September', // September
+                    'October', // October
+                    'November', // November
+                    'December'  // December
+                ];
+
+                let yOffset = 20;
+
+                // Title and filter information on the first page only
+                doc.setFontSize(16);
+                doc.text('Pansol Rural Waterworks Association Incorporation', 20, yOffset);
+                doc.setFontSize(12);
+                doc.text('Bill Reports', 20, yOffset + 10);
+                doc.text(`Area: ${selectedArea || 'All Areas'}`, 20, yOffset + 20);
+                doc.text(`Month: ${month >= 1 && month <= 12 ? monthNames[month] : 'All Months'}`, 20, yOffset + 30);
+                doc.text(`Year: ${year || 'All Year'}`, 20, yOffset + 40);
+
+                // Move down to after title section
+                yOffset += 50;
+
+                // Use autoTable to add the table with data
+                doc.autoTable({
+                    head: [headers],
+                    body: data.map(row => headers.map(header => row[header])),
+                    startY: yOffset,
+                    margin: { top: 10, left: 10, right: 10 },
+                    tableWidth: 'auto',
+                    columnStyles: {
+                        0: { cellWidth: 'auto' },  // 'Area' column
+                        1: { cellWidth: 'auto' },  // 'Present' column
+                        2: { cellWidth: 'auto' },  // 'Previous' column
+                        3: { cellWidth: 'auto' },  // 'Date' column
+                        4: { cellWidth: 'auto' },  // 'Date' column (adjust if you have more columns)
+                        5: { cellWidth: 'auto' },  // 'Date' column
+                        6: { cellWidth: 'auto' },  // 'Date' column
+                        7: { cellWidth: 'auto' },  // 'Date' column
+                    },
+                    styles: {
+                        cellPadding: 2,
+                        fontSize: 10,
+                        valign: 'middle',
+                        overflow: 'linebreak',
+                        lineWidth: 0.1,
+                        lineColor: [0, 0, 0],
+                        halign: 'center',
+                    },
+                    headStyles: {
+                        fillColor: [173, 216, 230],
+                        fontSize: 12,
+                        textColor: [0, 0, 0],
+                    },
+                    didDrawPage: function (data) {
+                        if (data.pageNumber > 1) {
+                            // If it's page 2 or later, don't draw the header or the page number
+                        } 
+                        
+                    },
+                    // Disable repeating headers on every page after the first one
+                    showHead: 'firstPage'
+                });
+
+                doc.save(`prwai_data_${selectedArea || 'all_areas'}.pdf`);
             })
-            .catch(error => console.error('Error fetching data for CSV download:', error));
+            .catch(error => console.error('Error fetching data for PDF download:', error));
     }
 
     // Function to download the data as Excel from the server
@@ -159,9 +247,9 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault(); // Prevent default anchor behavior
         printData(); // Call printData function
     });
-    document.getElementById('downloadCSVOption').addEventListener('click', (event) => {
+    document.getElementById('downloadPDFOption').addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default anchor behavior
-        downloadDataAsCSV(); // Call downloadDataAsCSV function
+        downloadDataAsPDF(); // Call downloadDataAsCSV function
     });
     document.getElementById('downloadExcelOption').addEventListener('click', (event) => {
         event.preventDefault(); // Prevent default anchor behavior

@@ -23,6 +23,8 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
     <link rel="stylesheet" href="./css/updateModal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.22/jspdf.plugin.autotable.min.js"></script>
     <script src="./Javascript/sweetalert.js"></script>
 </head>
 
@@ -57,8 +59,8 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                     </button>
 
                     <div class="sub-dropdown-content">
-                        <a href="#" id="downloadCSVOption" title="Download as CSV">
-                            <i class="fas fa-file-csv"></i>
+                        <a href="#" id="downloadPDFOption" title="Download as PDF">
+                            <i class="fas fa-file-pdf"></i>
                         </a>
                         <a href="#" id="downloadExcelOption" title="Download as Excel">
                             <i class="fas fa-file-excel"></i>
