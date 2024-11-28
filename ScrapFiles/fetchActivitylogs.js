@@ -23,22 +23,31 @@ function fetchActivityLogs() {
                 // Render each log entry
                 logs.forEach(log => {
                     const logEntry = document.createElement('li');
-                    logEntry.textContent = `${log.Name} ${log.Action} bill for ${log.recordAffected} on ${log.timestamp}`;
                     
-                    // Color the log entry based on the action
+                    // Create a span for the action with conditional coloring
+                    const nameText = document.createTextNode(`${log.Name} `);
+                    const actionSpan = document.createElement('span');
+                    actionSpan.textContent = log.Action;
+                    
+                    // Color the action word
                     switch(log.Action.toLowerCase()) {
                         case 'added':
-                            logEntry.style.color = 'blue';
+                            actionSpan.style.color = 'blue';
                             break;
                         case 'updated':
-                            logEntry.style.color = 'green';
+                            actionSpan.style.color = 'green';
                             break;
                         case 'deleted':
-                            logEntry.style.color = 'red';
+                            actionSpan.style.color = 'red';
                             break;
-                        default:
-                            logEntry.style.color = 'black';
                     }
+                    
+                    const restText = document.createTextNode(` bill for ${log.recordAffected} on ${log.timestamp}`);
+                    
+                    // Combine the parts
+                    logEntry.appendChild(nameText);
+                    logEntry.appendChild(actionSpan);
+                    logEntry.appendChild(restText);
                     
                     logsList.appendChild(logEntry);
                 });
