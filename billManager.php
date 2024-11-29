@@ -380,7 +380,7 @@ $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest'; // Fallback 
                     <th>Area</th>
                     <th>Current</th>
                     <th>Previous</th>
-                    <th>Date</th>
+                    <th>Billing Date</th>
                     <th>Initial Amount</th>
                     <th>Cu.M</th>
                     <th>Amount</th>
