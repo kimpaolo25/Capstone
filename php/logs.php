@@ -9,6 +9,9 @@ session_start();
 $userName = isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest';
 
 function insertLog($conn, $name, $action, $recordAffected) {
+    // Set the timezone to match your desired region (e.g., 'Asia/Manila')
+    date_default_timezone_set('Asia/Manila');
+
     $timestamp = date('Y-m-d H:i:s'); // Current timestamp
     $stmt = $conn->prepare("INSERT INTO logs (Name, Action, recordAffected, timestamp) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssss", $name, $action, $recordAffected, $timestamp);
