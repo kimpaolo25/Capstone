@@ -5,13 +5,15 @@ body {
 }
 
 header {
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #4169e1; /* Header background color */
-    color: #ffffff; /* White text color */
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space items evenly */
+    align-items: center; /* Center items vertically */
+    width: 100%; /* Ensure header takes full width */
+    padding: 10px 15px; /* Default padding */
+    box-sizing: border-box; /* Include padding in width calculation */
+    background-color: #4169e1; /* Set background color if needed */
+    position: relative; /* Positioning context for child elements */
 }
-
 .logo {
     width: 40px;
     height: 40px;
@@ -524,11 +526,11 @@ table tr:hover {
     max-height: 80%; /* Prevent overflow */
     box-sizing: border-box; /* Include padding in width calculation */
     animation: fadeIn 0.5s; /* Fade-in animation for content */
-    margin-left: 350px; /* Remove any margin that might cause issues */
-    margin-top: 100px   ;
+    position: absolute; /* Use absolute positioning for centering */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Shift element to its center */
 }
-
-
 
 
 .close-button {
@@ -572,3 +574,304 @@ table tr:hover {
     background-color: #6f8de6; /* Darker blue on hover */
 }
 
+
+@media (max-width: 768px) {
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        position: relative;
+    }
+
+    .logo {
+        width: 30px;
+        height: 30px;
+        order: 1;
+        margin-right: 10px;
+    }
+    
+    .exit-button {
+        order: 3;
+        margin-left: 10px;
+    }
+
+    .exit-button img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .accs-button,
+    .bills-button,
+    .dashboard-button,
+    .user-manage {
+        order: 2;
+        margin: 0 3px;
+        font-size: 14px;
+        padding: 6px 8px;
+    }
+
+    #addButton, #activityLogsButton {
+        width: 100%; 
+        margin: 10px 0; 
+        font-size: 14px; 
+    }
+
+    .table-container {
+        width: 100%; 
+        margin: 10px 0; 
+    }
+
+    .table-controls {
+        flex-direction: column; /* Stack vertically on smaller screens */
+        width: 95%;
+        align-items: center; /* Center items horizontally */
+        justify-content: center; /* Center items vertically */
+    }
+
+    .table-controls .add-button-container,
+    .table-controls .set-button-container,
+    .table-controls .search-container {
+        width: 60%; /* Full width when stacked */
+        display: flex;
+        justify-content: center; /* Center the contents of each container */
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+
+    }
+
+    .table-controls input,
+    .table-controls button {
+        width: 60%; /* Full width inputs and buttons */
+        margin: 5px 0;
+        text-align: center; /* Ensure text is centered */
+        gap: 5px;;
+    }
+
+    .table-controls .add-button-container, .table-controls .set-button-container {
+        text-align: center;
+    }
+
+    .manage_acc-content {
+        width: 90%; /* Increase width to nearly full screen */
+        max-width: 95%; /* Ensure it doesn't exceed screen width */
+        margin: 10% auto; /* Adjust vertical positioning */
+        padding: 30px 20px; /* Reduce padding */
+        border-width: 2px; /* Slightly thinner border */
+    }
+
+    .manage_acc-header {
+        padding: 0.3rem 1rem; /* Reduce header padding */
+        font-size: clamp(0.8rem, 4vw, 1.5rem); /* Responsive font size */
+    }
+
+    .manage_acc-header::before,
+    .manage_acc-header::after {
+        width: 20px; /* Reduce decorative element width */
+        height: 20px; /* Reduce decorative element height */
+    }
+
+    .manageAccInput-field {
+        width: 100%; /* Full width input */
+        margin-left: 0; /* Remove left margin */
+        padding: 0.4rem; /* Reduce padding */
+        font-size: clamp(0.8rem, 3vw, 1.2rem); /* Responsive font size */
+    }
+
+    .manage_acc-field {
+        margin-top: 1rem; /* Reduce field spacing */
+    }
+
+    .manageAccLabel {
+        margin-left: 5%; /* Reduce label left margin */
+        font-size: clamp(0.7rem, 3vw, 1rem); /* Responsive font size */
+    }
+
+    .checkbox-container {
+        margin-left: 10px; /* Reduce checkbox container margin */
+        font-size: clamp(0.8rem, 3vw, 1rem); /* Responsive font size */
+    }
+
+    .manage_acc-button {
+        margin-top: 30px; /* Reduce button top margin */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .manage_acc-button button {
+        width: 80%; /* Make buttons wider */
+        margin: 10px 0; /* Stack buttons vertically with spacing */
+        padding: 8px 15px; /* Reduce button padding */
+        font-size: clamp(0.8rem, 3vw, 1rem); /* Responsive font size */
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 5px;
+        min-height: 50px;
+    }
+    
+    .logo {
+        width: 25px;
+        height: 25px;
+        margin-right: 5px;
+        order: 1;
+    }
+    
+    .exit-button {
+        order: 3;
+        margin-left: 5px;
+    }
+    
+    .exit-button img {
+        width: 25px;
+        height: 25px;
+    }
+    
+    .dashboard-button,
+    .bills-button,
+    .accs-button,
+    .user-manage {
+        order: 2;
+        padding: 4px 6px;
+        font-size: 10px;
+        margin: 0 2px;
+    }
+
+    #addButton, #activityLogsButton {
+        width: 100%; 
+        font-size: 12px; 
+    }
+
+    .table-container {
+        width: 100%; 
+        margin: 5px 0; 
+    }
+
+    th, td {
+        font-size: 12px; 
+        padding: 8px; 
+    }
+
+    .table-controls {
+        width: 90%; /* Full width on very small screens */
+        align-items: center;
+        justify-content: center;
+    }
+
+    .manage_acc-content {
+        width: 95%; /* Almost full width on very small screens */
+        margin: 5% auto; /* Reduce vertical margin */
+        padding: 20px 15px; /* Further reduce padding */
+    }
+
+    .manage_acc-header {
+        padding: 0.2rem 0.8rem; /* Even smaller header padding */
+        font-size: clamp(0.7rem, 4vw, 1.2rem); /* Further reduce font size */
+    }
+
+    .manageAccInput-field {
+        padding: 0.3rem; /* Reduce input padding */
+        font-size: clamp(0.7rem, 3vw, 1rem); /* Smaller font size */
+    }
+
+    .manage_acc-field {
+        margin-top: 0.8rem; /* Reduce field spacing */
+    }
+
+    .manage_acc-button button {
+        width: 90%; /* Slightly wider buttons */
+        padding: 6px 12px; /* Reduce button padding */
+        font-size: clamp(0.7rem, 3vw, 0.9rem); /* Smaller button text */
+    }
+
+    @media (max-width: 1024) {
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px;
+            min-height: 50px;
+        }
+        
+        .logo {
+            width: 25px;
+            height: 25px;
+            margin-right: 5px;
+            order: 1;
+        }
+        
+        .exit-button {
+            order: 3;
+            margin-left: 5px;
+        }
+        
+        .exit-button img {
+            width: 25px;
+            height: 25px;
+        }
+        
+        .dashboard-button,
+        .bills-button,
+        .accs-button,
+        .user-manage {
+            order: 2;
+            padding: 4px 6px;
+            font-size: 10px;
+            margin: 0 2px;
+        }
+    
+        #addButton, #activityLogsButton {
+            width: 100%; 
+            font-size: 12px; 
+        }
+    
+        .table-container {
+            width: 100%; 
+            margin: 5px 0; 
+        }
+    
+        th, td {
+            font-size: 12px; 
+            padding: 8px; 
+        }
+    
+        .table-controls {
+            width: 90%; /* Full width on very small screens */
+            align-items: center;
+            justify-content: center;
+        }
+    
+        .manage_acc-content {
+            width: 95%; /* Almost full width on very small screens */
+            margin: 5% auto; /* Reduce vertical margin */
+            padding: 20px 15px; /* Further reduce padding */
+        }
+    
+        .manage_acc-header {
+            padding: 0.2rem 0.8rem; /* Even smaller header padding */
+            font-size: clamp(0.7rem, 4vw, 1.2rem); /* Further reduce font size */
+        }
+    
+        .manageAccInput-field {
+            padding: 0.3rem; /* Reduce input padding */
+            font-size: clamp(0.7rem, 3vw, 1rem); /* Smaller font size */
+        }
+    
+        .manage_acc-field {
+            margin-top: 0.8rem; /* Reduce field spacing */
+        }
+    
+        .manage_acc-button button {
+            width: 90%; /* Slightly wider buttons */
+            padding: 6px 12px; /* Reduce button padding */
+            font-size: clamp(0.7rem, 3vw, 0.9rem); /* Smaller button text */
+        }
+    } 
+}

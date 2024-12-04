@@ -163,9 +163,7 @@
         margin-right: auto;
         border: 2px solid #1d3ceb;
         overflow-y: auto;
-        /* Enable vertical scrolling */
         max-height: 420px;
-        /* Adjust as needed */
     }
 
     /* Table basic styling */
@@ -176,6 +174,7 @@
         margin-left: auto;
         margin-right: auto;
     }
+
 
     th,
     td {
@@ -234,17 +233,35 @@
         /* Adjust margin for better spacing */
     }
 
-    /* Styling for individual page buttons */
+    #paginationControls {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 3px;
+        bottom: 10px; /* Distance from the bottom of the table-container */
+        right: 50px; /* Distance from the right of the table-container */
+        margin-top: 10px;
+        margin-bottom: 5px;
+        margin-right: 70px;
+    }
+
+    #firstPageBtn,
+    #prevPageBtn,
+    #nextPageBtn,
+    #lastPageBtn {
+         margin-top: 10px;
+    }
+
     #firstPageBtn {
         background-color: white;
         color: black;
         font-weight: bold;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         border: 2px solid #4169e1;
-        width: 60px;
+        width: 80px;
         height: 27px;
         border-radius: 5px;
-        margin-left: 1210px;
+        margin-left: 1110px;
         margin-top: 10px;
     }
 
@@ -254,7 +271,7 @@
         font-weight: bold;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         border: 2px solid #4169e1;
-        width: 60px;
+        width: 80px;
         height: 27px;
         border-radius: 5px;
     }
@@ -265,7 +282,7 @@
         font-weight: bold;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         border: 2px solid #4169e1;
-        width: 60px;
+        width: 80px;
         height: 27px;
         border-radius: 5px;
     }
@@ -277,7 +294,7 @@
         font-weight: bold;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         border: 2px solid #4169e1;
-        width: 60px;
+        width: 80px;
         height: 27px;
         border-radius: 5px;
     }
@@ -1258,3 +1275,526 @@
         background-color: #7fb1e6;
         /* Highlight effect on hover */
     }
+
+    /* Responsive Header */
+    @media screen and (max-width: 768px) {
+        header {
+            min-height: 50px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .logo {
+            align-self: center;
+            margin-bottom: 10px;
+        }
+
+        .userName {
+            margin-left: 0;
+            align-self: center;
+        }
+
+        /* Button layout in header */
+        .dashboard-button,
+        .bills-button,
+        .accs-button,
+        .user-manage {
+            padding: 4px;
+            font-size: 11px;
+            margin-left: 3px;
+        }
+
+        .table-controls {
+            flex-direction: column;
+            align-items: stretch;
+            margin: 10px 5%;
+        }
+    
+        .table-controls input,
+        .table-controls button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    
+        .table-controls .search-container {
+            display: flex; /* Use flexbox to align search input and reload button */
+            flex-direction: column;
+            margin-left: 0;
+        }
+    
+        .table-controls .search-container input,
+        .table-controls .search-container #reloadButton {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    
+        #reloadButton {
+            margin-bottom: 10px;
+        }
+
+        #setButton, 
+        #PrintAll,
+        #addButton, 
+        .dropbtn {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        #searchInput{
+            width: 90%;
+            margin: 5px 0;
+
+        }
+
+        .filter-controls {
+            flex-direction: grid;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-width: none;
+            align-items: stretch;
+        }
+
+        .filter-container {
+            margin-bottom: 10px;
+        }
+
+        .reset-container{
+            flex-direction: grid;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-width: none;
+            align-items: stretch;
+        }
+
+        .reset-button{
+            flex-direction: grid;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-width: none;
+            align-items: stretch;
+        }
+
+        .table-controls {
+            flex-direction: column;
+            align-items: stretch;
+            margin: 10px 5%;
+        }
+
+        .table-controls input,
+        .table-controls button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #reloadButton {
+            margin-bottom: 10px;
+        }
+
+        .table-controls .search-container {
+            margin-left: 0;
+            margin-bottom: 10px;
+        }
+
+        .table-container {
+            width: 95%;
+            margin: 20px auto;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        #firstPageBtn, 
+        #prevPageBtn, 
+        #nextPageBtn, 
+        #lastPageBtn {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        /* Ensure modals are full-width on small screens */
+        .modal-content, 
+        .invModal-content, 
+        .printModal-content {
+            width: 90%;
+            margin: 5% auto;
+            padding: 20px;
+        }
+
+        /* Adjust modal fields */
+        .modal-field,
+        .invModal-field {
+            width: 100%;
+        }
+
+        /* Dropdown adjustments */
+        .dropdown {
+            position: relative;
+            right: 0;
+            top: 0;
+            margin-top: 10px;
+        }
+
+
+        .input-field, 
+        .area, 
+        .modal-field input, 
+        .invModal-field input {
+            width: 100%;
+        }
+
+
+    }
+
+
+    @media (max-width: 480px) {
+        header {
+            min-height: 50px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .logo {
+            align-self: center;
+            margin-bottom: 10px;
+        }
+
+        .userName {
+            margin-left: 0;
+            align-self: center;
+        }
+
+        /* Button layout in header */
+        .dashboard-button,
+        .bills-button,
+        .accs-button,
+        .user-manage {
+            padding: 4px;
+            font-size: 11px;
+            margin-left: 3px;
+        }
+
+        .table-controls {
+            flex-direction: column;
+            align-items: stretch;
+            margin: 10px 5%;
+        }
+    
+        .table-controls input,
+        .table-controls button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    
+        .table-controls .search-container {
+            display: flex; /* Use flexbox to align search input and reload button */
+            flex-direction: column;
+            margin-left: 0;
+        }
+    
+        .table-controls .search-container input,
+        .table-controls .search-container #reloadButton {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    
+        #reloadButton {
+            margin-bottom: 10px;
+        }
+
+        #setButton, 
+        #PrintAll,
+        #addButton, 
+        .drop {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        #searchInput{
+            width: 90%;
+            margin: 5px 0;
+
+        }
+
+        .filter-controls {
+            flex-direction: grid;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-width: none;
+            align-items: stretch;
+        }
+
+        .filter-container {
+            margin-bottom: 10px;
+        }
+
+        .reset-container{
+            flex-direction: grid;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-width: none;
+            align-items: stretch;
+        }
+
+        .reset-button{
+            flex-direction: grid;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-width: none;
+            align-items: stretch;
+        }
+
+        .table-controls {
+            flex-direction: column;
+            align-items: stretch;
+            margin: 10px 5%;
+        }
+
+        .table-controls input,
+        .table-controls button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #reloadButton {
+            margin-bottom: 10px;
+        }
+
+        .table-controls .search-container {
+            margin-left: 0;
+            margin-bottom: 10px;
+        }
+
+        .table-container {
+            width: 95%;
+            margin: 20px auto;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        #firstPageBtn, 
+        #prevPageBtn, 
+        #nextPageBtn, 
+        #lastPageBtn {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        /* Ensure modals are full-width on small screens */
+        .modal-content, 
+        .invModal-content, 
+        .printModal-content {
+            width: 90%;
+            margin: 5% auto;
+            padding: 20px;
+        }
+
+        /* Adjust modal fields */
+        .modal-field,
+        .invModal-field {
+            width: 100%;
+        }
+
+        /* Dropdown adjustments */
+        .dropdown {
+            position: relative;
+            right: 0;
+            top: 0;
+            margin-top: 10px;
+        }
+
+
+        .input-field, 
+        .area, 
+        .modal-field input, 
+        .invModal-field input {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 1024px) {
+        header {
+            min-height: 50px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .logo {
+            align-self: center;
+            margin-bottom: 10px;
+        }
+
+        .userName {
+            margin-left: 0;
+            align-self: center;
+        }
+
+        /* Button layout in header */
+        .dashboard-button,
+        .bills-button,
+        .accs-button,
+        .user-manage {
+            padding: 4px;
+            font-size: 11px;
+            margin-left: 3px;
+        }
+
+        .table-controls {
+            flex-direction: column;
+            align-items: stretch;
+            margin: 10px 5%;
+        }
+    
+        .table-controls input,
+        .table-controls button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    
+        .table-controls .search-container {
+            display: flex; /* Use flexbox to align search input and reload button */
+            flex-direction: column;
+            margin-left: 0;
+        }
+    
+        .table-controls .search-container input,
+        .table-controls .search-container #reloadButton {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    
+        #reloadButton {
+            margin-bottom: 10px;
+        }
+
+        #setButton, 
+        #PrintAll,
+        #addButton, 
+        .dropbtn {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        #searchInput{
+            width: 90%;
+            margin: 5px 0;
+
+        }
+
+        .filter-controls {
+            flex-direction: grid;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-width: none;
+            align-items: stretch;
+        }
+
+        .filter-container {
+            margin-bottom: 10px;
+        }
+
+        .reset-container{
+            flex-direction: grid;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-width: none;
+            align-items: stretch;
+        }
+
+        .reset-button{
+            flex-direction: grid;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-width: none;
+            align-items: stretch;
+        }
+
+        .table-controls {
+            flex-direction: column;
+            align-items: stretch;
+            margin: 10px 5%;
+        }
+
+        .table-controls input,
+        .table-controls button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #reloadButton {
+            margin-bottom: 10px;
+        }
+
+        .table-controls .search-container {
+            margin-left: 0;
+            margin-bottom: 10px;
+        }
+
+        .table-container {
+            width: 95%;
+            margin: 20px auto;
+        }
+
+        table {
+            font-size: 12px;
+        }
+
+        th, td {
+            padding: 5px;
+        }
+
+        #firstPageBtn, 
+        #prevPageBtn, 
+        #nextPageBtn, 
+        #lastPageBtn {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+
+        /* Ensure modals are full-width on small screens */
+        .modal-content, 
+        .invModal-content, 
+        .printModal-content {
+            width: 90%;
+            margin: 5% auto;
+            padding: 20px;
+        }
+
+        /* Adjust modal fields */
+        .modal-field,
+        .invModal-field {
+            width: 100%;
+        }
+
+        /* Dropdown adjustments */
+        .dropdown {
+            position: relative;
+            right: 0;
+            top: 0;
+            margin-top: 10px;
+        }
+
+        .input-field, 
+        .area, 
+        .modal-field input, 
+        .invModal-field input {
+            width: 100%;
+        }
+    }
+
+
+

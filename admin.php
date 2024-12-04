@@ -19,15 +19,16 @@ $userName = $_SESSION['name'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link rel="stylesheet" href="./css/admin.css">
+    <link rel="icon" type="image/png" href="./image/icon.png">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
-    <script src="./javascript/admin.js" defer></script>
-    <script src="./javascript/prediction.js" defer></script>
-    <script src="./javascript/descriptive.js" defer></script>
+    <script src="./Javascript/admin.js" defer></script>
+    <script src="./Javascript/prediction.js" defer></script>
+    <script src="./Javascript/descriptive.js" defer></script>
     <script src="./Javascript/updateCharts.js" defer></script>
-    <script src="./javascript/upperFilter.js" defer></script>
+    <script src="./Javascript/upperFilter.js" defer></script>
 </head>
 
 <body>
@@ -35,11 +36,11 @@ $userName = $_SESSION['name'];
         <img src="./image/icon.png" alt="Logo" class="logo">
 
         <!-- Navigation Links -->
-        <a href="admin.php" class="dashboard-button" id="dashButton">Dashboard</a>
-        <a href="billManager.php" class="bills-button" id="billsButton">Bill Manager</a>
+        <a href="./admin.php" class="dashboard-button" id="dashButton">Dashboard</a>
+        <a href="./billManager.php" class="bills-button" id="billsButton">Bill Manager</a>
         <?php if (isset($_SESSION['user_level']) && $_SESSION['user_level'] == 1): ?>
             <!-- Only show "Manage Account" if user is an admin (user_level == 1) -->
-            <a href="manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
+            <a href="./manage_acc.php" class="accs-button" id="accsButton">Manage Account</a>
         <?php endif; ?>
         <a href="javascript:void(0)" class="exit-button" id="exitButton">
             <img src="./image/out.png" alt="Exit">
@@ -50,49 +51,63 @@ $userName = $_SESSION['name'];
     <h2 class="userName">Good Day, <?php echo htmlspecialchars($userName); ?>!</h2>
 
     <h2 class="desc">Descriptive Analytics</h2>
-
-    <!-- Dropdown to select a date -->
-    <div class="filter-dropdown">
-    <label for="dateFilter">Select Date:</label>
-    <select id="dateFilter">
-        <option value="">Select Date</option>
-        <!-- Add other date options here -->
-    </select>
     
-    <!-- Reset button -->
-    <button id="resetFilter">&times;</button> <!-- Added Reset Button -->
+        <!-- Filters Container -->
+    <div class="filters-container">
+        <!-- Date Filter Dropdown and Reset Button -->
+        <div class="filter-dropdown1">
+            <label for="dateFilter">Select Date:</label>
+            <select id="dateFilter">
+                <option value="">Select Date</option>
+                <!-- Add other date options here -->
+            </select>
+            <button id="resetFilter" type="button" style="margin-left: 10px; cursor: pointer;">
+                &times;
+            </button>
         </div>
 
-    
-    <div class="descDashboard">
-        <!-- Card for Number of Bills This Month -->
-        <div class="card_chart">
-            <h2>Total Number of Bills This Month</h2>
-            <div id="billsThisMonth">Loading...</div>
-        </div>
-
-        <!-- Card for Number of Bills This Year -->
-        <div class="card_chart">
-            <h2>Total Number of Bills This Year</h2>
-            <div id="billsThisYear">Loading...</div>
-        </div>
-
-        <!-- Card for Overall Income this month -->
-        <div class="card_chart">
-            <h2>Expected Income This Month</h2>
-            <div id="overallIncomeThisMonth">Loading...</div>
-        </div>
-
-        <!-- Card for Overall Income -->
-        <div class="card_chart">
-            <h2>Expected Income This Year</h2>
-            <div id="overallIncome">Loading...</div>
+        <!-- Year Filter Dropdown and Reset Button -->
+        <div class="filter-dropdown2">
+            <label for="yearFilter">Select Year:</label>
+            <select id="yearFilter" onchange="updateCharts()">
+                <option value="">All Year</option>
+            </select>
+            <button id="resetButton" style="margin-left: 10px; cursor: pointer;">&times;</button>
         </div>
     </div>
+    
 
-    <div class="descDashboardPie">
-        <div class="card_chart">
-            <canvas id="meterStatusChart"></canvas>
+    <div class="container">
+        <div class="descDashboardPie">
+            <div class="card_chart">
+                <canvas id="meterStatusChart"></canvas>
+            </div>
+        </div>
+
+        <div class="descDashboard">
+            <!-- Card for Number of Bills This Month -->
+            <div class="card_chart">
+                <h2>Total Number of Bills This Month</h2>
+                <div id="billsThisMonth">Loading...</div>
+            </div>
+
+            <!-- Card for Number of Bills This Year -->
+            <div class="card_chart">
+                <h2>Total Number of Bills This Year</h2>
+                <div id="billsThisYear">Loading...</div>
+            </div>
+
+            <!-- Card for Overall Income this month -->
+            <div class="card_chart">
+                <h2>Expected Income This Month</h2>
+                <div id="overallIncomeThisMonth">Loading...</div>
+            </div>
+
+            <!-- Card for Overall Income -->
+            <div class="card_chart">
+                <h2>Expected Income This Year</h2>
+                <div id="overallIncome">Loading...</div>
+            </div>
         </div>
     </div>
 
@@ -108,14 +123,6 @@ $userName = $_SESSION['name'];
             <canvas id="incomeAreaChart"></canvas>
         </div>
 
-    </div>
-        <!-- Year Filter Dropdown and Reset Button -->
-    <div class="filter-dropdown">
-        <label for="yearFilter">Select Year:</label>
-        <select id="yearFilter" onchange="updateCharts()">
-            <option value="">All Year</option>
-        </select>
-    <button id="resetButton">&times;</button> <!-- Added Reset Button -->
     </div>
 
 
